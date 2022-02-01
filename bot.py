@@ -8,7 +8,7 @@ from aiogram.utils.exceptions import BotBlocked
 from aiogram import *
 
 # Инициализация и настройка опроса
-dasha = r"https://t.me.ru/dashuluicha"
+dasha = r"https://t.me/dashuluicha"
 nameandsurname = {}
 sname = str()
 # Monday = {}
@@ -60,10 +60,31 @@ async def cmd_start(callback: types.Message):
     name = callback.from_user.username
     nameandsurname[userbtn] = username
     await callback.answer(
-        f"Охае, чайный мастер {callback.from_user.username} \nЕсли мы уже знакомы - выбери первый пункт \nЕсли нет, то второй!",
-        reply_markup=keyboard)
+        f"Охае, чайный мастер {callback.from_user.username} \nЕсли мы уже знакомы - выбери первый пункт \nЕсли нет, то второй!"
+        , reply_markup=keyboard)
 
     # await message.answer()
+
+
+@dp.callback_query_handler(text='start')
+async def cmd_start(callback: types.Message):
+    buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='1) Время работать!'),
+               # types.InlineKeyboardButton(text='2)Давай знакомиться', callback_data='Знакомвство'),
+               types.InlineKeyboardButton(text="2) Я не знаю что делать!", callback_data="3) Я не знаю что делать!"),
+               # types.InlineKeyboardButton(text="Я", url='https://t.me/Itisialready')
+               ]
+    # first_name = callback.first_name  # Не может быть пустым
+    username = callback.from_user.username
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    userbtn = callback.from_user.id
+    name = callback.from_user.username
+    nameandsurname[userbtn] = username
+    await callback.message.answer(
+        f"Охае, чайный мастер {callback.from_user.username} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
+        reply_markup=keyboard
+    )
+    await callback.answer()
 
 
 # Знакомвство
@@ -79,6 +100,7 @@ async def meeting(callback: types.CallbackQuery):
     await callback.message.answer(
         'Я телеграмм бот написанный для облегчения твоей работы \n Мой создатель @Itisialready aka Влад, связь с ним:',
         reply_markup=keyboard)
+    await callback.answer()
 
 
 # Ответ на первый вопрос
@@ -95,19 +117,16 @@ async def time_to_work(callback: types.CallbackQuery):
     # await bot.send_message(message.from_user.id) берет user id и пишет по нему
 
 
-# Знакомвство с мастером
-
-
 # Ответ на второй вопрос
 @dp.callback_query_handler(text="3) Я не знаю что делать!")
 async def problem1(callback: types.CallbackQuery):
-    buttons = [types.InlineKeyboardButton(text='Да, нужна помощь', callback_data='Да, нужна помощь'),
+    buttons = [types.InlineKeyboardButton(text='Да, нужна помощь', url=dasha),
                types.InlineKeyboardButton(text="Нет, Я запутался в рабочем дне",
                                           callback_data="Нет, Я запутался в рабочем дне")
                ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    await callback.message.answer("Давай разберемся!\nУ тебя критическая ситуация?", reply_markup=keyboard())
+    await callback.message.answer("Давай разберемся!\nУ тебя критическая ситуация?", reply_markup=keyboard)
     await callback.answer()
     # await message.answer(reply_markup=types.ReplyKeyboardRemove())
 
@@ -117,7 +136,8 @@ async def open_day(callback: types.CallbackQuery):
     # keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     # buttons = ['Да, нужна помощь', "Нет,Я запутался в рабочем дне"]
     # keyboard.add(*buttons)
-    reply_markup = types.InlineKeyboardButton()
+    # reply_markup = types.InlineKeyboardButton()
+    # Распорядок
     await callback.message.answer('Сообщение 1')
     await callback.message.answer('Сообщение 2')
     await callback.message.answer('Сообщение 3')
@@ -125,49 +145,102 @@ async def open_day(callback: types.CallbackQuery):
 
 
 # await message.answer('У тебя критическая ситуация?', reply_markup=keyboard)
-
-
-# @dp.message_handler(lambda message: message.text == "Давай разберемся")
-# async def without_puree(message: types.Message):
-#     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-#     buttons = ['Да', "Нет,Я запутался в рабочем дне"]
-#     keyboard.add(*buttons)
-#     await message.answer('У тебя критическая ситуация?', reply_markup=keyboard)
-
-@dp.message_handler(lambda message: message.text == '2)Давай знакомиться')
-async def get_know(message: types.CallbackQuery):
-    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    buttons = ['C приятного']
+# Пушка
+@dp.callback_query_handler(text='Чайная История на Пушке')
+async def push(callback: types.CallbackQuery):
+    buttons = [types.InlineKeyboardButton(text='Распорядок', callback_data='Распорядок на Пушке'),
+               types.InlineKeyboardButton(text="Открыть смену",
+                                          callback_data="Открыть смену на пушке"),
+               types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
+               types.InlineKeyboardButton(text='Закрыть смену', callback_data='Закрыть смену на пушке')
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    await message.answer('Предлагаю тебе начать с приятного, с знакомства', reply_markup=types.ReplyKeyboardRemove())
-    await message.answer('Выбирай с чего начнем!', reply_markup=keyboard)
+    await callback.message.answer('Хорошего дня тебе')
+    await callback.message.answer(f'Помни, {callback.from_user.username},ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого')
+    await callback.message.answer('Готов ли ты сделать план чемпиона?\nЗря засомневался в тебе\nТвоя награда ждет тебя в нашем чайном мире!', reply_markup=keyboard)
+
+@dp.callback_query_handler(text='Распорядок на Пушке')
+async def push(callback: types.CallbackQuery):
+    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке'),
+               # types.InlineKeyboardButton(text="Открыть смену",
+               #                            callback_data="Открыть смену")
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer('Текст распорядка', reply_markup=keyboard)
+
+@dp.callback_query_handler(text='Открыть смену на пушке')
+async def push(callback: types.CallbackQuery):
+    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке'),
+               types.InlineKeyboardButton(text="Далее",
+                                          callback_data="Далее")
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer('Текст открытия смены1')
+    await callback.message.answer('Текст открытия смены2')
+    await callback.message.answer('Текст открытия смены3')
+    await callback.message.answer('Текст открытия смены4', reply_markup=keyboard)
+
+#Тут должна быть продовцовая мудрость
+@dp.callback_query_handler(text='Далее')
+async def push(callback: types.CallbackQuery):
+    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке'),
+               types.InlineKeyboardButton(text="Далее",
+                                          callback_data="Далее")
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer('Текст')
+    await callback.message.answer('Текст')
+    await callback.message.answer('Текст')
+    await callback.message.answer('Текст', reply_markup=keyboard)
 
 
-@dp.message_handler(lambda message: message.text == 'С имени')
-async def add(message: types.Message):
-    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    if message.from_user.username not in nameandsurname:
-        nameandsurname.append(message.from_user.username)
-        # surname.append('0')
-        print('Новый Мастер!')
-        # print(str(name))
-    else:
-        pass
-
-        # break
-    # for i in name:
-    #     keyboard.add(name)
-    # await message.answer(r"Введите Имя:", reply_markup=keyboard)
-    # await Orderpeople.waiting_for_name.set()
 
 
-# async def start(message):
-#     if message.text == '/reg':
-#         message.answer(message.from_user.id, "Как тебя зовут?");
-#         bot.register_next_step_handler(message, get_name); #следующий шаг – функция get_name
-#     else:
-#         bot.send_message(message.from_user.id, 'Напиши /reg');
 
+@dp.callback_query_handler(text='Закрыть смену на пушке')
+async def push(callback: types.CallbackQuery):
+    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке'),
+               types.InlineKeyboardButton(text="Далее",
+                                          callback_data="Далее закрытия")
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer('Текст закрытия смены1')
+    await callback.message.answer('Текст закрытия смены2')
+    await callback.message.answer('Текст закрытия смены3')
+    await callback.message.answer('Текст закрытия смены4', reply_markup=keyboard)
+
+
+
+
+
+
+
+
+# Центральная
+@dp.callback_query_handler(text='Центральная Чайная История')
+async def central(callback: types.CallbackQuery):
+    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке'),
+               types.InlineKeyboardButton(text="Открыть смену",
+                                          callback_data="Открыть смену")
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer('Текст открытия смены1')
+    await callback.message.answer('Текст открытия смены2')
+    await callback.message.answer('Текст открытия смены3')
+    await callback.message.answer('Текст открытия смены4', reply_markup=keyboard)
+
+#Тут надо ввести переменную с мудростью
+
+
+
+
+# Хелп с обработкой исключением
 
 @dp.message_handler(text='help')
 async def need_help(message: types.Message):
