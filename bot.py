@@ -1,4 +1,4 @@
-import config
+import os
 import logging
 import aiogram
 import json
@@ -11,6 +11,15 @@ import random
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
+from pathlib import Path
+from dotenv import load_dotenv
+
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
+
+TOKEN = os.environ['TOKEN']
+
+
 # excel
 ##открываем файл
 rb = xlrd.open_workbook(r'userid=name.xls')
@@ -41,7 +50,7 @@ sname = str()
 
 
 # bot init
-bot = Bot(token=config.TOKEN)
+bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
 # log lvl
