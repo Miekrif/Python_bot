@@ -1,12 +1,18 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+import xlrd
+import random
+#открываем файл
+rb = xlrd.open_workbook(r'userid=name.xls')
 
+#выбираем активный лист
+sheet = rb.sheet_by_index(0)
 
-Base = declarative_base()
+lines = []
 
+for i in range(3):
+    for j in range(0, 1):
+        # Print the cell values with tab space
+        lines.append(sheet.cell_value(i, j))
+        print(i + 1, sheet.cell_value(i, j), end = '\t')
+    print('')
 
-class MediaIds(Base):
-    __tablename__ = 'userid'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255))
-    userid = Column(String(255))
+print(random.choice(lines))

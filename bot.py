@@ -6,8 +6,25 @@ import datetime
 import re
 from aiogram.utils.exceptions import BotBlocked
 from aiogram import *
+import xlrd
+import random
+from aiogram import Bot, types
+from aiogram.dispatcher import Dispatcher
+from aiogram.utils import executor
+# excel
+##открываем файл
+rb = xlrd.open_workbook(r'userid=name.xls')
+# выбираем активный лист
+sheet = rb.sheet_by_index(0)
+lines = []
+for i in range(3):
+    for j in range(0, 1):
+        # Print the cell values with tab space
+        lines.append(sheet.cell_value(i, j))
+        #     print(i + 1, sheet.cell_value(i, j), end = '\t')
+        # print('')
 
-# Инициализация и настройка опроса
+# Переменные
 dasha = r"https://t.me/dashuluicha"
 nameandsurname = {}
 sname = str()
@@ -110,8 +127,19 @@ async def time_to_work(callback: types.CallbackQuery):
                types.InlineKeyboardButton(text='Центральная Чайная История',
                                           callback_data='Центраяльная Чайная История'),
                ]
+    for i in range(3):
+        for j in range(0, 1):
+            # Print the cell values with tab space
+            lines.append(sheet.cell_value(i, j))
+        #     print(i + 1, sheet.cell_value(i, j), end='\t')
+        # print('')
+    # b = run(random.choice(lines))
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
+    await callback.message.answer("Цитата дня:\n")
+    # b = run(random.choice(lines))
+    await callback.message.answer(random.choice(lines))
+    # await callback.message.answer(b)
     await callback.message.answer("На какой точке ты сегодня работаешь?", reply_markup=keyboard)
     await callback.answer()
     # await bot.send_message(message.from_user.id) берет user id и пишет по нему
@@ -122,7 +150,8 @@ async def time_to_work(callback: types.CallbackQuery):
 async def problem1(callback: types.CallbackQuery):
     buttons = [types.InlineKeyboardButton(text='Да, нужна помощь', url=dasha),
                types.InlineKeyboardButton(text="Нет, Я запутался в рабочем дне",
-                                          callback_data="Нет, Я запутался в рабочем дне")
+                                          callback_data="Нет, Я запутался в рабочем дне"),
+               types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!')
                ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
@@ -133,15 +162,15 @@ async def problem1(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(text='Нет, Я запутался в рабочем дне')
 async def open_day(callback: types.CallbackQuery):
-    # keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    # buttons = ['Да, нужна помощь', "Нет,Я запутался в рабочем дне"]
-    # keyboard.add(*buttons)
-    # reply_markup = types.InlineKeyboardButton()
+    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='3) Я не знаю что делать!')
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
     # Распорядок
     await callback.message.answer('Сообщение 1')
     await callback.message.answer('Сообщение 2')
     await callback.message.answer('Сообщение 3')
-    await callback.message.answer('Сообщение 4')
+    await callback.message.answer('Сообщение 4', reply_markup=keyboard)
 
 
 # await message.answer('У тебя критическая ситуация?', reply_markup=keyboard)
@@ -157,8 +186,12 @@ async def push(callback: types.CallbackQuery):
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
     await callback.message.answer('Хорошего дня тебе')
-    await callback.message.answer(f'Помни, {callback.from_user.username},ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого')
-    await callback.message.answer('Готов ли ты сделать план чемпиона?\nЗря засомневался в тебе\nТвоя награда ждет тебя в нашем чайном мире!', reply_markup=keyboard)
+    await callback.message.answer(
+        f'Помни, {callback.from_user.username},ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого')
+    await callback.message.answer(
+        'Готов ли ты сделать план чемпиона?\nЗря засомневался в тебе\nТвоя награда ждет тебя в нашем чайном мире!',
+        reply_markup=keyboard)
+
 
 @dp.callback_query_handler(text='Распорядок на Пушке')
 async def push(callback: types.CallbackQuery):
@@ -169,6 +202,7 @@ async def push(callback: types.CallbackQuery):
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     await callback.message.answer('Текст распорядка', reply_markup=keyboard)
+
 
 @dp.callback_query_handler(text='Открыть смену на пушке')
 async def push(callback: types.CallbackQuery):
@@ -183,7 +217,8 @@ async def push(callback: types.CallbackQuery):
     await callback.message.answer('Текст открытия смены3')
     await callback.message.answer('Текст открытия смены4', reply_markup=keyboard)
 
-#Тут должна быть продовцовая мудрость
+
+# Тут должна быть продовцовая мудрость
 @dp.callback_query_handler(text='Далее')
 async def push(callback: types.CallbackQuery):
     buttons = [types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке'),
@@ -196,9 +231,6 @@ async def push(callback: types.CallbackQuery):
     await callback.message.answer('Текст')
     await callback.message.answer('Текст')
     await callback.message.answer('Текст', reply_markup=keyboard)
-
-
-
 
 
 @dp.callback_query_handler(text='Закрыть смену на пушке')
@@ -215,12 +247,6 @@ async def push(callback: types.CallbackQuery):
     await callback.message.answer('Текст закрытия смены4', reply_markup=keyboard)
 
 
-
-
-
-
-
-
 # Центральная
 @dp.callback_query_handler(text='Центральная Чайная История')
 async def central(callback: types.CallbackQuery):
@@ -235,14 +261,13 @@ async def central(callback: types.CallbackQuery):
     await callback.message.answer('Текст открытия смены3')
     await callback.message.answer('Текст открытия смены4', reply_markup=keyboard)
 
-#Тут надо ввести переменную с мудростью
 
-
+# Тут надо ввести переменную с мудростью
 
 
 # Хелп с обработкой исключением
 
-@dp.message_handler(text='help')
+@dp.message_handler()
 async def need_help(message: types.Message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     buttons = ['Бот плохо работает', "/start"]
@@ -257,3 +282,15 @@ if __name__ == '__main__':
 
 ##################################################################_админская часть_##############################################
 # run long-polling
+while True:
+    for i in range(3):
+        for j in range(0, 1):
+            # Print the cell values with tab space
+            lines.append(sheet.cell_value(i, j))
+#             #     print(i + 1, sheet.cell_value(i, j), end = '\t')
+#             # print('')
+#     b = random.choice(lines)
+
+# @dp.message_handler(commands="send")
+# async def pars(msg:types.Message):
+#     await bot.send_message(dasha, "@" + msg.from_user.username + ": " + msg.text[6:])
