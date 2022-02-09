@@ -26,26 +26,19 @@ rb = xlrd.open_workbook(r'userid=name.xls')
 # выбираем активный лист
 sheet = rb.sheet_by_index(0)
 lines = []
+
+
+
 for i in range(3):
     for j in range(0, 1):
         # Print the cell values with tab space
         lines.append(sheet.cell_value(i, j))
-        #     print(i + 1, sheet.cell_value(i, j), end = '\t')
-        # print('')
 
 # Переменные
-dasha = r"https://t.me/dashuluicha"
+dasha = os.environ['dasha']
 nameandsurname = {}
 sname = str()
-# Monday = {}
-# Tuesday = {}
-# Wednesday = {}
-# Thursday = {}
-# Friday = {}
-# Saturday = {}
-# Sunday = {}
-# Week = {}
-# Mounth = {}
+
 # Дни недели для акций, вводить их будет пользователь с name =  "Менеджер"
 
 
@@ -161,6 +154,8 @@ async def problem1(callback: types.CallbackQuery):
                types.InlineKeyboardButton(text="Нет, Я запутался в рабочем дне",
                                           callback_data="Нет, Я запутался в рабочем дне"),
                types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!')
+               ,types.InlineKeyboardButton(text='Регламент', callback_data='Регламент'),types.InlineKeyboardButton(text='Должностная инструкция', callback_data='Должностная инструкция'),types.InlineKeyboardButton(text='Миссия компании', callback_data='Миссия компании')
+
                ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
@@ -284,6 +279,36 @@ async def need_help(message: types.Message):
     await message.answer('Что-то не так?', reply_markup=keyboard)
     await message.answer(r"Нажми /start чтобы начать сначала!")
 
+@dp.callback_query_handler(text="Регламент")
+async def central(callback: types.CallbackQuery):
+    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке'),
+               types.InlineKeyboardButton(text="Открыть смену",
+                                          callback_data="Открыть смену")
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer('Текст открытия смены4', reply_markup=keyboard)
+
+@dp.callback_query_handler(text="Должностная инструкция")
+async def central(callback: types.CallbackQuery):
+    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
+               types.InlineKeyboardButton(text="Открыть смену",
+                                          callback_data="Открыть смену")
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer('Текст открытия смены4', reply_markup=keyboard)
+
+@dp.callback_query_handler(text="Миссия компании")
+async def central(callback: types.CallbackQuery):
+    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
+               types.InlineKeyboardButton(text="Открыть смену",
+                                          callback_data="Открыть смену")
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer('Текст Миссии', reply_markup=keyboard)
+
 
 if __name__ == '__main__':
     # executor.start(dp, on_startup())
@@ -291,14 +316,22 @@ if __name__ == '__main__':
 
 ##################################################################_админская часть_##############################################
 # run long-polling
-while True:
-    for i in range(3):
+# while True:
+#     for i in range(3):
+#         for j in range(0, 1):
+#             # Print the cell values with tab space
+#             lines.append(sheet.cell_value(i, j))
+# #             #     print(i + 1, sheet.cell_value(i, j), end = '\t')
+# #             # print('')
+# #     b = random.choice(lines)
+
+def che():
+    for i in lines:
         for j in range(0, 1):
             # Print the cell values with tab space
             lines.append(sheet.cell_value(i, j))
-#             #     print(i + 1, sheet.cell_value(i, j), end = '\t')
-#             # print('')
-#     b = random.choice(lines)
+            # print(i + 1, sheet.cell_value(i, j), end = '\t')
+    print('')
 
 # @dp.message_handler(commands="send")
 # async def pars(msg:types.Message):
