@@ -10,6 +10,9 @@ from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 from pathlib import Path
 from dotenv import load_dotenv
+import asyncio
+import aioschedule
+
 
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
@@ -32,8 +35,7 @@ for i in range(3):
 dasha = os.environ['dasha']
 nameandsurname = {}
 sname = str()
-
-# Дни недели для акций, вводить их будет пользователь с name =  "Менеджер"
+phonenumber = []
 
 
 # bot init
@@ -71,8 +73,9 @@ async def cmd_start(callback: types.Message):
     keyboard.add(*buttons)
     userbtn = callback.from_user.id
     first_name = callback.from_user.first_name
-    name = callback.from_user.username
-    nameandsurname[userbtn] = [(username, first_name)]
+    global name
+    name = [callback.from_user.username]
+    nameandsurname[userbtn] = [(username, first_name, name)]
     await callback.answer(
         f"Охае, чайный мастер {callback.from_user.first_name} \nЕсли мы уже знакомы - выбери первый пункт \nЕсли нет, то второй!"
         , reply_markup=keyboard)
@@ -405,25 +408,45 @@ async def push(callback: types.CallbackQuery):
 #                                   reply_markup=keyboard)
 
 
-# Центральная
-@dp.callback_query_handler(text='Центральная Чайная История')
-async def central(callback: types.CallbackQuery):
-    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке'),
-               types.InlineKeyboardButton(text="Открыть смену",
-                                          callback_data="Открыть смену")
-               ]
-    keyboard = types.InlineKeyboardMarkup(row_width=1)
-    keyboard.add(*buttons)
-    await callback.message.answer('Текст открытия смены1')
-    await callback.message.answer('Текст открытия смены2')
-    await callback.message.answer('Текст открытия смены3')
-    await callback.message.answer('Текст открытия смены4', reply_markup=keyboard)
-    await callback.answer()
+# # Центральная
+# @dp.callback_query_handler(text='Центральная Чайная История')
+# async def central(callback: types.CallbackQuery):
+#     buttons = [types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке'),
+#                types.InlineKeyboardButton(text="Открыть смену",
+#                                           callback_data="Открыть смену")
+#                ]
+#     keyboard = types.InlineKeyboardMarkup(row_width=1)
+#     keyboard.add(*buttons)
+#     await callback.message.answer('Текст открытия смены1')
+#     await callback.message.answer('Текст открытия смены2')
+#     await callback.message.answer('Текст открытия смены3')
+#     await callback.message.answer('Текст открытия смены4', reply_markup=keyboard)
+#     await callback.answer()
 
 # Тут надо ввести переменную с мудростью
 
 
 # Хелп с обработкой исключением
+
+@dp.message_handler(lambda message: message.text == ['/close', '/open'])
+async def cmd_start(callback: types.Message):
+    buttons = [types.InlineKeyboardButton(text='Закрыть смену', callback_data='Сворачиваемся, ребята'),
+               types.InlineKeyboardButton(text='Открыть смену', callback_data='1) Время работать!'),
+               # types.InlineKeyboardButton(text="3) Я не знаю что делать!", callback_data="3) Я не знаю что делать!"),
+               # types.InlineKeyboardButton(text="Я", url='https://t.me/Itisialready')
+               ]
+    # first_name = callback.first_name  # Не может быть пустым
+    username = callback.from_user.username
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    userbtn = callback.from_user.id
+    first_name = callback.from_user.first_name
+    name = callback.from_user.username
+    nameandsurname[userbtn] = [(username, first_name)]
+    await callback.answer(
+        f"Охае, чайный мастер {callback.from_user.first_name} \nЕсли мы уже знакомы - выбери первый пункт \nЕсли нет, то второй!"
+        , reply_markup=keyboard)
+    await callback.answer()
 
 @dp.message_handler()
 async def need_help(message: types.Message):
@@ -436,24 +459,24 @@ async def need_help(message: types.Message):
 
 @dp.callback_query_handler(text="Регламент")
 async def central(callback: types.CallbackQuery):
-    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке'),
+    buttons = [types.InlineKeyboardButton(text='Регламент', url='https://docs.google.com/document/d/1PtKJEh4C5sq3zWwRSU8VQrMh1EkT7jXlqPuY2gW3vcA/edit'),
                types.InlineKeyboardButton(text="Открыть смену",
                                           callback_data="Открыть смену")
                ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    await callback.message.answer('Текст открытия смены4', reply_markup=keyboard)
+    await callback.message.answer('Регламент доступен по одноименной кнопочке', reply_markup=keyboard)
     await callback.answer()
 
 @dp.callback_query_handler(text="Должностная инструкция")
 async def central(callback: types.CallbackQuery):
     buttons = [types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
-               types.InlineKeyboardButton(text="Открыть смену",
-                                          callback_data="Открыть смену")
+               types.InlineKeyboardButton(text="Должностная инструкция",
+                                          url="https://docs.google.com/document/d/1QZ_50FBmrg89zRkTPr0VX2KwdjykzKQxeMnfsOs43Zk/edit")
                ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    await callback.message.answer('Текст открытия смены4', reply_markup=keyboard)
+    await callback.message.answer('Должностная инструкция доступна по одноименной кнопочке', reply_markup=keyboard)
     await callback.answer()
 
 @dp.callback_query_handler(text="Миссия компании")
@@ -464,12 +487,42 @@ async def central(callback: types.CallbackQuery):
                ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    await callback.message.answer('Текст Миссии', reply_markup=keyboard)
+    await callback.message.answer('Наша миссия - подобрать чай с заботой  для Вас, вашего настроения и самочувствия, тем самым сделав вас Счастливей!', reply_markup=keyboard)
     await callback.answer()
+
+#Напоминание для текучих
+@dp.message_handler()
+async def choose_your_dinner():
+    buttons = [types.InlineKeyboardButton(text='Список расходников', callback_data='РАСХОД'),
+               # types.InlineKeyboardButton(text="Открыть смену",
+               #                            callback_data="Открыть смену")
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    for user in name:
+        await bot.send_message(chat_id = user, text = "Хей🖖 не забудь заказать расходники", reply_markup = keyboard)
+
+
+async def scheduler():
+    aioschedule.every().wednesday("13:00").do(choose_your_dinner)
+    aioschedule.every().day("22:00").do(name = [] )
+    while True:
+        await aioschedule.run_pending()
+        await asyncio.sleep(1)
+
+
+async def on_startup(dp):
+    asyncio.create_task(scheduler())
+
+
+# if __name__ == '__main__':
+#     executor.start_polling(on_startup=on_startup)
 
 if __name__ == '__main__':
     # executor.start(dp, on_startup())
     executor.start_polling(dp, skip_updates=True)
+
+
 
 
 ##################################################################_админская часть_##############################################
