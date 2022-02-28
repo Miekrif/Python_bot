@@ -551,7 +551,9 @@ async def choose_your_dinner():
 
 async def scheduler():
     aioschedule.every().wednesday("13:00").do(choose_your_dinner)
-    aioschedule.every().day("22:00").do(name = [] )
+    aioschedule.every().day("00:00").do(a)
+    aioschedule.every().day("00:00").do(b)
+    aioschedule.every().day("00:00").do(c)
     while True:
         await aioschedule.run_pending()
         await asyncio.sleep(1)
@@ -565,8 +567,6 @@ async def on_startup(dp):
 # @dp.callback_query_handler(lambda c: c.data == 'art')
 async def photo_message(pic):
     file_id = pic.photo[-1].file_id  # file ID загруженной фотографии
-    tochka_Pushka = 0
-    tochka_Central = 0
     a = datetime.date.today()
     if tochka_Pushka > tochka_Central:
         inf = 'Чек с точки на Пушкинской'
@@ -580,8 +580,6 @@ async def photo_message(pic):
         await bot.send_photo(chat_id=chekichat, photo=file_id)
         await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и я не смог понять откуда этот чек(")
 
-
-
 # if __name__ == '__main__':
 #     executor.start_polling(on_startup=on_startup)
 
@@ -589,9 +587,12 @@ if __name__ == '__main__':
     # executor.start(dp, on_startup())
     executor.start_polling(dp, skip_updates=True)
 
-
-
-
+name = []
+a = name
+tochka_Central = 0
+b = tochka_Central
+tochka_Pushka = 0
+c = tochka_Pushka
 ##################################################################_админская часть_##############################################
 # run long-polling
 # while True:
