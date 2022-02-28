@@ -1,4 +1,5 @@
 import os
+from datetime import *
 import logging
 import aiogram
 import json
@@ -39,36 +40,7 @@ sname = str()
 phonenumber = []
 tochka_Pushka = 0
 tochka_Central = 0
-rashod = ''' Салфетки для рук
-Полотенца
-Туалетная бумага
-Жидкое мыло
-Моющее для посуды
-Моющее для полов
-Средство для чистки окон
-Мусорные мешки
-Кассовые ленты
-Перчатки
-Стикеры большие(ЧИ)
-Стикеры маленькие(ЧИ)
-Стикеры для штрих-кодов(большие и маленькие
-Наклейки на холдеры и стаканы(ЧИ)
-Зип-пакеты
-Полиэтиленовые пакеты для чая
-Стаканы маленькие
-Стаканы большие
-Крышки маленькие
-Крышки большие
-Холдеры для стаканов
-Сахар в стиках
-Свечи
-Фильтр-пакеты
-Газовые баллоны
-Подстаканник
-Сладости
-Орехи
-Фрукты '''
-
+rashod = os.environ['rashod']
 
 # bot init
 bot = Bot(token=TOKEN)
@@ -589,16 +561,23 @@ async def on_startup(dp):
     asyncio.create_task(scheduler())
 
 #Обработка присылаемого фото
-@bot.message_handler(content_types=["photo"])
-def photo_message(msg):
+@dp.message_handler(content_types=["photo"])
+# @dp.callback_query_handler(lambda c: c.data == 'art')
+async def photo_message(pic):
+    file_id = pic.photo[-1].file_id  # file ID загруженной фотографии
     tochka_Pushka = 0
     tochka_Central = 0
     if tochka_Pushka > tochka_Central:
         inf = 'Чек с точки на Пушкинской'
+        await bot.send_photo(chat_id=chekichat, photo=file_id)
+        await bot.send_message(chat_id=chekichat, text=f"Хей🖖, {datetime.today()}" + inf)
     elif tochka_Central > tochka_Pushka:
         inf = 'Чек с Центарльной точки'
-    await bot.send_message(chat_id=chekichat, text=f"Хей🖖, {inf}")
-
+        await bot.send_photo(chat_id=chekichat, photo=file_id)
+        await bot.send_message(chat_id=chekichat, text=f"Хей🖖, {datetime.today()}" + inf)
+    else:
+        await bot.send_photo(chat_id=chekichat, photo=file_id)
+        await bot.send_message(chat_id=chekichat, text=f"Хей🖖, {datetime.today()}, я не смог понять откуда этот чек(")
 
 
 
