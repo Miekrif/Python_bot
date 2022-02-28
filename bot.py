@@ -567,17 +567,18 @@ async def photo_message(pic):
     file_id = pic.photo[-1].file_id  # file ID загруженной фотографии
     tochka_Pushka = 0
     tochka_Central = 0
+    a = datetime.date.today()
     if tochka_Pushka > tochka_Central:
         inf = 'Чек с точки на Пушкинской'
         await bot.send_photo(chat_id=chekichat, photo=file_id)
-        await bot.send_message(chat_id=chekichat, text=f"Хей🖖, {datetime.today()}" + inf)
+        await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a} и это" + inf)
     elif tochka_Central > tochka_Pushka:
         inf = 'Чек с Центарльной точки'
         await bot.send_photo(chat_id=chekichat, photo=file_id)
-        await bot.send_message(chat_id=chekichat, text=f"Хей🖖, {datetime.today()}" + inf)
+        await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a} и это" + inf)
     else:
         await bot.send_photo(chat_id=chekichat, photo=file_id)
-        await bot.send_message(chat_id=chekichat, text=f"Хей🖖, {datetime.today()}, я не смог понять откуда этот чек(")
+        await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a} и я не смог понять откуда этот чек(")
 
 
 
