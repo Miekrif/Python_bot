@@ -571,14 +571,14 @@ async def photo_message(pic):
     if tochka_Pushka > tochka_Central:
         inf = 'Чек с точки на Пушкинской'
         await bot.send_photo(chat_id=chekichat, photo=file_id)
-        await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a} и это" + inf)
+        await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и это" + inf)
     elif tochka_Central > tochka_Pushka:
         inf = 'Чек с Центарльной точки'
         await bot.send_photo(chat_id=chekichat, photo=file_id)
-        await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a} и это" + inf)
+        await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и это" + inf)
     else:
         await bot.send_photo(chat_id=chekichat, photo=file_id)
-        await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a} и я не смог понять откуда этот чек(")
+        await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и я не смог понять откуда этот чек(")
 
 
 
