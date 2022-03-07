@@ -568,33 +568,19 @@ async def on_startup(dp):
 async def photo_message(pic):
     file_id = pic.photo[-1].file_id  # file ID загруженной фотографии
     a = datetime.date.today()
-    # await bot.send_message(chat_id=pic.from_user.first_name, text="Хей🖖 не забудь заказать расходники ")
-    if tochka_Pushka > tochka_Central:
-        inf = 'Чек с точки на Пушкинской'
-        await bot.send_photo(chat_id=chekichat, photo=file_id)
-        await bot.send_message(chat_id=chekichat,
-                               text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и это" + inf)
-    elif tochka_Central > tochka_Pushka:
-        inf = 'Чек с Центарльной точки'
-        await bot.send_photo(chat_id=chekichat, photo=file_id)
-        await bot.send_message(chat_id=chekichat,
-                               text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и это" + inf)
-    else:
-        await bot.send_photo(chat_id=chekichat, photo=file_id)
-        await bot.send_message(chat_id=chekichat,
-                               text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и я не смог понять откуда этот чек(")
-    # def send_photo():
-    #     if tochka_Pushka > tochka_Central:
-    #         inf = 'Чек с точки на Пушкинской'
-    #         await bot.send_photo(chat_id=chekichat, photo=file_id)
-    #         await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и это" + inf)
-    #     elif tochka_Central > tochka_Pushka:
-    #         inf = 'Чек с Центарльной точки'
-    #         await bot.send_photo(chat_id=chekichat, photo=file_id)
-    #         await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и это" + inf)
-    #     else:
-    #         await bot.send_photo(chat_id=chekichat, photo=file_id)
-    #         await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и я не смог понять откуда этот чек(")
+    await pic.message.answer(chat_id=pic.from_user.first_name, text="Хей🖖 не забудь заказать расходники ")
+    def send_photo():
+        if tochka_Pushka > tochka_Central:
+            inf = 'Чек с точки на Пушкинской'
+            await bot.send_photo(chat_id=chekichat, photo=file_id)
+            await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и это" + inf)
+        elif tochka_Central > tochka_Pushka:
+            inf = 'Чек с Центарльной точки'
+            await bot.send_photo(chat_id=chekichat, photo=file_id)
+            await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и это" + inf)
+        else:
+            await bot.send_photo(chat_id=chekichat, photo=file_id)
+            await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и я не смог понять откуда этот чек(")
 
 # if __name__ == '__main__':
 #     executor.start_polling(on_startup=on_startup)
