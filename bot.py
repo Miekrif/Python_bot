@@ -13,6 +13,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import asyncio
 import aioschedule
+import re
 
 
 env_path = Path('.') / '.env'
@@ -41,7 +42,11 @@ phonenumber = []
 tochka_Pushka = 0
 tochka_Central = 0
 rashod = os.environ['rashod']
-
+user_id = []
+user_i = '247548114'
+with open('nameandsurname.json') as json_for_dict:
+    MY_CONTACT = json.load(json_for_dict)
+    MY_CONTACT = dict(MY_CONTACT)
 # bot init
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
@@ -75,17 +80,17 @@ async def cmd_start(callback: types.Message):
     username = callback.from_user.username
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    userbtn = callback.from_user.id
-    first_name = callback.from_user.first_name
-    global name
-    name = [callback.from_user.username]
-    nameandsurname[userbtn] = [(username, first_name, name)]
+    global MY_CONTACT
+    global user_id
+    user_id = ['247548114',callback.from_user.id]
+    user_id1 = callback.from_user.id
     await callback.answer(
         f"Охае, чайный мастер {callback.from_user.first_name} \nЕсли мы уже знакомы - выбери первый пункт \nЕсли нет, то второй!"
         , reply_markup=keyboard)
     await callback.answer()
     # await message.answer()
 
+# global user_id
 
 @dp.callback_query_handler(text='start')
 async def cmd_start(callback: types.Message):
@@ -566,21 +571,76 @@ async def on_startup(dp):
 @dp.message_handler(content_types=["photo"])
 # @dp.callback_query_handler(lambda c: c.data == 'art')
 async def photo_message(pic):
+    # await bot.send_message(chat_id=chekichat, text=f"Хей🖖")
     file_id = pic.photo[-1].file_id  # file ID загруженной фотографии
     a = datetime.date.today()
-    await pic.message.answer(chat_id=pic.from_user.first_name, text="Хей🖖 не забудь заказать расходники ")
-    def send_photo():
-        if tochka_Pushka > tochka_Central:
-            inf = 'Чек с точки на Пушкинской'
+    button_phone = types.KeyboardButton(text="Делись!", request_contact=True)
+    keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+    keyboard.add(button_phone)
+    await bot.send_message(pic.chat.id,"Для того, чтобы понять кто прислал чек, мне нужен твой номер",reply_markup=keyboard)
+    @dp.message_handler(content_types=["contact"])
+    async def contact_photo(pic2):
+        data = pic2.contact
+        phone = str(data)
+        phone = re.findall('"phone_number": "79885666437"', phone)
+        phone = str(phone).replace('"phone_number": "', '+')
+        phone = phone.replace('"', '')
+        userbtn = str(data)
+        userbtn = re.findall('"user_id": 247548114', userbtn)
+        userbtn = str(userbtn).replace('"user_id": ', '')
+        nameandsurname[userbtn] = [(phone)]
+        with open('nameandsurname.json', 'w') as json_for_dict:
+            json.dump(nameandsurname, json_for_dict)
+        message = [types.InlineKeyboardButton(text="Чайная История на Пушке", callback_data='Чайная История на Пушке фото'),
+                       types.InlineKeyboardButton(text='Чайная История на Театралке', callback_data='Чайная История на Театралке фото')]
+        keyboard = types.InlineKeyboardMarkup(row_width=1, resize_keyboard=True)
+        keyboard.add(*message)
+        await bot.send_message(pic2.chat.id, "Выбери свою точку",reply_markup=keyboard)
+        @dp.callback_query_handler(text= 'Чайная История на Пушке фото')
+        @dp.message_handler()
+        async def send_long_message_from_pyshc():
+            inf = 'Чайная История на Пушке'
+            # file_id = pic.photo[-1].file_id
             await bot.send_photo(chat_id=chekichat, photo=file_id)
-            await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и это" + inf)
-        elif tochka_Central > tochka_Pushka:
-            inf = 'Чек с Центарльной точки'
+            await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone} и это" + inf)
+
+        @dp.message_handler(text= 'Чайная История на Театралке фото')
+        async def send_long_message_from_teare(file_id):
+            inf = 'Чайная История на Театралке'
             await bot.send_photo(chat_id=chekichat, photo=file_id)
-            await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и это" + inf)
-        else:
-            await bot.send_photo(chat_id=chekichat, photo=file_id)
-            await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и я не смог понять откуда этот чек(")
+            await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone} и это" + inf)
+        # message = [types.KeyboardButton(text="Чайная История на Пушке"),
+        #            types.KeyboardButton(text='Чайная История на Театралке')]
+        # keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+        # keyboard.add(*message)
+        # @dp.message_handler(lambda message: message.text == 'Чайная История на Пушке')
+        # async def send_long_message_from_pyshc():
+        #     inf = 'Чайная История на Пушке'
+        #     await bot.send_photo(chat_id=chekichat, photo=file_id)
+        #     await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone} и это" + inf)
+        # @dp.message_handler(lambda message: message.text == 'Чайная История на Театралке')
+        # async def send_long_message_from_teare():
+        #     inf = 'Чайная История на Театралке'
+        #     await bot.send_photo(chat_id=chekichat, photo=file_id)
+        #     await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone} и это" + inf)
+
+        # await bot.send_photo(chat_id=chekichat, photo=file_id)
+        # await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone} и это" + inf)
+    # if pic.Message != 0:
+    #     await bot.send_photo(chat_id=chekichat, photo=file_id)
+    #     await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и это" + inf)
+    # def send_photo():
+    #     if tochka_Pushka > tochka_Central:
+    #         inf = 'Чек с точки на Пушкинской'
+    #         await bot.send_photo(chat_id=chekichat, photo=file_id)
+    #         await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и это" + inf)
+    #     elif tochka_Central > tochka_Pushka:
+    #         inf = 'Чек с Центарльной точки'
+    #         await bot.send_photo(chat_id=chekichat, photo=file_id)
+    #         await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и это" + inf)
+    #     else:
+    #         await bot.send_photo(chat_id=chekichat, photo=file_id)
+    #         await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {pic.from_user.first_name} и я не смог понять откуда этот чек(")
 
 # if __name__ == '__main__':
 #     executor.start_polling(on_startup=on_startup)
