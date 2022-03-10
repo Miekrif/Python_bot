@@ -569,46 +569,54 @@ async def on_startup(dp):
 
 #Обработка присылаемого фото
 @dp.message_handler(content_types=["photo"])
-# @dp.callback_query_handler(lambda c: c.data == 'art')
-async def photo_message(pic):
-    # await bot.send_message(chat_id=chekichat, text=f"Хей🖖")
-    file_id = pic.photo[-1].file_id  # file ID загруженной фотографии
+async def photo_message(message: types.Message):
+    file_id = message.photo[-1].file_id # file ID загруженной фотографии
+    print(type(file_id))
+    # file_id1 = pic.photo
     a = datetime.date.today()
     button_phone = types.KeyboardButton(text="Делись!", request_contact=True)
     keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
     keyboard.add(button_phone)
-    await bot.send_message(pic.chat.id,"Для того, чтобы понять кто прислал чек, мне нужен твой номер",reply_markup=keyboard)
-    @dp.message_handler(content_types=["contact"])
-    async def contact_photo(pic2):
-        data = pic2.contact
-        phone = str(data)
-        phone = re.findall('"phone_number": "79885666437"', phone)
-        phone = str(phone).replace('"phone_number": "', '+')
-        phone = phone.replace('"', '')
-        userbtn = str(data)
-        userbtn = re.findall('"user_id": 247548114', userbtn)
-        userbtn = str(userbtn).replace('"user_id": ', '')
-        nameandsurname[userbtn] = [(phone)]
-        with open('nameandsurname.json', 'w') as json_for_dict:
-            json.dump(nameandsurname, json_for_dict)
-        message = [types.InlineKeyboardButton(text="Чайная История на Пушке", callback_data='Чайная История на Пушке фото'),
-                       types.InlineKeyboardButton(text='Чайная История на Театралке', callback_data='Чайная История на Театралке фото')]
-        keyboard = types.InlineKeyboardMarkup(row_width=1, resize_keyboard=True)
-        keyboard.add(*message)
-        await bot.send_message(pic2.chat.id, "Выбери свою точку",reply_markup=keyboard)
-        @dp.callback_query_handler(text= 'Чайная История на Пушке фото')
-        @dp.message_handler()
-        async def send_long_message_from_pyshc():
-            inf = 'Чайная История на Пушке'
-            # file_id = pic.photo[-1].file_id
-            await bot.send_photo(chat_id=chekichat, photo=file_id)
-            await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone} и это" + inf)
+    await message.answer(text="Для того, чтобы понять кто прислал чек, мне нужен твой номер",reply_markup=keyboard)
+    # return file_id
 
-        @dp.message_handler(text= 'Чайная История на Театралке фото')
-        async def send_long_message_from_teare(file_id):
-            inf = 'Чайная История на Театралке'
-            await bot.send_photo(chat_id=chekichat, photo=file_id)
-            await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone} и это" + inf)
+@dp.message_handler(content_types=["contact"])
+async def contact_photo(pic2):
+    data = pic2.contact
+    phone = str(data)
+    phone = re.findall('"phone_number": "79885666437"', phone)
+    phone = str(phone).replace('"phone_number": "', '+')
+    # global phone = phone
+    phone = phone.replace('"', '')
+    userbtn = str(data)
+    userbtn = re.findall('"user_id": 247548114', userbtn)
+    userbtn = str(userbtn).replace('"user_id": ', '')
+    nameandsurname[userbtn] = [(phone)]
+    with open('nameandsurname.json', 'w') as json_for_dict:
+        json.dump(nameandsurname, json_for_dict)
+    message = [types.InlineKeyboardButton(text="Чайная История на Пушке", callback_data='Чайная История на Пушке фото'),
+                   types.InlineKeyboardButton(text='Чайная История на Театралке', callback_data='Чайная История на Театралке фото')]
+    keyboard = types.InlineKeyboardMarkup(row_width=1, resize_keyboard=True)
+    keyboard.add(*message)
+    await bot.send_message(pic2.chat.id, "Выбери свою точку",reply_markup=keyboard)
+    # send_long_message_from_pyshc(file_id ,phone)
+    return phone
+# phone = phone
+
+@dp.callback_query_handler(text= 'Чайная История на Пушке фото')
+# @dp.message_handler()
+async def send_long_message_from_pyshc(file_id):
+    inf = 'Чайная История на Пушке'
+    # file_id = pic.photo[-1].file_id
+    await bot.send_photo(chat_id=chekichat, photo=photo_message(file_id))
+    await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его !number! и это" + inf)
+
+@dp.message_handler(text= 'Чайная История на Театралке фото')
+async def send_long_message_from_teare(file_id):
+    inf = 'Чайная История на Театралке'
+    await bot.send_photo(chat_id=chekichat, photo=file_id)
+    await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его !number! и это" + inf)
+
         # message = [types.KeyboardButton(text="Чайная История на Пушке"),
         #            types.KeyboardButton(text='Чайная История на Театралке')]
         # keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
