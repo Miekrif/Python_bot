@@ -648,6 +648,7 @@ async def photo_message(message: types.Message, state: FSMContext):
 
 @dp.message_handler(content_types=["contact"])
 async def contact_photo(pic2: types.Message, state: FSMContext):
+    # file_id.download('data/send-' + pic2.photo[-1].file_unique_id + '.jpg')
     data = pic2.contact
     phone = str(data)
     phone = re.findall('"phone_number": "[0-9]+"', phone)
@@ -675,6 +676,7 @@ async def send_long_message_from(message: types.Message, state: FSMContext):
     a = datetime.date.today()
     # print(file_id, 'pop1')
     # print(file_id[0])
+    await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
     inf = 'Чайная История на Пушке'
     await bot.send_photo(chat_id=chekichat, photo=file_id[0])
     file_id.clear()
@@ -686,6 +688,7 @@ async def send_long_message_from(message: types.Message, state: FSMContext):
     a = datetime.date.today()
     # print(file_id, 'pop2')
     # print(file_id[0])
+    await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
     inf = 'Чайная История на Театралке'
     await bot.send_photo(chat_id=chekichat, photo=file_id[0])
     file_id.clear()
