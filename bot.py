@@ -1,10 +1,8 @@
 import os
 from datetime import *
 import logging
-import aiogram
 import json
 import datetime
-import xlrd
 import random
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
@@ -18,6 +16,9 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from cleaning import *
+# from cleaning import send_mess
+# from cleaning import KPI_lines
 
 storage = MemoryStorage()
 
@@ -26,23 +27,10 @@ load_dotenv(dotenv_path=env_path)
 
 TOKEN = os.environ['TOKEN']
 
-# excel
-# открываем файл
-rb = xlrd.open_workbook(r'userid=name.xls')
-# выбираем активный лист
-sheet = rb.sheet_by_index(0)
-lines = []
 
-async def anig_name():
-    name = []
-
-def randomnii_skaz():
-    for i in range(3):
-        for j in range(0, 1):
-            # Print the cell values with tab space
-            lines.append(sheet.cell_value(i, j))
 
 # Переменные
+# KPI = os.environ['KPI']
 chekichat = os.environ['chekichat']
 dasha = os.environ['dasha']
 nameandsurname = {}
@@ -51,9 +39,9 @@ phonenumber = []
 tochka_Pushka = 0
 tochka_Central = 0
 rashod = os.environ['rashod']
-user_id = []
+# user_id = []
 user_i = '247548114'
-
+# name = []
 
 #Начало кпи
 # def KPI():
@@ -93,6 +81,25 @@ async def main():
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
     )
     logger.error("Starting bot")
+#################################################################################################################################
+
+def word_mentor():
+    k = 1
+    i = 1
+    global Words
+    Words = []
+    while i != 0:
+        line = word_book[f'A{k}'].value
+        k += 1
+        # print(line)
+        Words.append(line)
+        if line == None:
+            i = 0
+            Words.pop()
+            a_send_message = random.choice(Words)
+
+
+
 
 
 ###########################################################_общая часть_#########################################################
@@ -100,57 +107,55 @@ async def main():
 
 # start message
 @dp.message_handler(lambda message: message.text == '/start')
-async def cmd_start(callback: types.Message):
+async def cmd_start(message: types.Message):
     buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='1) Время работать!'),
                types.InlineKeyboardButton(text='2)Давай знакомиться', callback_data='Знакомвство'),
                types.InlineKeyboardButton(text="3) Я не знаю что делать!", callback_data="3) Я не знаю что делать!"),
                ]
     # first_name = callback.first_name  # Не может быть пустым
-    global name
-    name = [callback.from_user.username]
+    await KPI_lines()
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    # global MY_CONTACT
     global user_id
-    user_id = ['247548114', callback.from_user.id]
+    user_id = [message.from_user.id]
+    user_id.append(message.from_user.id)
     # user_id1 = callback.from_user.id
-    await callback.answer(
-        f"Охае, чайный мастер {callback.from_user.first_name} \nЕсли мы уже знакомы - выбери первый пункт \nЕсли нет, то второй!"
+    await message.answer(
+        f"Охае, чайный мастер {message.from_user.first_name} \nЕсли мы уже знакомы - выбери первый пункт \nЕсли нет, то второй!"
         , reply_markup=keyboard)
-    # await callback.answer()
-    # await message.answer()
+    # return name
 
 
 # global user_id
 
 @dp.callback_query_handler(text='start')
-async def cmd_start(callback: types.Message):
+async def cmd_start(message: types.Message):
     buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='1) Время работать!'),
                types.InlineKeyboardButton(text="2) Я не знаю что делать!", callback_data="3) Я не знаю что делать!"),
                ]
     # first_name = callback.first_name  # Не может быть пустым
-    username = callback.from_user.username
+    await bot.edit_message_text(text="text")
+    username = message.from_user.username
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    userbtn = callback.from_user.id
-    name = callback.from_user.username
+    userbtn = message.from_user.id
     add_to_dict(userbtn, 0)
-    await callback.answer(
-        f"Охае, чайный мастер {callback.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
+    await message.answer(
+        f"Охае, чайный мастер {message.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
         reply_markup=keyboard
     )
-    await callback.answer()
+    await message.answer()
 
 
 # Знакомвство
 @dp.callback_query_handler(text='Знакомвство')
-async def meeting(callback: types.CallbackQuery):
+async def meeting(callback: types.CallbackQuery, message: types.Message):
     # sname = types.InlineKeyboardButton(text='Давай знакомиться', callback=)
     buttons = [types.InlineKeyboardButton(text='Написать ему в телеграмме', url='https://t.me/Itisialready'),
                types.InlineKeyboardButton(text='Следить за ним в инст', url='https://www.instagram.com/chepozrat/'),
                types.InlineKeyboardButton(text='Назад', callback_data='start')
                ]
-    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     await callback.message.answer(
         'Я телеграмм бот написанный для облегчения твоей работы \n Мой создатель @Itisialready aka Влад, связь с ним:',
@@ -165,17 +170,17 @@ async def time_to_work(callback: types.CallbackQuery):
                types.InlineKeyboardButton(text='Центральная Чайная История',
                                           callback_data='Центральная чайная история'),
                ]
-    randomnii_skaz()
+    word_mentor()
+    # print(send_mess.a_send_message)
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     await callback.message.answer("Цитата дня:\n")
     # b = run(random.choice(lines))
-    await callback.message.answer(random.choice(lines))
+    await callback.message.answer(random.choice(Words))
     # await callback.message.answer(b)
     await callback.message.answer("На какой точке ты сегодня работаешь?", reply_markup=keyboard)
     await callback.answer()
     # await bot.send_message(message.from_user.id) берет user id и пишет по нему
-    await callback.answer()
 
 
 # Ответ на второй вопрос
@@ -183,11 +188,11 @@ async def time_to_work(callback: types.CallbackQuery):
 async def problem1(callback: types.CallbackQuery):
     buttons = [types.InlineKeyboardButton(text='Да, нужна помощь', url=dasha),
                types.InlineKeyboardButton(text="Нет, Я запутался в рабочем дне",
-                                          callback_data="Нет, Я запутался в рабочем дне"),
-               types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!')
+                                          callback_data="Нет, Я запутался в рабочем дне")
         , types.InlineKeyboardButton(text='Регламент', callback_data='Регламент'),
                types.InlineKeyboardButton(text='Должностная инструкция', callback_data='Должностная инструкция'),
-               types.InlineKeyboardButton(text='Миссия компании', callback_data='Миссия компании')
+               types.InlineKeyboardButton(text='Миссия компании', callback_data='Миссия компании'),
+               types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!')
 
                ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
@@ -221,10 +226,9 @@ async def push(callback: types.CallbackQuery):
         types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
         types.InlineKeyboardButton(text='Закрыть смену', callback_data='Закрыть смену')
     ]
+    await po_tochkam(tochka='Чайная История на Пушке')
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    global tochka_Pushka
-    tochka_Pushka += 1
     await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} ')
     await callback.message.answer(
         'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
@@ -243,10 +247,9 @@ async def push(callback: types.CallbackQuery):
         types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
         types.InlineKeyboardButton(text='Закрыть смену', callback_data='Закрыть смену')
     ]
+    await po_tochkam(tochka='Центральная Чайная история')
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    global tochka_Central
-    tochka_Central += 1
     await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} ')
     await callback.message.answer(
         'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
@@ -255,6 +258,12 @@ async def push(callback: types.CallbackQuery):
         reply_markup=keyboard)
     await callback.answer()
 
+#Напоминалка об уборке
+async def clean_on_space(clean):
+    print(user_id)
+    for i in user_id:
+        await bot.send_message(chat_id=i, text="Хей🖖 не забудь про уборку")
+        await bot.send_message(chat_id=i, text=clean)
 
 @dp.callback_query_handler(text='Распорядок на Пушке')
 async def pushday(callback: types.CallbackQuery):
@@ -362,7 +371,7 @@ async def closesmena(callback: types.CallbackQuery):
     await callback.message.answer(f'{callback.from_user.first_name}')
     # Здесь будет переменная которую будут менять
     await callback.message.answer(
-        'Твой КПИ на это месяц.\nТЫ можешь больше, чемдумаешь!\nМир чай май\nВОРЛД КАП 2018 ШУ ПУЭР\nЮндэ Цяо Му\nгриб Дин Син\nГаба Голд\nШУ ПУэр Волшебство\n\Дегустация габа РУБИ\n\nДоп каждый +200р чайник исин',
+        f'''Твой КПИ на это месяц.{KPI_lines}''',
         reply_markup=keyboard)
     await callback.answer()
 
@@ -435,20 +444,6 @@ async def push(callback: types.CallbackQuery):
     await callback.answer()
 
 
-# @dp.callback_query_handler(text="СДЕЛАЛ, гуд бай")
-# async def push(callback: types.CallbackQuery):
-#     buttons = [types.InlineKeyboardButton(text="СДЕЛАЛ, гуд бай", callback_data="СДЕЛАЛ, гуд бай"),
-#                # types.InlineKeyboardButton(text="Напомни, как закрыать смену", url=""),
-#                # types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке')
-#                ]
-#     keyboard = types.InlineKeyboardMarkup(row_width=1)
-#     keyboard.add(*buttons)
-#     await callback.message.answer(f'ТЕПЕРЬ ЗАЙМЕМСЯ 1С и ТАБЛИЦЕЙ\n⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇ ')
-#     await callback.message.answer("---  Считаем наличку в кассе, заносим в таблу.\n---  Закрываем смену в 1С,заносим в таблу.\n--- Отправляй фото чеков\n---  Выключаем свет врубильнике.\n---  Закрываем магазин.", reply_markup=keyboard)
-#     # await callback.message.answer('Текст закрытия смены3')
-#     # await callback.message.answer('Текст закрытия смены4', reply_markup=keyboard)
-#     await callback.answer()
-
 @dp.callback_query_handler(text='Плохо закрыл')
 async def push(callback: types.CallbackQuery):
     buttons = [types.InlineKeyboardButton(text="Сворачиваемся, ребята",
@@ -463,37 +458,6 @@ async def push(callback: types.CallbackQuery):
     await callback.message.answer(f'Сойдет,но у тебя будет возможность стрельнуть завтра.\nТЫ ЛУЧШИЙ! 💪',
                                   reply_markup=keyboard)
     await callback.answer()
-
-
-# @dp.callback_query_handler(text="Сворачиваемся, ребята")
-# async def push(callback: types.CallbackQuery):
-#     buttons = [types.InlineKeyboardButton(text="Сворачиваемся, ребята",
-#                                           callback_data="Сворачиваемся, ребята"),
-#                # types.InlineKeyboardButton(text="😔",
-#                #                            callback_data="Плохо закрыл"),
-#                types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке')
-#
-#                ]
-#     keyboard = types.InlineKeyboardMarkup(row_width=1)
-#     keyboard.add(*buttons)
-#     await callback.message.answer(f'Слабо,но у тебя будет возможность стрельнуть завтра.\nТЫ ЛУЧШИЙ! 💪',
-#                                   reply_markup=keyboard)
-
-
-# # Центральная
-# @dp.callback_query_handler(text='Центральная Чайная История')
-# async def central(callback: types.CallbackQuery):
-#     buttons = [types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке'),
-#                types.InlineKeyboardButton(text="Открыть смену",
-#                                           callback_data="Открыть смену")
-#                ]
-#     keyboard = types.InlineKeyboardMarkup(row_width=1)
-#     keyboard.add(*buttons)
-#     await callback.message.answer('Текст открытия смены1')
-#     await callback.message.answer('Текст открытия смены2')
-#     await callback.message.answer('Текст открытия смены3')
-#     await callback.message.answer('Текст открытия смены4', reply_markup=keyboard)
-#     await callback.answer()
 
 
 # @dp.message_handler(lambda message: message.text == ['close', 'open'])
@@ -607,15 +571,17 @@ async def choose_your_dinner():
                ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    for user in name:
+    for user in user_id:
         await bot.send_message(chat_id=user, text="Хей🖖 не забудь заказать расходники ", reply_markup=keyboard)
         await bot.send_message(chat_id=user, text=rashod)
 
+def anig_name():
+    user_id = []
 
 async def scheduler():
     aioschedule.every().wednesday("13:00").do(choose_your_dinner)
     aioschedule.every().day("00:00").do(anig_name())
-    # aioschedule.every().day("00:00").do(b)
+    # aioschedule.every().day("00:00").do()
     # aioschedule.every().day("00:00").do(c)
     while True:
         await aioschedule.run_pending()
@@ -674,8 +640,6 @@ async def contact_photo(pic2: types.Message, state: FSMContext):
 @dp.callback_query_handler(text='Чайная История на Пушке фото')
 async def send_long_message_from(message: types.Message, state: FSMContext):
     a = datetime.date.today()
-    # print(file_id, 'pop1')
-    # print(file_id[0])
     await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
     inf = 'Чайная История на Пушке'
     await bot.send_photo(chat_id=chekichat, photo=file_id[0])
@@ -694,12 +658,6 @@ async def send_long_message_from(message: types.Message, state: FSMContext):
     file_id.clear()
     await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone1} и это {inf}")
 
-
-# def register_handlers_food(dp: Dispatcher):
-#     dp.register_message_handler(photo_message, content_types=["photo"], state='*')
-#     dp.register_message_handler(contact_photo, content_types=["contact"],  state=WaitPhoto.waiting_photo)
-#     dp.register_message_handler(send_long_message_from, state=WaitPhoto.waiting_photo_commit)
-#
 
 
 
