@@ -38,7 +38,6 @@ tochka_Pushka = 0
 tochka_Central = 0
 rashod = os.environ['rashod']
 user_id = list()
-user_i = '247548114'
 # name = []
 
 def open_json():
@@ -56,6 +55,7 @@ async def add_to_dict(userbtn, phone):
 # # bot init
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=storage)
+
 
 # log lvl
 # logging.basicConfig(level=logging.INFO)
@@ -596,7 +596,7 @@ async def scheduler():
         await asyncio.sleep(1)
 
 
-async def on_startup(dp):
+async def on_startup():
     await asyncio.create_task(scheduler())
 
 
@@ -657,8 +657,8 @@ async def contact_photo(pic2: types.Message, state: FSMContext):
 
 
 @dp.callback_query_handler(text='Чайная История на Пушке фото')
-async def send_long_message_from(message: types.Message, state: FSMContext):
-    await message.answer(text='Положил твой чек в карман!')
+async def send_long_message_from(callback: types.CallbackQuery):
+    await callback.message.answer('Положил твой чек в карман!')
     a = date.today()
     # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
     inf = 'Чайная История на Пушке'
@@ -669,8 +669,9 @@ async def send_long_message_from(message: types.Message, state: FSMContext):
 
 
 @dp.callback_query_handler(text='Чайная История на Театралке фото')
-async def send_long_message_from(message: types.Message, state: FSMContext):
-    await message.answer(text='Положил твой чек в карман!')
+async def send_long_message_from(callback: types.CallbackQuery):
+    # keyboard = types.InlineKeyboardMarkup(row_width=1, resize_keyboard=True)
+    await callback.message.answer('Положил твой чек в карман!')
     a = date.today()
     # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
     inf = 'Чайная История на Театралке'
@@ -680,8 +681,8 @@ async def send_long_message_from(message: types.Message, state: FSMContext):
     # await message.answer(text='Положил твой чек в карман!')
 
 @dp.callback_query_handler(text='Чайная История в Краснодаре')
-async def send_long_message_from(message: types.Message, state: FSMContext):
-    await message.answer(text='Положил твой чек в карман!')
+async def send_long_message_from(callback: types.CallbackQuery):
+    await callback.message.answer('Положил твой чек в карман!')
     a = date.today()
     # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
     inf = 'Чайная История в Краснодаре'
@@ -695,8 +696,8 @@ async def send_long_message_from(message: types.Message, state: FSMContext):
 if __name__ == '__main__':
     anig()    # executor.start(dp, on_startup())
     open_json()
+    on_startup()
     executor.start_polling(dp, skip_updates=True)
-    on_startup(dp)
 
 
 
