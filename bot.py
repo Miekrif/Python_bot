@@ -23,8 +23,8 @@ storage = MemoryStorage()
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
-TOKEN = os.environ['TOKEN_ussualy']
-# TOKEN = os.environ['TOKEN_test']
+# TOKEN = os.environ['TOKEN_ussualy']
+TOKEN = os.environ['TOKEN_test']
 
 
 
@@ -134,8 +134,7 @@ async def cmd_start(message: types.Message):
 
 # Знакомвство
 @dp.callback_query_handler(text='Знакомвство')
-async def meeting(callback: types.CallbackQuery, message: types.Message):
-    # sname = types.InlineKeyboardButton(text='Давай знакомиться', callback=)
+async def meeting(callback: types.CallbackQuery):
     buttons = [types.InlineKeyboardButton(text='Написать ему в телеграмме', url='https://t.me/Itisialready'),
                types.InlineKeyboardButton(text='Следить за ним в инст', url='https://www.instagram.com/chepozrat/'),
                types.InlineKeyboardButton(text='Назад', callback_data='start')
@@ -307,9 +306,6 @@ async def gonext(callback: types.CallbackQuery):
     await callback.message.answer(
         '💰💰💰💰💰💰💰💰💰💰💰💰 \nТеперь посчитай остаток денег в кассе и сравни с тем что в таблице.',
         reply_markup=keyboard)
-    # await callback.message.answer('Текст')
-    # await callback.message.answer('Текст')
-    # await callback.message.answer('Текст', reply_markup=keyboard)
     await callback.answer()
 
 
@@ -450,6 +446,11 @@ async def push(callback: types.CallbackQuery):
         reply_markup=keyboard)
     # await callback.message.answer('Текст закрытия смены3')
     # await callback.message.answer('Текст закрытия смены4', reply_markup=keyboard)
+    await callback.answer()
+
+@dp.callback_query_handler(text="СДЕЛАЛ, гуд бай")
+async def push(callback: types.CallbackQuery):
+    await callback.message.answer(f'Ну вот ты и подошел к заключающему фактору нашей встречи сегодня!\nЗаходи ко мне завтра, я ведь буду скучать по тебе!\nПожалуйста не забудь прилать мне фотографию чеков \n\n\nДо скорой встречи')
     await callback.answer()
 
 
