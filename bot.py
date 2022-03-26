@@ -671,10 +671,10 @@ async def send_long_message_from(callback: types.CallbackQuery):
     await callback.message.answer('Положил твой чек в карман!')
     a = date.today()
     # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
-    inf = 'Чайная История на Пушке'
+    inf = 'Чайная История на #Пушке'
     await bot.send_photo(chat_id=chekichat, photo=file_id[0])
     file_id.clear()
-    await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня #{a}, отправил его {phone1} и это #{inf}")
+    await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone1} и это {inf}")
     # await message.answer(text='Положил твой чек в карман!')
 
 
@@ -684,10 +684,10 @@ async def send_long_message_from(callback: types.CallbackQuery):
     await callback.message.answer('Положил твой чек в карман!')
     a = date.today()
     # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
-    inf = 'Чайная История на Театралке'
+    inf = 'Чайная История на #Театралке'
     await bot.send_photo(chat_id=chekichat, photo=file_id[0])
     file_id.clear()
-    await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня #{a}, отправил его {phone1} и это #{inf}")
+    await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone1} и это {inf}")
     # await message.answer(text='Положил твой чек в карман!')
 
 @dp.callback_query_handler(text='Чайная История в Краснодаре')
@@ -695,10 +695,10 @@ async def send_long_message_from(callback: types.CallbackQuery):
     await callback.message.answer('Положил твой чек в карман!')
     a = date.today()
     # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
-    inf = 'Чайная История в Краснодаре'
+    inf = 'Чайная История в #Краснодаре'
     await bot.send_photo(chat_id=chekichat, photo=file_id[0])
     file_id.clear()
-    await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня #{a}, отправил его {phone1} и это #{inf}")
+    await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone1} и это {inf}")
 
 
 
