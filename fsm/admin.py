@@ -4,3 +4,4 @@ from aiogram import types
 
 class FSMAdmin(StatesGroup):
     KPI = State()
+

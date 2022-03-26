@@ -2,15 +2,13 @@ import os
 from datetime import *
 import logging
 import json
-import datetime
+from datetime import *
 import random
-from aiogram import Bot, types
+from aiogram import Bot
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 from pathlib import Path
 from dotenv import load_dotenv
-import asyncio
-import aioschedule
 import re
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
@@ -39,33 +37,23 @@ phonenumber = []
 tochka_Pushka = 0
 tochka_Central = 0
 rashod = os.environ['rashod']
-# user_id = []
+user_id = list()
 user_i = '247548114'
 # name = []
-
-#Начало кпи
-# def KPI():
-#     rb = xlrd.open_workbook(r'KPI_file.xls')
-#     sheet = rb.sheet_by_index(0)
-#     lines_KPI = []
-#     for i in range(3):
-#         for j in range(0, 1):
-#             # Print the cell values with tab space
-#             lines.append(sheet.cell_value(i, j))
-# work with json
 
 def open_json():
     with open('nameandsurname.json') as json_for_dict:
         global MY_CONTACT
         MY_CONTACT = json.load(json_for_dict)
+        return MY_CONTACT
 
-def add_to_dict(userbtn, phone):
+async def add_to_dict(userbtn, phone):
     MY_CONTACT[userbtn] = [(phone)]
     with open(r'nameandsurname.json', 'w') as json_for_dict:
         json.dump(MY_CONTACT, json_for_dict)
 
 
-# bot init
+# # bot init
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=storage)
 
@@ -83,7 +71,7 @@ async def main():
     logger.error("Starting bot")
 #################################################################################################################################
 
-def word_mentor():
+async def word_mentor():
     k = 1
     i = 1
     global Words
@@ -99,9 +87,13 @@ def word_mentor():
             a_send_message = random.choice(Words)
 
 
+def anig():
+    global user_id
+    user_id = list()
 
-
-
+class FILE_ID_it(StatesGroup):
+    USER_id_input = State()
+    Primary_user_id_on_sassion = State()
 ###########################################################_общая часть_#########################################################
 
 
@@ -112,21 +104,16 @@ async def cmd_start(message: types.Message):
                types.InlineKeyboardButton(text='2)Давай знакомиться', callback_data='Знакомвство'),
                types.InlineKeyboardButton(text="3) Я не знаю что делать!", callback_data="3) Я не знаю что делать!"),
                ]
-    # first_name = callback.first_name  # Не может быть пустым
     await KPI_lines()
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    global user_id
-    user_id = [message.from_user.id]
-    user_id.append(message.from_user.id)
-    # user_id1 = callback.from_user.id
     await message.answer(
         f"Охае, чайный мастер {message.from_user.first_name} \nЕсли мы уже знакомы - выбери первый пункт \nЕсли нет, то второй!"
         , reply_markup=keyboard)
+
     # return name
 
 
-# global user_id
 
 @dp.callback_query_handler(text='start')
 async def cmd_start(message: types.Message):
@@ -137,9 +124,6 @@ async def cmd_start(message: types.Message):
     await bot.edit_message_text(text="text")
     username = message.from_user.username
     keyboard = types.InlineKeyboardMarkup(row_width=2)
-    keyboard.add(*buttons)
-    userbtn = message.from_user.id
-    add_to_dict(userbtn, 0)
     await message.answer(
         f"Охае, чайный мастер {message.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
         reply_markup=keyboard
@@ -170,7 +154,7 @@ async def time_to_work(callback: types.CallbackQuery):
                types.InlineKeyboardButton(text='Центральная Чайная История',
                                           callback_data='Центральная чайная история'),
                ]
-    word_mentor()
+    await word_mentor()
     # print(send_mess.a_send_message)
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
@@ -180,6 +164,8 @@ async def time_to_work(callback: types.CallbackQuery):
     # await callback.message.answer(b)
     await callback.message.answer("На какой точке ты сегодня работаешь?", reply_markup=keyboard)
     await callback.answer()
+
+
     # await bot.send_message(message.from_user.id) берет user id и пишет по нему
 
 
@@ -218,7 +204,14 @@ async def open_day(callback: types.CallbackQuery):
 
 # Пушка
 @dp.callback_query_handler(text='Чайная История на Пушке')
-async def push(callback: types.CallbackQuery):
+async def push(callback: types.CallbackQuery, state: FSMContext):
+    a = await do_cleaning_pyshk()
+    a = str(a).replace('[', '')
+    a = str(a).replace(']', '')
+    a = str(a).replace(r'\n', '')
+    a = str(a).replace(r"'", '')
+    # a = str(a).replace(r" ", '')
+    a = str(a).replace(r",", '\n')
     buttons = [
         # types.InlineKeyboardButton(text='Распорядок', callback_data='Распорядок на Пушке'),
         types.InlineKeyboardButton(text="Открыть смену",
@@ -226,20 +219,32 @@ async def push(callback: types.CallbackQuery):
         types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
         types.InlineKeyboardButton(text='Закрыть смену', callback_data='Закрыть смену')
     ]
-    await po_tochkam(tochka='Чайная История на Пушке')
+    # await po_tochkam(tochka='Чайная История на Пушке')
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} ')
+    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{a}')
+    await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} \n ')
     await callback.message.answer(
         'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
     await callback.message.answer(
         'Готов ли ты сделать план чемпиона?\nЗря засомневался в тебе\nТвоя награда ждет тебя в нашем чайном мире!',
         reply_markup=keyboard)
-    await callback.answer()
+
+
+    # await FILE_ID_it.USER_id_input.set()
+    # await state.update_data(id=callback.from_user.id)
+    # await callback.message.answer()
 
 
 @dp.callback_query_handler(text='Центральная чайная история')
 async def push(callback: types.CallbackQuery):
+    a = await do_cleaning_cchi()
+    a = str(a).replace('[', '')
+    a = str(a).replace(']', '')
+    a = str(a).replace(r'\n', '')
+    a = str(a).replace(r"'", '')
+    # a = str(a).replace(r" ", '')
+    a = str(a).replace(r",", '\n')
     buttons = [
         # types.InlineKeyboardButton(text='Распорядок', callback_data='Распорядок на Пушке'),
         types.InlineKeyboardButton(text="Открыть смену",
@@ -247,9 +252,10 @@ async def push(callback: types.CallbackQuery):
         types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
         types.InlineKeyboardButton(text='Закрыть смену', callback_data='Закрыть смену')
     ]
-    await po_tochkam(tochka='Центральная Чайная история')
+    # await po_tochkam(tochka='Центральная Чайная история')
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
+    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{a}')
     await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} ')
     await callback.message.answer(
         'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
@@ -257,13 +263,8 @@ async def push(callback: types.CallbackQuery):
         'Готов ли ты сделать план чемпиона?\nЗря засомневался в тебе\nТвоя награда ждет тебя в нашем чайном мире!',
         reply_markup=keyboard)
     await callback.answer()
-
-#Напоминалка об уборке
-async def clean_on_space(clean):
-    print(user_id)
-    for i in user_id:
-        await bot.send_message(chat_id=i, text="Хей🖖 не забудь про уборку")
-        await bot.send_message(chat_id=i, text=clean)
+    # await FILE_ID_it.USER_id_input.set()
+    # await state.update_data(id=callback.from_user.id)
 
 @dp.callback_query_handler(text='Распорядок на Пушке')
 async def pushday(callback: types.CallbackQuery):
@@ -361,6 +362,13 @@ async def push(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(text="Старт")
 async def closesmena(callback: types.CallbackQuery):
+    a = await KPI_lines()
+    a = str(a).replace('[', '')
+    a = str(a).replace(']', '')
+    a = str(a).replace(r'\n', '')
+    a = str(a).replace(r"'", '')
+    # a = str(a).replace(r" ", '')
+    a = str(a).replace(r",", '\n')
     buttons = [
         types.InlineKeyboardButton(text="Закрыть смену",
                                    callback_data="Закрыть смену"),
@@ -371,7 +379,7 @@ async def closesmena(callback: types.CallbackQuery):
     await callback.message.answer(f'{callback.from_user.first_name}')
     # Здесь будет переменная которую будут менять
     await callback.message.answer(
-        f'''Твой КПИ на это месяц.{KPI_lines}''',
+        f'''Твой КПИ на это месяц. \n\n{a}''',
         reply_markup=keyboard)
     await callback.answer()
 
@@ -487,7 +495,7 @@ async def cmd_start(callback: types.Message):
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     # for key in nameandsurname.values():
-    #
+    # anig_name(user=)
     await callback.answer(
         f"{callback.from_user.first_name}, Хорошего начала дня!"
         , reply_markup=keyboard)
@@ -563,7 +571,6 @@ async def mission(callback: types.CallbackQuery):
 # @dp.message_handler(message='close')
 
 # Напоминание для текучих
-@dp.message_handler()
 async def choose_your_dinner():
     buttons = [types.InlineKeyboardButton(text='Список расходников', callback_data='РАСХОД'),
                # types.InlineKeyboardButton(text="Открыть смену",
@@ -575,12 +582,13 @@ async def choose_your_dinner():
         await bot.send_message(chat_id=user, text="Хей🖖 не забудь заказать расходники ", reply_markup=keyboard)
         await bot.send_message(chat_id=user, text=rashod)
 
-def anig_name():
-    user_id = []
+
+
+
 
 async def scheduler():
     aioschedule.every().wednesday("13:00").do(choose_your_dinner)
-    aioschedule.every().day("00:00").do(anig_name())
+    aioschedule.every().day("00:00").do(anig)
     # aioschedule.every().day("00:00").do()
     # aioschedule.every().day("00:00").do(c)
     while True:
@@ -589,13 +597,11 @@ async def scheduler():
 
 
 async def on_startup(dp):
-    asyncio.create_task(scheduler())
+    await asyncio.create_task(scheduler())
 
 
 # Обработка присылаемого фото
-class WaitPhoto(StatesGroup):
-    waiting_photo = State()
-    # waiting_photo_commit = State()
+
 
 #Оброаботка присылаемого сообщения
 @dp.message_handler(content_types=["photo"])
@@ -603,18 +609,32 @@ async def photo_message(message: types.Message, state: FSMContext):
     global file_id
     file_id = [message.photo[-1].file_id]  # file ID загруженной фотографии
     await state.update_data(file_id=file_id)
-    # print(type(file_id))
-    # file_id1 = pic.photo
-    button_phone = types.KeyboardButton(text="Делись!", request_contact=True)
-    keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
-    keyboard.add(button_phone)
-    await message.answer(text="Для того, чтобы понять кто прислал чек, мне нужен твой номер", reply_markup=keyboard)
-    # await WaitPhoto.waiting_photo.set()
+    id_telo = message.from_user.id
+    open_json()
+    print(id_telo)
+    id_telo =f'[\'{id_telo}\']'
+    MY_CONTACT.fromkeys(f'{id_telo}')
+    if MY_CONTACT.get(id_telo) != None:
+        global phone1
+        print('Не ровняется')
+        phone1 = MY_CONTACT.get(id_telo)
+        messages = [
+            types.InlineKeyboardButton(text="Чайная История на Пушке", callback_data='Чайная История на Пушке фото'),
+            types.InlineKeyboardButton(text='Чайная История в Краснодаре', callback_data='Чайная История в Краснодаре'),
+            types.InlineKeyboardButton(text='Чайная История на Театралке',
+                                       callback_data='Чайная История на Театралке фото')]
+        keyboard = types.InlineKeyboardMarkup(row_width=1, resize_keyboard=True)
+        keyboard.add(*messages)
+        await message.answer(text='Тебя я уже знаю!', reply_markup=keyboard)
+    else:
+        button_phone = types.KeyboardButton(text="Делись!", request_contact=True)
+        keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+        keyboard.add(button_phone)
+        await message.answer(text="Для того, чтобы понять кто прислал чек, мне нужен твой номер", reply_markup=keyboard)
 
 
 @dp.message_handler(content_types=["contact"])
 async def contact_photo(pic2: types.Message, state: FSMContext):
-    # file_id.download('data/send-' + pic2.photo[-1].file_unique_id + '.jpg')
     data = pic2.contact
     phone = str(data)
     phone = re.findall('"phone_number": "[0-9]+"', phone)
@@ -626,47 +646,58 @@ async def contact_photo(pic2: types.Message, state: FSMContext):
     userbtn = str(data)
     userbtn = re.findall('"user_id": [0-9]+', userbtn)
     userbtn = str(userbtn).replace('"user_id": ', '')
-    add_to_dict(userbtn, phone)
+    await add_to_dict(userbtn, phone)
     message = [types.InlineKeyboardButton(text="Чайная История на Пушке", callback_data='Чайная История на Пушке фото'),
+               types.InlineKeyboardButton(text='Чайная История в Краснодаре', callback_data='Чайная История в Краснодаре'),
                types.InlineKeyboardButton(text='Чайная История на Театралке',
                                           callback_data='Чайная История на Театралке фото')]
     keyboard = types.InlineKeyboardMarkup(row_width=1, resize_keyboard=True)
     keyboard.add(*message)
-    # await WaitPhoto.next()
     await bot.send_message(pic2.chat.id, "Выбери свою точку", reply_markup=keyboard)
-    # await pic2.answer("", reply_markup=None)
-#
-#
+
+
 @dp.callback_query_handler(text='Чайная История на Пушке фото')
 async def send_long_message_from(message: types.Message, state: FSMContext):
-    a = datetime.date.today()
-    await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
+    await message.answer(text='Положил твой чек в карман!')
+    a = date.today()
+    # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
     inf = 'Чайная История на Пушке'
     await bot.send_photo(chat_id=chekichat, photo=file_id[0])
     file_id.clear()
     await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone1} и это {inf}")
+    # await message.answer(text='Положил твой чек в карман!')
 
 
 @dp.callback_query_handler(text='Чайная История на Театралке фото')
 async def send_long_message_from(message: types.Message, state: FSMContext):
-    a = datetime.date.today()
-    # print(file_id, 'pop2')
-    # print(file_id[0])
-    await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
+    await message.answer(text='Положил твой чек в карман!')
+    a = date.today()
+    # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
     inf = 'Чайная История на Театралке'
     await bot.send_photo(chat_id=chekichat, photo=file_id[0])
     file_id.clear()
     await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone1} и это {inf}")
+    # await message.answer(text='Положил твой чек в карман!')
 
+@dp.callback_query_handler(text='Чайная История в Краснодаре')
+async def send_long_message_from(message: types.Message, state: FSMContext):
+    await message.answer(text='Положил твой чек в карман!')
+    a = date.today()
+    # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
+    inf = 'Чайная История в Краснодаре'
+    await bot.send_photo(chat_id=chekichat, photo=file_id[0])
+    file_id.clear()
+    await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone1} и это {inf}")
 
 
 
 
 if __name__ == '__main__':
-    # executor.start(dp, on_startup())
+    anig()    # executor.start(dp, on_startup())
     open_json()
-    # che()
     executor.start_polling(dp, skip_updates=True)
+    on_startup(dp)
+
 
 
 

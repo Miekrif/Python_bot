@@ -1,5 +1,5 @@
 from datetime import *
-from bot import clean_on_space
+# from bot import clean_on_space
 import openpyxl
 import asyncio
 import random
@@ -19,16 +19,18 @@ kpi = book['KPI']
 async def KPI_lines():
     k = 1
     i = 1
-    KPI = []
+    KPI_it = []
     while i != 0:
-        line = kpi[f'A{k}'].value
+        line1 = kpi[f'A{k}'].value
         k += 1
-        if line == None:
-            KPI.pop()
+        print(line1)
+        KPI_it.append(line1)
+        if line1 == None:
+            print(KPI_it)
+            KPI_it.pop()
             i = 0
-        else:
-            KPI.append(line)
             # print(KPI)
+    return KPI_it
 
 
 
@@ -52,7 +54,7 @@ async def KPI_lines():
 #         # print(line)
 #         Words.append(line)
 #         if line == None:
-#             i = 0
+#             i = return
 #             # a_send_message = random.choice(Words)
 #             # print(a_send_message)
 
@@ -65,185 +67,212 @@ async def KPI_lines():
 
 
 # Уборка ЦЧИ
-async def do_cleaning_cchi(day):
+async def do_cleaning_cchi():
     if day.strftime("%A") == 'Monday':
-        Monday = {}
+        Monday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][0].value
+            line = sheet_clean_cchi[f'A{k}'].value
             k += 1
             print(line)
-            Monday['Monday'] = [line]
+            Monday.append(line)
             if line == None:
+                Monday.pop()
                 i = 0
-        await clean_on_space(clean=Monday.values())
-        print(day.strftime("%A"))
+        return Monday
+        #await clean_on_space(clean=Monday)
+        # print(day.strftime("%A"))
     elif day.strftime("%A") == 'Tuesday':
-        Tuesday = {}
+        Tuesday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][1].value
+            line = sheet_clean_cchi[f'B{k}'].value
             k += 1
             print(line)
-            Tuesday['Tuesday'] = [line]
+            Tuesday.append(line)
             if line == None:
+                Tuesday.pop()
                 i = 0
-        await clean_on_space(clean=Tuesday.values())
-        print(day.strftime("%A"))
+        return Tuesday
+        #await clean_on_space(clean=Tuesday)
+        # print(day.strftime("%A"))
     elif day.strftime("%A") == 'Wednesday':
-        Wednesday = {}
+        Wednesday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][2].value
+            line = sheet_clean_cchi[f'C{k}'].value
             k += 1
             print(line)
-            Wednesday['Wednesday'] = [line]
+            Wednesday.append(line)
             if line == None:
+                Wednesday.pop()
                 i = 0
-        await clean_on_space(clean=Wednesday.values())
+        return Wednesday
+        #await clean_on_space(clean=Wednesday)
     elif day.strftime("%A") == 'Thursday':
-        Thursday = {}
+        Thursday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][3].value
+            line = sheet_clean_cchi[f'D{k}'].value
             k += 1
             print(line)
-            Thursday['Thursday'] = [line]
+            Thursday.append(line)
             if line == None:
+                Thursday.pop()
                 i = 0
-        await clean_on_space(clean=Thursday.values())
+        return Thursday
+        #await clean_on_space(clean=Thursday)
     elif day.strftime("%A") == 'Friday':
-        Friday = {}
+        Friday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][4].value
+            line = sheet_clean_cchi[f'E{k}'].value
             k += 1
             print(line)
-            Friday['Friday'] = [line]
+            Friday.append(line)
             if line == None:
+                Friday.pop()
                 i = 0
-        await clean_on_space(clean=Friday.values())
+        return Friday
+        #await clean_on_space(clean=Friday)
     elif day.strftime("%A") == "Saturday":
-        Saturday = {}
+        Saturday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][5].value
+            line = sheet_clean_cchi[f'F{k}'].value
             k += 1
             print(line)
-            Saturday['Saturday'] = [line]
+            Saturday.append(line)
             if line == None:
+                Saturday.pop()
                 i = 0
-        await clean_on_space(clean=Saturday.values())
+        return Saturday
+        #await clean_on_space(clean=Saturday)
 
     elif day.strftime("%A") == 'Sunday':
-        Sunday = {}
+        Sunday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][6].value
+            line = sheet_clean_cchi[f'G{k}'].value
             k += 1
             print(line)
-            Sunday['Sunday'] = [line]
+            Sunday.append(line)
             if line == None:
+                Sunday.pop()
                 i = 0
-        await clean_on_space(clean=Sunday.values())
+        return Sunday
+        #await clean_on_space(clean=Sunday)
 
 
 # Уборка Пушка
-async def do_cleaning_pyshk(day):
+async def do_cleaning_pyshk():
     if day.strftime("%A") == 'Monday':
-        Monday = {}
+        Monday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][0].value
+            line = sheet_clean_cchi[f'A{k}'].value
             k += 1
             print(line)
-            Monday['Monday'] = [line]
+            Monday.append(line)
             if line == None:
+                Monday.pop()
                 i = 0
-        await clean_on_space(clean=Monday.values())
-        print(day.strftime("%A"))
+        return Monday
+        #await clean_on_space(clean=Monday)
+        # print(day.strftime("%A"))
     elif day.strftime("%A") == 'Tuesday':
-        Tuesday = {}
+        Tuesday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][1].value
+            line = sheet_clean_cchi[f'B{k}'].value
             k += 1
             print(line)
-            Tuesday['Tuesday'] = [line]
+            Tuesday.append(line)
             if line == None:
+                Tuesday.pop()
                 i = 0
-        await clean_on_space(clean=Tuesday.values())
-        print(day.strftime("%A"))
+        return Tuesday
+        #await clean_on_space(clean=Tuesday)
+        # print(day.strftime("%A"))
     elif day.strftime("%A") == 'Wednesday':
-        Wednesday = {}
+        Wednesday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][2].value
+            line = sheet_clean_cchi[f'C{k}'].value
             k += 1
             print(line)
-            Wednesday['Wednesday'] = [line]
+            Wednesday.append(line)
             if line == None:
+                Wednesday.pop()
                 i = 0
-        await clean_on_space(clean=Wednesday.values())
+        return Wednesday
+        #await clean_on_space(clean=Wednesday)
     elif day.strftime("%A") == 'Thursday':
-        Thursday = {}
+        Thursday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][3].value
+            line = sheet_clean_cchi[f'D{k}'].value
             k += 1
             print(line)
-            Thursday['Thursday'] = [line]
+            Thursday.append(line)
             if line == None:
+                Thursday.pop()
                 i = 0
-        await clean_on_space(clean=Thursday.values())
+        return Thursday
+        #await clean_on_space(clean=Thursday)
     elif day.strftime("%A") == 'Friday':
-        Friday = {}
+        Friday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][4].value
+            line = sheet_clean_cchi[f'E{k}'].value
             k += 1
             print(line)
-            Friday['Friday'] = [line]
+            Friday.append(line)
             if line == None:
+                Friday.pop()
                 i = 0
-        await clean_on_space(clean=Friday.values())
+        return Friday
+        # #await clean_on_space(clean=Friday)
     elif day.strftime("%A") == "Saturday":
-        Saturday = {}
+        Saturday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][5].value
+            line = sheet_clean_cchi[f'F{k}'].value
             k += 1
             print(line)
-            Saturday['Saturday'] = [line]
+            Saturday.append(line)
             if line == None:
+                Saturday.pop()
                 i = 0
-        await clean_on_space(clean=Saturday.values())
-
+        return Saturday
+        #await clean_on_space(clean=Saturday)
     elif day.strftime("%A") == 'Sunday':
-        Sunday = {}
+        Sunday = []
         k = 1
         i = 1
         while i != 0:
-            line = sheet_clean_cchi[k][6].value
+            line = sheet_clean_cchi[f'G{k}'].value
             k += 1
             print(line)
-            Sunday['Sunday'] = [line]
+            Sunday.append(line)
             if line == None:
+                Sunday.pop()
                 i = 0
-        await clean_on_space(clean=Sunday.values())
+        return Sunday
+        #await clean_on_space(clean=Sunday)
 
 
 # day = date.weekday(weekday)
@@ -252,9 +281,9 @@ day = datetime.now()
 print(day.strftime("%A"))
 
 
-async def po_tochkam(tochka):
-    central = 'Центральная Чайная история'
-    if tochka == central:
-        await do_cleaning_cchi(day)
-    else:
-        await do_cleaning_pyshk(day)
+# async def po_tochkam(tochka):
+#     central = 'Центральная Чайная история'
+#     if tochka == central:
+#         await do_cleaning_cchi(day)
+#     else:
+#         await do_cleaning_pyshk(day)
