@@ -67,7 +67,7 @@ async def KPI_lines():
 
 
 # Уборка ЦЧИ
-async def do_cleaning_cchi():
+async def do_cleaning_cchi(day):
     if day.strftime("%A") == 'Monday':
         Monday = []
         k = 1
@@ -172,7 +172,7 @@ async def do_cleaning_cchi():
 
 
 # Уборка Пушка
-async def do_cleaning_pyshk():
+async def do_cleaning_pyshk(day):
     if day.strftime("%A") == 'Monday':
         Monday = []
         k = 1
@@ -277,8 +277,8 @@ async def do_cleaning_pyshk():
 
 # day = date.weekday(weekday)
 # print(day)
-day = datetime.now()
-print(day.strftime("%A"))
+# day = datetime.now()
+# print(day.strftime("%A"))
 
 
 # async def po_tochkam(tochka):

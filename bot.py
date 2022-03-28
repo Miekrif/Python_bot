@@ -23,8 +23,8 @@ storage = MemoryStorage()
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
-TOKEN = os.environ['TOKEN_ussualy']
-# TOKEN = os.environ['TOKEN_test']
+# TOKEN = os.environ['TOKEN_ussualy']
+TOKEN = os.environ['TOKEN_test']
 
 
 
@@ -205,14 +205,13 @@ async def open_day(callback: types.CallbackQuery):
 # Пушка
 @dp.callback_query_handler(text='Чайная История на Пушке')
 async def push(callback: types.CallbackQuery, state: FSMContext):
-    a = await do_cleaning_pyshk()
-    a = str(a).replace('[', '')
-    a = str(a).replace(']', '')
-    a = str(a).replace(r'\n', '')
-    a = str(a).replace(r"'", '')
+    day = datetime.now()
+    a = str(await do_cleaning_pyshk(day)).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
+    # a = str(a).replace(']', '')
+    # a = str(a).replace(r'\n', '')
+    # a = str(a).replace(r"'", '')
     # a = str(a).replace(r" ", '')
-    a = str(a).replace(r",", '\n')
-    chci = a
+    # a = str(a).replace(r",", '\n')
     buttons = [
         # types.InlineKeyboardButton(text='Распорядок', callback_data='Распорядок на Пушке'),
         types.InlineKeyboardButton(text="Открыть смену",
@@ -223,7 +222,8 @@ async def push(callback: types.CallbackQuery, state: FSMContext):
     # await po_tochkam(tochka='Чайная История на Пушке')
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{chci}')
+    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{a}')
+    a = 0
     await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} \n ')
     await callback.message.answer(
         'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
@@ -239,14 +239,14 @@ async def push(callback: types.CallbackQuery, state: FSMContext):
 
 @dp.callback_query_handler(text='Центральная чайная история')
 async def push(callback: types.CallbackQuery):
-    a = await do_cleaning_cchi()
-    a = str(a).replace('[', '')
-    a = str(a).replace(']', '')
-    a = str(a).replace(r'\n', '')
-    a = str(a).replace(r"'", '')
-    # a = str(a).replace(r" ", '')
-    a = str(a).replace(r",", '\n')
-    chci = a
+    day = datetime.now()
+    a = str(await do_cleaning_cchi(day)).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
+    # a = str(a).replace('[', '')
+    # a = str(a).replace(']', '')
+    # a = str(a).replace(r'\n', '')
+    # a = str(a).replace(r"'", '')
+    # # a = str(a).replace(r" ", '')
+    # a = str(a).replace(r",", '\n')
     buttons = [
         # types.InlineKeyboardButton(text='Распорядок', callback_data='Распорядок на Пушке'),
         types.InlineKeyboardButton(text="Открыть смену",
@@ -257,7 +257,8 @@ async def push(callback: types.CallbackQuery):
     # await po_tochkam(tochka='Центральная Чайная история')
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{chci}')
+    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{a}')
+    a = 0
     await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} ')
     await callback.message.answer(
         'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
