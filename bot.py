@@ -206,6 +206,7 @@ async def open_day(callback: types.CallbackQuery):
 @dp.callback_query_handler(text='Чайная История на Пушке')
 async def push(callback: types.CallbackQuery, state: FSMContext):
     day = datetime.now()
+    await do_cleaning_pyshk(day)
     a = str(await do_cleaning_pyshk(day)).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
     # a = str(a).replace(']', '')
     # a = str(a).replace(r'\n', '')
@@ -224,6 +225,7 @@ async def push(callback: types.CallbackQuery, state: FSMContext):
     keyboard.add(*buttons)
     await callback.message.answer(f'Так же не забудь про уборочку! \n\n{a}')
     a = 0
+    print(a)
     await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} \n ')
     await callback.message.answer(
         'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
@@ -240,6 +242,7 @@ async def push(callback: types.CallbackQuery, state: FSMContext):
 @dp.callback_query_handler(text='Центральная чайная история')
 async def push(callback: types.CallbackQuery):
     day = datetime.now()
+    await do_cleaning_cchi(day)
     a = str(await do_cleaning_cchi(day)).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
     # a = str(a).replace('[', '')
     # a = str(a).replace(']', '')
@@ -259,6 +262,7 @@ async def push(callback: types.CallbackQuery):
     keyboard.add(*buttons)
     await callback.message.answer(f'Так же не забудь про уборочку! \n\n{a}')
     a = 0
+    print(a)
     await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} ')
     await callback.message.answer(
         'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
