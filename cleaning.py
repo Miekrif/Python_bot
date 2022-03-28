@@ -80,6 +80,7 @@ async def do_cleaning_cchi(day):
             if line == None:
                 Monday.pop()
                 i = 0
+        Monday = str(Monday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
         return Monday
         #await clean_on_space(clean=Monday)
         # print(day.strftime("%A"))
@@ -95,6 +96,7 @@ async def do_cleaning_cchi(day):
             if line == None:
                 Tuesday.pop()
                 i = 0
+        Tuesday = str(Tuesday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
         return Tuesday
         #await clean_on_space(clean=Tuesday)
         # print(day.strftime("%A"))
@@ -110,6 +112,7 @@ async def do_cleaning_cchi(day):
             if line == None:
                 Wednesday.pop()
                 i = 0
+        Wednesday = str(Wednesday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
         return Wednesday
         #await clean_on_space(clean=Wednesday)
     elif day.strftime("%A") == 'Thursday':
@@ -124,6 +127,7 @@ async def do_cleaning_cchi(day):
             if line == None:
                 Thursday.pop()
                 i = 0
+        Thursday = str(Thursday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
         return Thursday
         #await clean_on_space(clean=Thursday)
     elif day.strftime("%A") == 'Friday':
@@ -138,6 +142,8 @@ async def do_cleaning_cchi(day):
             if line == None:
                 Friday.pop()
                 i = 0
+        Friday = str(Friday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",",
+                                                                                                                '\n')
         return Friday
         #await clean_on_space(clean=Friday)
     elif day.strftime("%A") == "Saturday":
@@ -152,6 +158,8 @@ async def do_cleaning_cchi(day):
             if line == None:
                 Saturday.pop()
                 i = 0
+        Saturday = str(Saturday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",",
+                                                                                                            '\n')
         return Saturday
         #await clean_on_space(clean=Saturday)
 
@@ -167,6 +175,8 @@ async def do_cleaning_cchi(day):
             if line == None:
                 Sunday.pop()
                 i = 0
+        Sunday = str(Sunday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",",
+                                                                                                                '\n')
         return Sunday
         #await clean_on_space(clean=Sunday)
 
@@ -185,6 +195,7 @@ async def do_cleaning_pyshk(day):
             if line == None:
                 Monday.pop()
                 i = 0
+        Monday = str(Monday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
         return Monday
         #await clean_on_space(clean=Monday)
         # print(day.strftime("%A"))
@@ -200,6 +211,7 @@ async def do_cleaning_pyshk(day):
             if line == None:
                 Tuesday.pop()
                 i = 0
+        Tuesday = str(Tuesday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
         return Tuesday
         #await clean_on_space(clean=Tuesday)
         # print(day.strftime("%A"))
@@ -215,6 +227,8 @@ async def do_cleaning_pyshk(day):
             if line == None:
                 Wednesday.pop()
                 i = 0
+        Wednesday = str(Wednesday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",",
+                                                                                                              '\n')
         return Wednesday
         #await clean_on_space(clean=Wednesday)
     elif day.strftime("%A") == 'Thursday':
@@ -229,6 +243,8 @@ async def do_cleaning_pyshk(day):
             if line == None:
                 Thursday.pop()
                 i = 0
+        Thursday = str(Thursday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",",
+                                                                                                                  '\n')
         return Thursday
         #await clean_on_space(clean=Thursday)
     elif day.strftime("%A") == 'Friday':
@@ -243,6 +259,8 @@ async def do_cleaning_pyshk(day):
             if line == None:
                 Friday.pop()
                 i = 0
+        Friday = str(Friday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",",
+                                                                                                                '\n')
         return Friday
         # #await clean_on_space(clean=Friday)
     elif day.strftime("%A") == "Saturday":
@@ -257,6 +275,8 @@ async def do_cleaning_pyshk(day):
             if line == None:
                 Saturday.pop()
                 i = 0
+        Saturday = str(Saturday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",",
+                                                                                                            '\n')
         return Saturday
         #await clean_on_space(clean=Saturday)
     elif day.strftime("%A") == 'Sunday':
@@ -271,6 +291,8 @@ async def do_cleaning_pyshk(day):
             if line == None:
                 Sunday.pop()
                 i = 0
+        Sunday = str(Sunday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",",
+                                                                                                                '\n')
         return Sunday
         #await clean_on_space(clean=Sunday)
 

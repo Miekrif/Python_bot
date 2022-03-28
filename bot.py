@@ -23,7 +23,7 @@ storage = MemoryStorage()
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
-# TOKEN = os.environ['TOKEN_ussualy']
+#TOKEN = os.environ['TOKEN_ussualy']
 TOKEN = os.environ['TOKEN_test']
 
 
@@ -223,7 +223,7 @@ async def push(callback: types.CallbackQuery, state: FSMContext):
     # await po_tochkam(tochka='Чайная История на Пушке')
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{a}')
+    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{await do_cleaning_cchi(day)}')
     a = 0
     print(a)
     await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} \n ')
@@ -260,7 +260,7 @@ async def push(callback: types.CallbackQuery):
     # await po_tochkam(tochka='Центральная Чайная история')
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{a}')
+    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{await do_cleaning_cchi(day)}')
     a = 0
     print(a)
     await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} ')
@@ -367,12 +367,12 @@ async def push(callback: types.CallbackQuery):
 @dp.callback_query_handler(text="Старт")
 async def closesmena(callback: types.CallbackQuery):
     a = await KPI_lines()
-    a = str(a).replace('[', '')
-    a = str(a).replace(']', '')
-    a = str(a).replace(r'\n', '')
-    a = str(a).replace(r"'", '')
+    a = str(a).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
+    # a = str(a).replace(']', '')
+    # a = str(a).replace(r'\n', '')
+    # a = str(a).replace(r"'", '')
     # a = str(a).replace(r" ", '')
-    a = str(a).replace(r",", '\n')
+    # a = str(a).replace(r",", '\n')
     buttons = [
         types.InlineKeyboardButton(text="Закрыть смену",
                                    callback_data="Закрыть смену"),
