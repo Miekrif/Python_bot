@@ -212,6 +212,7 @@ async def push(callback: types.CallbackQuery, state: FSMContext):
     a = str(a).replace(r"'", '')
     # a = str(a).replace(r" ", '')
     a = str(a).replace(r",", '\n')
+    chci = a
     buttons = [
         # types.InlineKeyboardButton(text='Распорядок', callback_data='Распорядок на Пушке'),
         types.InlineKeyboardButton(text="Открыть смену",
@@ -222,7 +223,7 @@ async def push(callback: types.CallbackQuery, state: FSMContext):
     # await po_tochkam(tochka='Чайная История на Пушке')
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{a}')
+    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{chci}')
     await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} \n ')
     await callback.message.answer(
         'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
@@ -245,6 +246,7 @@ async def push(callback: types.CallbackQuery):
     a = str(a).replace(r"'", '')
     # a = str(a).replace(r" ", '')
     a = str(a).replace(r",", '\n')
+    chci = a
     buttons = [
         # types.InlineKeyboardButton(text='Распорядок', callback_data='Распорядок на Пушке'),
         types.InlineKeyboardButton(text="Открыть смену",
@@ -255,7 +257,7 @@ async def push(callback: types.CallbackQuery):
     # await po_tochkam(tochka='Центральная Чайная история')
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{a}')
+    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{chci}')
     await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} ')
     await callback.message.answer(
         'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
