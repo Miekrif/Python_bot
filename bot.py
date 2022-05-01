@@ -23,8 +23,8 @@ storage = MemoryStorage()
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
-TOKEN = os.environ['TOKEN']
-# TOKEN = os.environ['TOKEN_test']
+# TOKEN = os.environ['TOKEN']
+TOKEN = os.environ['TOKEN_test']
 
 
 
@@ -152,7 +152,7 @@ async def meeting(callback: types.CallbackQuery):
 async def time_to_work(callback: types.CallbackQuery):
     buttons = [types.InlineKeyboardButton(text='Чайная История на Пушке', callback_data='Чайная История на Пушке'),
                types.InlineKeyboardButton(text='Центральная Чайная История',
-                                          callback_data='Центральная чайная история'),
+                                          callback_data='Центральная чайная история'),types.InlineKeyboardButton(text='Чайная История в Краснодаре на Красной', callback_data='Чайная История в Краснодаре'), types.InlineKeyboardButton(text='Чайная История в Краснодаре на Театральной', callback_data='Чайная История в Краснодаре')
                ]
     await word_mentor()
     # print(send_mess.a_send_message)
@@ -208,11 +208,6 @@ async def push(callback: types.CallbackQuery, state: FSMContext):
     day = datetime.now()
     await do_cleaning_pyshk(day)
     a = str(await do_cleaning_pyshk(day)).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
-    # a = str(a).replace(']', '')
-    # a = str(a).replace(r'\n', '')
-    # a = str(a).replace(r"'", '')
-    # a = str(a).replace(r" ", '')
-    # a = str(a).replace(r",", '\n')
     buttons = [
         # types.InlineKeyboardButton(text='Распорядок', callback_data='Распорядок на Пушке'),
         types.InlineKeyboardButton(text="Открыть смену",
@@ -233,23 +228,12 @@ async def push(callback: types.CallbackQuery, state: FSMContext):
         'Готов ли ты сделать план чемпиона?\nЗря засомневался в тебе\nТвоя награда ждет тебя в нашем чайном мире!',
         reply_markup=keyboard)
 
-
-    # await FILE_ID_it.USER_id_input.set()
-    # await state.update_data(id=callback.from_user.id)
-    # await callback.message.answer()
-
-
+#ЦЧИ
 @dp.callback_query_handler(text='Центральная чайная история')
 async def push(callback: types.CallbackQuery):
     day = datetime.now()
     await do_cleaning_cchi(day)
     a = str(await do_cleaning_cchi(day)).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
-    # a = str(a).replace('[', '')
-    # a = str(a).replace(']', '')
-    # a = str(a).replace(r'\n', '')
-    # a = str(a).replace(r"'", '')
-    # # a = str(a).replace(r" ", '')
-    # a = str(a).replace(r",", '\n')
     buttons = [
         # types.InlineKeyboardButton(text='Распорядок', callback_data='Распорядок на Пушке'),
         types.InlineKeyboardButton(text="Открыть смену",
@@ -272,6 +256,34 @@ async def push(callback: types.CallbackQuery):
     await callback.answer()
     # await FILE_ID_it.USER_id_input.set()
     # await state.update_data(id=callback.from_user.id)
+
+#Краснодар
+@dp.callback_query_handler(text='Чайная История в Краснодаре')
+async def push(callback: types.CallbackQuery, state: FSMContext):
+    day = datetime.now()
+    await do_cleaning_kchi(day)
+    a = str(await do_cleaning_pyshk(day)).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
+    buttons = [
+        # types.InlineKeyboardButton(text='Распорядок', callback_data='Распорядок на Пушке'),
+        types.InlineKeyboardButton(text="Открыть смену",
+                                   callback_data="Открыть смену в Красе"),
+        types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
+        types.InlineKeyboardButton(text='Закрыть смену', callback_data='Закрыть смену')
+    ]
+    # await po_tochkam(tochka='Чайная История на Пушке')
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
+    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{await do_cleaning_cchi(day)}')
+    a = 0
+    print(a)
+    await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} \n ')
+    await callback.message.answer(
+        'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
+    await callback.message.answer(
+        'Готов ли ты сделать план чемпиона?\nЗря засомневался в тебе\nТвоя награда ждет тебя в нашем чайном мире!',
+        reply_markup=keyboard)
+
+
 
 @dp.callback_query_handler(text='Распорядок на Пушке')
 async def pushday(callback: types.CallbackQuery):
@@ -387,7 +399,106 @@ async def closesmena(callback: types.CallbackQuery):
         reply_markup=keyboard)
     await callback.answer()
 
+#KRASNODAR#########################
+@dp.callback_query_handler(text='Открыть смену в Красе')
+async def pushopen(callback: types.CallbackQuery):
+    buttons = [types.InlineKeyboardButton(text="Сделал, двигаем дальше",
+                                          callback_data="Сделал, двигаем дальше Краснодаре"),
+               types.InlineKeyboardButton(text='Назад', callback_data='Чайная История в Краснодаре')
 
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer(' НУЖНО сделать по порядку\n⬇⬇⬇⬇⬇⬇⬇⬇')
+    await callback.message.answer('1 - вынести всё необходимое наулицу')
+    await callback.message.answer('2 - проверить мусорные пакеты')
+    await callback.message.answer('3 - поставить кипятиться воду', reply_markup=keyboard)
+    await callback.answer()
+
+
+@dp.callback_query_handler(text='Сделал, двигаем дальше Краснодаре')
+async def gonext(callback: types.CallbackQuery):
+    buttons = [types.InlineKeyboardButton(text="Все гууд",
+                                          callback_data="Все гууд в Краснодаре"),
+               types.InlineKeyboardButton(text='Есть проблема...', url=dasha),
+               types.InlineKeyboardButton(text='Назад', callback_data='Чайная История в Краснодаре')
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer(
+        '💰💰💰💰💰💰💰💰💰💰💰💰 \nТеперь посчитай остаток денег в кассе и сравни с тем что в таблице.',
+        reply_markup=keyboard)
+    await callback.answer()
+
+
+@dp.callback_query_handler(text='Все гууд в Краснодаре')
+async def push(callback: types.CallbackQuery):
+    buttons = [types.InlineKeyboardButton(text="Готово",
+                                          callback_data="Готово в Краснодаре"),
+               types.InlineKeyboardButton(text='Назад', callback_data='Чайная История в Краснодаре')
+
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer('Вода уже наверное вскипела,заливай тэрмоса, заваривай велкомдринк')
+    await callback.message.answer('Открывай смену в 1С')
+    await callback.message.answer('Проверь телефон на заряд')
+    await callback.message.answer('Включи музыку на улице', reply_markup=keyboard)
+    await callback.answer()
+
+
+@dp.callback_query_handler(text='Готово в Краснодаре')
+async def push(callback: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Все чики бамбони",
+                                   callback_data="Все чики бамбони в Краснодаре"),
+        types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке')
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer(
+        'ОСТАЛОСЬ ЧУТЬ ЧУТЬ до ДЗЕНА\n🧶🧶🧶🧶🧶🧶🧶🧶🧶🧶\nПройдиcь по точкам чистоты этого дня:')
+    await callback.message.answer(
+        '-Протереть столешницу бара.\n-Проверить выкладку товара и ценники.\n-Уборка Санузла\n-Опрыскать цветы\n-Уборка холодильника\n-Вымыть лицо барной стойки',
+        reply_markup=keyboard)
+    await callback.answer()
+
+
+@dp.callback_query_handler(text="Все чики бамбони в Краснодаре")
+async def push(callback: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text="Старт",
+                                   callback_data="Старт в Краснодаре"),
+        types.InlineKeyboardButton(text='Назад', callback_data='Чайная История в Краснодаре ')
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer(f'{callback.from_user.first_name}\n😇😇😇😇😇')
+    await callback.message.answer('БЛАГОДАРИМ ЗА ПОРЯДОК !\nВЕДЬ ТОЛЬКО В ЧИСТОТЕ И ПОРЯДКЕ ВОДИТСЯ ИЗОБИЛИЕ 💰',
+                                  reply_markup=keyboard)
+    await callback.answer()
+
+
+@dp.callback_query_handler(text="Старт в Краснодаре")
+async def closesmena(callback: types.CallbackQuery):
+    a = await KPI_kras_lines()
+    a = str(a).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
+    buttons = [
+        types.InlineKeyboardButton(text="Закрыть смену",
+                                   callback_data="Закрыть смену"),
+        types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке')
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer(f'{callback.from_user.first_name}')
+    # Здесь будет переменная которую будут менять
+    await callback.message.answer(
+        f'''Твой КПИ на это месяц. \n\n{a}''',
+        reply_markup=keyboard)
+    await callback.answer()
+
+
+###################################
 @dp.callback_query_handler(text='Закрыть смену')
 async def push(callback: types.CallbackQuery):
     buttons = [types.InlineKeyboardButton(text="Отлично закрыл\n💰💰😅💰💰",
@@ -609,9 +720,7 @@ async def on_startup():
     await asyncio.create_task(scheduler())
 
 
-# Обработка присылаемого фото
-
-
+#Обработка присылаемого фото
 #Оброаботка присылаемого сообщения
 @dp.message_handler(content_types=["photo"])
 async def photo_message(message: types.Message, state: FSMContext):

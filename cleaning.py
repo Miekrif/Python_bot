@@ -3,6 +3,7 @@ from datetime import *
 import openpyxl
 import asyncio
 import random
+import time
 import aioschedule
 
 
@@ -12,10 +13,10 @@ sheet_clean_cchi = book['clean_cchi']
 sheet_clean_pyshk = book['clean_pyshk']
 word_book = book['word']
 kpi = book['KPI']
+sheet_clean_kras = book['clean_krasnodar']
+kpi_kras = book['KPI_Kras']
 
-
-# For KPI
-
+# For KPI Rostov
 async def KPI_lines():
     k = 1
     i = 1
@@ -32,6 +33,22 @@ async def KPI_lines():
             # print(KPI)
     return KPI_it
 
+# For KPI KRAS
+async def KPI_kras_lines():
+    k = 1
+    i = 1
+    KPI_it = []
+    while i != 0:
+        line1 = kpi_kras[f'A{k}'].value
+        k += 1
+        print(line1)
+        KPI_it.append(line1)
+        if line1 == None:
+            print(KPI_it)
+            KPI_it.pop()
+            i = 0
+            # print(KPI)
+    return KPI_it
 
 
 # Продаванские мудрости
@@ -60,11 +77,176 @@ async def KPI_lines():
 
 # class send_mess():
 #     a_send_message = random.choice(Words)
+#########################################################################################################################################################################
+#Уборка Крас
+
+async def do_cleaning_kchi(day):
+    if day.strftime("%A") == 'Monday':
+        Monday = []
+        k = 1
+        i = 1
+        while i != 0:
+            if datetime.now().hour < 14: #Добавить определение времени
+                line = sheet_clean_kras[f'A{k}'].value
+                k += 1
+                print(line)
+                Monday.append(line)
+                if line == None:
+                    Monday.pop()
+                    i = 0
+            else:
+                line = sheet_clean_kras[f'H{k}'].value
+                k += 1
+                print(line)
+                Monday.append(line)
+                if line == None:
+                    Monday.pop()
+                    i = 0
+        Monday = str(Monday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
+        return Monday
+        #await clean_on_space(clean=Monday)
+        # print(day.strftime("%A"))
+    elif day.strftime("%A") == 'Tuesday':
+        Tuesday = []
+        k = 1
+        i = 1
+        while i != 0:
+            if datetime.now().hour < 14:  # Добавить определение времени
+                line = sheet_clean_kras[f'B{k}'].value
+                k += 1
+                print(line)
+                Tuesday.append(line)
+                if line == None:
+                    Tuesday.pop()
+                    i = 0
+            else:
+                line = sheet_clean_kras[f'I{k}'].value
+                k += 1
+                print(line)
+                Tuesday.append(line)
+                if line == None:
+                    Tuesday.pop()
+                    i = 0
+        Tuesday = str(Tuesday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
+        return Tuesday
+        #await clean_on_space(clean=Tuesday)
+        # print(day.strftime("%A"))
+    elif day.strftime("%A") == 'Wednesday':
+        Wednesday = []
+        k = 1
+        i = 1
+        while i != 0:
+            if datetime.now().hour < 14:  # Добавить определение времени
+                line = sheet_clean_kras[f'C{k}'].value
+                k += 1
+                print(line)
+                Wednesday.append(line)
+                if line == None:
+                    Wednesday.pop()
+                    i = 0
+            else:
+                line = sheet_clean_kras[f'J{k}'].value
+                k += 1
+                print(line)
+                Wednesday.append(line)
+                if line == None:
+                    Wednesday.pop()
+                    i = 0
+        Wednesday = str(Wednesday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
+        return Wednesday
+        #await clean_on_space(clean=Wednesday)
+    elif day.strftime("%A") == 'Thursday':
+        Thursday = []
+        k = 1
+        i = 1
+        while i != 0:
+            if datetime.now().hour < 14:  # Добавить определение времени
+                line = sheet_clean_kras[f'D{k}'].value
+                k += 1
+                print(line)
+                Thursday.append(line)
+                if line == None:
+                    Thursday.pop()
+                    i = 0
+            else:
+                line = sheet_clean_kras[f'K{k}'].value
+                k += 1
+                print(line)
+                Thursday.append(line)
+                if line == None:
+                    Thursday.pop()
+                    i = 0
+        Thursday = str(Thursday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
+        return Thursday
+        #await clean_on_space(clean=Thursday)
+    elif day.strftime("%A") == 'Friday':
+        Friday = []
+        k = 1
+        i = 1
+        while i != 0:
+            if datetime.now().hour < 14:  # Добавить определение времени
+                line = sheet_clean_kras[f'E{k}'].value
+                k += 1
+                print(line)
+                Friday.append(line)
+                if line == None:
+                    Friday.pop()
+                    i = 0
+            else:
+                line = sheet_clean_kras[f'L{k}'].value
+                k += 1
+                print(line)
+                Friday.append(line)
+                if line == None:
+                    Friday.pop()
+                    i = 0
+        Friday = str(Friday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",",
+                                                                                                                '\n')
+        return Friday
+        #await clean_on_space(clean=Friday)
+    elif day.strftime("%A") == "Saturday":
+        Saturday = []
+        k = 1
+        i = 1
+        while i != 0:
+            line = sheet_clean_kras[f'F{k}'].value
+            k += 1
+            print(line)
+            Saturday.append(line)
+            if line == None:
+                Saturday.pop()
+                i = 0
+        Saturday = str(Saturday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",",
+                                                                                                            '\n')
+        return Saturday
+        #await clean_on_space(clean=Saturday)
+
+    elif day.strftime("%A") == 'Sunday':
+        Sunday = []
+        k = 1
+        i = 1
+        while i != 0:
+            line = sheet_clean_kras[f'G{k}'].value
+            k += 1
+            print(line)
+            Sunday.append(line)
+            if line == None:
+                Sunday.pop()
+                i = 0
+        Sunday = str(Sunday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",",
+                                                                                                                '\n')
+        return Sunday
+        #await clean_on_space(clean=Sunday)
 
 
 
-########################################################
 
+
+
+
+
+
+########################################################################################################################################################################
 
 # Уборка ЦЧИ
 async def do_cleaning_cchi(day):
