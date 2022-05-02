@@ -587,8 +587,8 @@ async def push(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(text="СДЕЛАЛ, гуд бай")
 async def push(callback: types.CallbackQuery):
-    buttons = types.InlineKeyboardButton(text="Отправить чек",
-                                          callback_data="Отправить чек")
+    buttons = [types.InlineKeyboardButton(text="Отправить чек",
+                                          callback_data="Отправить чек")]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     await callback.message.answer(
@@ -598,12 +598,12 @@ async def push(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(text="Отправить чек")
 async def push(callback: types.CallbackQuery):
-    await callback.message.answer(f'Отправляй чек, я ловлю!')
-    await callback.message.answer_sticker(r'CAACAgIAAxkBAAEEmxhibtEFTZ4688dKcoatIyq04BViPwACWgADrWW8FGIMKfS80fFyJAQ')
     buttons = types.InlineKeyboardButton(text="Отправить чек",
                                           callback_data="Отправить чек")
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
+    await callback.message.answer(f'Отправляй чек, я ловлю!', reply_markup=keyboard)
+    await callback.message.answer_sticker(r'CAACAgIAAxkBAAEEmxhibtEFTZ4688dKcoatIyq04BViPwACWgADrWW8FGIMKfS80fFyJAQ')
     await callback.answer()
 
 
