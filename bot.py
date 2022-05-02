@@ -23,8 +23,8 @@ storage = MemoryStorage()
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
-# TOKEN = os.environ['TOKEN']
-TOKEN = os.environ['TOKEN_test']
+TOKEN = os.environ['TOKEN']
+# TOKEN = os.environ['TOKEN_test']
 
 
 
@@ -101,16 +101,34 @@ class FILE_ID_it(StatesGroup):
 # start message
 @dp.message_handler(lambda message: message.text == '/start')
 async def cmd_start(message: types.Message):
-    buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='1) Время работать!'),
-               types.InlineKeyboardButton(text='2)Давай знакомиться', callback_data='Знакомвство'),
-               types.InlineKeyboardButton(text="3) Я не знаю что делать!", callback_data="3) Я не знаю что делать!"),
-               ]
-    await KPI_lines()
-    keyboard = types.InlineKeyboardMarkup(row_width=2)
-    keyboard.add(*buttons)
-    await message.answer(
-        f"Охае, чайный мастер {message.from_user.first_name} \nЕсли мы уже знакомы - выбери первый пункт \nЕсли нет, то второй!"
-        , reply_markup=keyboard)
+    id_telo = message.from_user.id
+    open_json()
+    print(id_telo)
+    id_telo = f'[\'{id_telo}\']'
+    print(MY_CONTACT)
+    MY_CONTACT.fromkeys(f'{id_telo}')
+    if MY_CONTACT.get(id_telo) != None:
+        buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='1) Время работать!'),
+                   types.InlineKeyboardButton(text="2) Я не знаю что делать!",
+                                              callback_data="3) Я не знаю что делать!"),
+                   ]
+        # first_name = callback.first_name  # Не может быть пустым
+        keyboard = types.InlineKeyboardMarkup(row_width=2)
+        keyboard.add(*buttons)
+        await message.answer(
+            f"Охае, чайный мастер {message.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
+            reply_markup=keyboard)
+    else:
+        buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='1) Время работать!'),
+                   types.InlineKeyboardButton(text='2)Давай знакомиться', callback_data='Знакомвство'),
+                   types.InlineKeyboardButton(text="3) Я не знаю что делать!", callback_data="3) Я не знаю что делать!"),
+                   ]
+        await KPI_lines()
+        keyboard = types.InlineKeyboardMarkup(row_width=2)
+        keyboard.add(*buttons)
+        await message.answer(
+            f"Охае, чайный мастер {message.from_user.first_name} \nЕсли мы уже знакомы - выбери первый пункт \nЕсли нет, то второй!"
+            ,reply_markup=keyboard)
 
     # return name
 
@@ -125,6 +143,7 @@ async def cmd_start(message: types.Message):
     await bot.edit_message_text(text="text")
     username = message.from_user.username
     keyboard = types.InlineKeyboardMarkup(row_width=2)
+    keyboard.add(*buttons)
     await message.answer(
         f"Охае, чайный мастер {message.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
         reply_markup=keyboard
@@ -578,7 +597,7 @@ async def push(callback: types.CallbackQuery):
 @dp.callback_query_handler(text="Отправить чек")
 async def push(callback: types.CallbackQuery):
     await callback.message.answer(f'Отправляй чек, я ловлю!')
-    await message.answer_sticker(r'CAACAgIAAxkBAAEEmxhibtEFTZ4688dKcoatIyq04BViPwACWgADrWW8FGIMKfS80fFyJAQ')
+    await callback.message.answer_sticker(r'CAACAgIAAxkBAAEEmxhibtEFTZ4688dKcoatIyq04BViPwACWgADrWW8FGIMKfS80fFyJAQ')
     buttons = types.InlineKeyboardButton(text="Отправить чек",
                                           callback_data="Отправить чек")
     keyboard = types.InlineKeyboardMarkup(row_width=1)
