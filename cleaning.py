@@ -37,18 +37,18 @@ async def KPI_lines():
 async def KPI_kras_lines():
     k = 1
     i = 1
-    KPI_it = []
+    KPI_kras = []
     while i != 0:
         line1 = kpi_kras[f'A{k}'].value
         k += 1
         print(line1)
-        KPI_it.append(line1)
+        KPI_kras.append(line1)
         if line1 == None:
-            print(KPI_it)
-            KPI_it.pop()
+            print(KPI_kras)
+            KPI_kras.pop()
             i = 0
             # print(KPI)
-    return KPI_it
+    return KPI_kras
 
 
 # Продаванские мудрости
@@ -82,7 +82,7 @@ async def KPI_kras_lines():
 
 async def do_cleaning_kchi(day):
     if day.strftime("%A") == 'Monday':
-        Monday = []
+        Monday_k = []
         k = 1
         i = 1
         while i != 0:
@@ -90,20 +90,20 @@ async def do_cleaning_kchi(day):
                 line = sheet_clean_kras[f'A{k}'].value
                 k += 1
                 print(line)
-                Monday.append(line)
+                Monday_k.append(line)
                 if line == None:
-                    Monday.pop()
+                    Monday_k.pop()
                     i = 0
             else:
                 line = sheet_clean_kras[f'H{k}'].value
                 k += 1
                 print(line)
-                Monday.append(line)
+                Monday_k.append(line)
                 if line == None:
-                    Monday.pop()
+                    Monday_k.pop()
                     i = 0
-        Monday = str(Monday).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
-        return Monday
+        Monday_k = str(Monday_k).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
+        return Monday_k
         #await clean_on_space(clean=Monday)
         # print(day.strftime("%A"))
     elif day.strftime("%A") == 'Tuesday':

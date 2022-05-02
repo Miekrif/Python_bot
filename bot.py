@@ -292,7 +292,7 @@ async def push(callback: types.CallbackQuery, state: FSMContext):
     # await po_tochkam(tochka='Чайная История на Пушке')
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
-    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{await do_cleaning_cchi(day)}')
+    await callback.message.answer(f'Так же не забудь про уборочку! \n\n{await do_cleaning_kchi(day)}')
     a = 0
     print(a)
     await callback.message.answer(f'Хорошего дня тебе,\U0001F609 {callback.from_user.first_name} \n ')
@@ -587,11 +587,13 @@ async def push(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(text="СДЕЛАЛ, гуд бай")
 async def push(callback: types.CallbackQuery):
-    await callback.message.answer(f'Ну вот ты и подошел к заключающему фактору нашей встречи сегодня!\nЗаходи ко мне завтра, я ведь буду скучать по тебе!\nПожалуйста не забудь прилать мне фотографию чеков \n\n\nДо скорой встречи')
     buttons = types.InlineKeyboardButton(text="Отправить чек",
                                           callback_data="Отправить чек")
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
+    await callback.message.answer(
+        f'Ну вот ты и подошел к заключающему фактору нашей встречи сегодня!\nЗаходи ко мне завтра, я ведь буду скучать по тебе!\nПожалуйста не забудь прилать мне фотографию чеков \n\n\nДо скорой встречи',
+        reply_markup=keyboard)
     await callback.answer()
 
 @dp.callback_query_handler(text="Отправить чек")
@@ -626,7 +628,9 @@ async def push(callback: types.CallbackQuery):
 async def cmd_start(callback: types.Message):
     buttons = [
                types.InlineKeyboardButton(text='Закрыть смену на Пушке', callback_data='Сворачиваемся, ребята'),
-               types.InlineKeyboardButton(text='Закрыть смену на Централе', callback_data='Сворачиваемся, ребята')
+               types.InlineKeyboardButton(text='Закрыть смену на Централе', callback_data='Сворачиваемся, ребята'),
+               types.InlineKeyboardButton(text='Чайная История в Краснодаре на Красной', callback_data='Сворачиваемся, ребята'),
+               types.InlineKeyboardButton(text='Чайная История в Краснодаре на Театральной', callback_data='Сворачиваемся, ребята')
                ]
     # first_name = callback.first_name  # Не может быть пустым
     username = callback.from_user.username
