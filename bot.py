@@ -779,7 +779,7 @@ async def photo_message(message: types.Message, state: FSMContext):
         phone1 = str(phone1).replace('\'', '')
         messages = [
             types.InlineKeyboardButton(text="Чайная История на Пушке", callback_data='Чайная История на Пушке фото'),
-            types.InlineKeyboardButton(text='Чайная История в Краснодаре', callback_data='Чайная История в Краснодаре'),
+            types.InlineKeyboardButton(text='Чайная История в Краснодаре', callback_data='Чайная История в Краснодаре фото'),
             types.InlineKeyboardButton(text='Чайная История на Театралке',
                                        callback_data='Чайная История на Театралке фото')]
         keyboard = types.InlineKeyboardMarkup(row_width=1, resize_keyboard=True)
@@ -811,7 +811,7 @@ async def contact_photo(pic2: types.Message, state: FSMContext):
     userbtn = str(userbtn).replace('"user_id": ', '')
     await add_to_dict(userbtn, phone)
     message = [types.InlineKeyboardButton(text="Чайная История на Пушке", callback_data='Чайная История на Пушке фото'),
-               types.InlineKeyboardButton(text='Чайная История в Краснодаре', callback_data='Чайная История в Краснодаре'),
+               types.InlineKeyboardButton(text='Чайная История в Краснодаре', callback_data='Чайная История в Краснодаре фото'),
                types.InlineKeyboardButton(text='Чайная История на Театралке',
                                           callback_data='Чайная История на Театралке фото')]
     keyboard = types.InlineKeyboardMarkup(row_width=1, resize_keyboard=True)
@@ -843,7 +843,7 @@ async def send_long_message_from(callback: types.CallbackQuery):
     await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone1} и это {inf}")
     # await message.answer(text='Положил твой чек в карман!')
 
-@dp.callback_query_handler(text='Чайная История в Краснодаре')
+@dp.callback_query_handler(text='Чайная История в Краснодаре фото')
 async def send_long_message_from(callback: types.CallbackQuery):
     await callback.message.answer('Положил твой чек в карман!', reply_markup=None)
     a = date.today()
