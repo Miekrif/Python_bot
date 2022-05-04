@@ -598,8 +598,8 @@ async def push(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(text="Отправить чек")
 async def push(callback: types.CallbackQuery):
-    buttons = types.InlineKeyboardButton(text="Отправить чек",
-                                          callback_data="Отправить чек")
+    buttons = [types.InlineKeyboardButton(text="Отправить чек",
+                                          callback_data="Отправить чек")]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     await callback.message.answer(f'Отправляй чек, я ловлю!', reply_markup=keyboard)
@@ -821,7 +821,7 @@ async def contact_photo(pic2: types.Message, state: FSMContext):
 
 @dp.callback_query_handler(text='Чайная История на Пушке фото')
 async def send_long_message_from(callback: types.CallbackQuery):
-    await callback.message.answer('Положил твой чек в карман!')
+    await callback.message.answer('Положил твой чек в карман!', reply_markup=None)
     a = date.today()
     # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
     inf = 'Чайная История на #Пушке'
@@ -834,7 +834,7 @@ async def send_long_message_from(callback: types.CallbackQuery):
 @dp.callback_query_handler(text='Чайная История на Театралке фото')
 async def send_long_message_from(callback: types.CallbackQuery):
     # keyboard = types.InlineKeyboardMarkup(row_width=1, resize_keyboard=True)
-    await callback.message.answer('Положил твой чек в карман!')
+    await callback.message.answer('Положил твой чек в карман!', reply_markup=None)
     a = date.today()
     # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
     inf = 'Чайная История на #Театралке'
@@ -845,7 +845,7 @@ async def send_long_message_from(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(text='Чайная История в Краснодаре')
 async def send_long_message_from(callback: types.CallbackQuery):
-    await callback.message.answer('Положил твой чек в карман!')
+    await callback.message.answer('Положил твой чек в карман!', reply_markup=None)
     a = date.today()
     # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
     inf = 'Чайная История в #Краснодаре'
