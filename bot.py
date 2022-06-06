@@ -170,8 +170,10 @@ async def meeting(callback: types.CallbackQuery):
 @dp.callback_query_handler(text='1) Время работать!')
 async def time_to_work(callback: types.CallbackQuery):
     buttons = [types.InlineKeyboardButton(text='Чайная История на Пушке', callback_data='Чайная История на Пушке'),
-               types.InlineKeyboardButton(text='Центральная Чайная История',
-                                          callback_data='Центральная чайная история'),types.InlineKeyboardButton(text='Чайная История в Краснодаре на Красной', callback_data='Чайная История в Краснодаре'), types.InlineKeyboardButton(text='Чайная История в Краснодаре на Театральной', callback_data='Чайная История в Краснодаре')
+               types.InlineKeyboardButton(text='Центральная Чайная История',callback_data='Центральная чайная история'),
+               types.InlineKeyboardButton(text='Чайная История в парке Революции', callback_data='Чайная История на Пушке'),
+               types.InlineKeyboardButton(text='Чайная История в Краснодаре на Красной', callback_data='Чайная История в Краснодаре'),
+               types.InlineKeyboardButton(text='Чайная История в Краснодаре на Театральной', callback_data='Чайная История в Краснодаре')
                ]
     await word_mentor()
     # print(send_mess.a_send_message)
@@ -811,13 +813,28 @@ async def contact_photo(pic2: types.Message, state: FSMContext):
     userbtn = str(userbtn).replace('"user_id": ', '')
     await add_to_dict(userbtn, phone)
     message = [types.InlineKeyboardButton(text="Чайная История на Пушке", callback_data='Чайная История на Пушке фото'),
-               types.InlineKeyboardButton(text='Чайная История в Краснодаре', callback_data='Чайная История в Краснодаре фото'),
+               types.InlineKeyboardButton(text="Чайная История в парке Революции", callback_data='Чайная История в парке Революции фото'),
                types.InlineKeyboardButton(text='Чайная История на Театралке',
-                                          callback_data='Чайная История на Театралке фото')]
+                                          callback_data='Чайная История на Театралке фото'),
+               types.InlineKeyboardButton(text='Чайная История в Краснодаре на Театральной',
+                                          callback_data='Чайная История в Краснодаре на Театральной фото'),
+               types.InlineKeyboardButton(text='Чайная История в Краснодаре на Красной', callback_data='Чайная История в Краснодаре на Красной фото'),
+               ]
     keyboard = types.InlineKeyboardMarkup(row_width=1, resize_keyboard=True)
     keyboard.add(*message)
     await bot.send_message(pic2.chat.id, "Выбери свою точку", reply_markup=keyboard)
 
+
+@dp.callback_query_handler(text='Чайная История в парке Революции фото')
+async def send_long_message_from(callback: types.CallbackQuery):
+    await callback.message.answer('Положил твой чек в карман!', reply_markup=None)
+    a = date.today()
+    # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
+    inf = 'Чайная История на #Пушке'
+    await bot.send_photo(chat_id=chekichat, photo=file_id[0])
+    file_id.clear()
+    await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone1} и это {inf}")
+    # await message.answer(text='Положил твой чек в карман!')
 
 @dp.callback_query_handler(text='Чайная История на Пушке фото')
 async def send_long_message_from(callback: types.CallbackQuery):
@@ -843,7 +860,17 @@ async def send_long_message_from(callback: types.CallbackQuery):
     await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone1} и это {inf}")
     # await message.answer(text='Положил твой чек в карман!')
 
-@dp.callback_query_handler(text='Чайная История в Краснодаре фото')
+@dp.callback_query_handler(text='Чайная История в Краснодаре на Театральной фото')
+async def send_long_message_from(callback: types.CallbackQuery):
+    await callback.message.answer('Положил твой чек в карман!', reply_markup=None)
+    a = date.today()
+    # await file_id[0].download(f'cheki/send-{file_id[0].file_unique_id}.jpg')  # Сохраниение чеков
+    inf = 'Чайная История в #Краснодаре'
+    await bot.send_photo(chat_id=chekichat, photo=file_id[0])
+    file_id.clear()
+    await bot.send_message(chat_id=chekichat, text=f"Хей🖖,сегодня {a}, отправил его {phone1} и это {inf}")
+
+@dp.callback_query_handler(text='Чайная История в Краснодаре на Красной фото')
 async def send_long_message_from(callback: types.CallbackQuery):
     await callback.message.answer('Положил твой чек в карман!', reply_markup=None)
     a = date.today()
