@@ -779,7 +779,7 @@ async def photo_message(message: types.Message, state: FSMContext):
         phone1 = str(phone1).replace(']', '')
         phone1 = str(phone1).replace('"', '')
         phone1 = str(phone1).replace('\'', '')
-        message = [
+        messages = [
             types.InlineKeyboardButton(text="Чайная История на Пушке", callback_data='Чайная История на Пушке фото'),
             types.InlineKeyboardButton(text="Чайная История в парке Революции",
                                        callback_data='Чайная История в парке Революции фото'),
@@ -791,7 +791,7 @@ async def photo_message(message: types.Message, state: FSMContext):
                                        callback_data='Чайная История в Краснодаре на Красной фото'),
             ]
         keyboard = types.InlineKeyboardMarkup(row_width=1, resize_keyboard=True)
-        keyboard.add(*message)
+        keyboard.add(*messages)
         await message.answer(text='Тебя я уже знаю!', reply_markup=keyboard)
     else:
         button_phone = types.KeyboardButton(text="Делись!", request_contact=True)
