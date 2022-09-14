@@ -397,8 +397,9 @@ async def push(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(text="Старт")
 async def closesmena(callback: types.CallbackQuery):
-    a = await KPI_lines()
-    a = str(a).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
+    KPI_it = []
+    KPI_lines(KPI_it)
+    a = str(KPI_it).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
     # a = str(a).replace(']', '')
     # a = str(a).replace(r'\n', '')
     # a = str(a).replace(r"'", '')

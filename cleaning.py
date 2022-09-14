@@ -17,10 +17,9 @@ sheet_clean_kras = book['clean_krasnodar']
 kpi_kras = book['KPI_Kras']
 
 # For KPI Rostov
-async def KPI_lines():
+async def KPI_lines(KPI_it):
     k = 1
     i = 1
-    KPI_it = []
     while i != 0:
         line1 = kpi[f'A{k}'].value
         k += 1
