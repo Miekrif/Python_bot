@@ -398,13 +398,7 @@ async def push(callback: types.CallbackQuery):
 @dp.callback_query_handler(text="Старт")
 async def closesmena(callback: types.CallbackQuery):
     KPI_it = []
-    KPI_lines(KPI_it)
-    a = str(KPI_it).replace('[', '').replace(']', '').replace(r'\n', '').replace(r"'", '').replace(r",", '\n')
-    # a = str(a).replace(']', '')
-    # a = str(a).replace(r'\n', '')
-    # a = str(a).replace(r"'", '')
-    # a = str(a).replace(r" ", '')
-    # a = str(a).replace(r",", '\n')
+    await KPI_lines(KPI_it)
     buttons = [
         types.InlineKeyboardButton(text="Закрыть смену",
                                    callback_data="Закрыть смену"),
@@ -415,7 +409,7 @@ async def closesmena(callback: types.CallbackQuery):
     await callback.message.answer(f'{callback.from_user.first_name}')
     # Здесь будет переменная которую будут менять
     await callback.message.answer(
-        f'''Твой КПИ на это месяц. \n\n{a}''',
+        f'''Твой КПИ на это месяц. \n\n{print(*KPI_it)}''',
         reply_markup=keyboard)
     await callback.answer()
 

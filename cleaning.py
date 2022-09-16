@@ -24,7 +24,7 @@ async def KPI_lines(KPI_it):
         line1 = kpi[f'A{k}'].value
         k += 1
         print(line1)
-        KPI_it.append(line1)
+        KPI_it.append(f'{line1}\n')
         if line1 == None:
             print(KPI_it)
             KPI_it.pop()
