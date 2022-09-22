@@ -883,7 +883,7 @@ if __name__ == '__main__':
     anig()
     # executor.start(dp, on_startup())
     open_json()
-    on_startup()
+    # on_startup()
     executor.start_polling(dp, skip_updates=True)
 
 
