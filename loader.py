@@ -1,9 +1,9 @@
-from aiogram import Bot, Dispatcher, types
-from aiogram.contrib.middlewares.logging import LoggingMiddleware
-from aiogram.types import ParseMode
 from aiogram.utils import executor
+from aiogram.types import ParseMode
+from aiogram import Bot, Dispatcher, types
 from aiogram.utils.markdown import text, quote_html
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
 from config import BOT_TOKEN
 

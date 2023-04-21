@@ -1,12 +1,12 @@
 from aiogram import types
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters import Command, Text
-from aiogram.types import ParseMode
-from aiogram.utils.markdown import text, hbold
-
 from loader import dp, bot
+from aiogram.types import ParseMode
+from aiogram.dispatcher import FSMContext
+from aiogram.utils.markdown import text, hbold
+from aiogram.dispatcher.filters import Command, Text
 from utils.functions import open_json, add_to_dict, anig, open_json
-from config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE
+from config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
+
 
 
 @dp.message_handler(Command("start"))
@@ -16,7 +16,7 @@ async def cmd_start(message: types.Message):
     print(id_telo)
     print(MY_CONTACT)
     # MY_CONTACT.fromkeys(id_telo)
-    if not MY_CONTACT.get(id_telo):
+    if MY_CONTACT.get(id_telo):
         buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='1) Время работать!'),
                    types.InlineKeyboardButton(text="2) Я не знаю что делать!",
                                               callback_data="3) Я не знаю что делать!"),
@@ -28,17 +28,22 @@ async def cmd_start(message: types.Message):
             f"Охае, чайный мастер {message.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
             reply_markup=keyboard)
     else:
-        buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='1) Время работать!'),
-                   types.InlineKeyboardButton(text='2)Давай знакомиться', callback_data='Знакомвство'),
-                   types.InlineKeyboardButton(text="3) Я не знаю что делать!",
-                                              callback_data="3) Я не знаю что делать!"),
+        buttons = [
+            types.InlineKeyboardButton(text='Да, нужна помощь', url=manager),
                    ]
-        await KPI_lines()
         keyboard = types.InlineKeyboardMarkup(row_width=2)
         keyboard.add(*buttons)
         await message.answer(
-            f"Охае, чайный мастер {message.from_user.first_name} \nЕсли мы уже знакомы - выбери первый пункт \nЕсли нет, то второй!"
+            f"Привет, Незнакомец! Для того, чтобы пользоваться мной свяжись с менеджером"
             , reply_markup=keyboard)
+    if id_telo in manager or id_telo in ADMINS:
+        buttons = [types.InlineKeyboardButton(text='Админская панель', callback_data='Админская панель')]
+        await message.answer(
+            f"Админская панель"
+            , reply_markup=keyboard)
+        keyboard = types.InlineKeyboardMarkup(row_width=2)
+        keyboard.add(*buttons)
+
 
 
 @dp.message_handler(commands=['close'])
