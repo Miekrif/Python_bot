@@ -5,19 +5,18 @@ from aiogram.types import ParseMode
 from aiogram.utils.markdown import text, hbold
 
 from loader import dp, bot
-from utils.functions import open_json, add_to_dict, anig
+from utils.functions import open_json, add_to_dict, anig, open_json
 from config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE
 
 
 @dp.message_handler(Command("start"))
 async def cmd_start(message: types.Message):
     id_telo = message.from_user.id
-    open_json()
+    MY_CONTACT = open_json()
     print(id_telo)
-    id_telo = f'[\'{id_telo}\']'
     print(MY_CONTACT)
-    MY_CONTACT.fromkeys(f'{id_telo}')
-    if MY_CONTACT.get(id_telo) != None:
+    # MY_CONTACT.fromkeys(id_telo)
+    if not MY_CONTACT.get(id_telo):
         buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='1) Время работать!'),
                    types.InlineKeyboardButton(text="2) Я не знаю что делать!",
                                               callback_data="3) Я не знаю что делать!"),

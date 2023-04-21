@@ -25,3 +25,6 @@ def add_to_dict(userbtn, phone):
     MY_CONTACT.update({f'{userbtn}': f'{phone}'})
     save_json()
 
+def anig():
+    global user_id
+    user_id = list()
