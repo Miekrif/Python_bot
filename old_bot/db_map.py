@@ -4,7 +4,7 @@ import random
 import openpyxl
 
 day = datetime.now()
-book = openpyxl.open('CHI.xlsx', read_only=True)
+book = openpyxl.open('../CHI.xlsx', read_only=True)
 word_book = book['word']
 sheet_clean_cchi = book['clean_cchi']
 

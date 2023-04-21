@@ -8,7 +8,7 @@ import aioschedule
 
 
 # Import data from excel
-book = openpyxl.open('CHI.xlsx', read_only=True)
+book = openpyxl.open('../CHI.xlsx', read_only=True)
 sheet_clean_cchi = book['clean_cchi']
 sheet_clean_pyshk = book['clean_pyshk']
 word_book = book['word']
