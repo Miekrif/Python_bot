@@ -15,7 +15,6 @@ async def cmd_start(message: types.Message):
     MY_CONTACT = open_json()
     print(id_telo)
     print(MY_CONTACT)
-    # MY_CONTACT.fromkeys(id_telo)
     if MY_CONTACT.get(id_telo):
         buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='1) Время работать!'),
                    types.InlineKeyboardButton(text="2) Я не знаю что делать!",
@@ -36,13 +35,15 @@ async def cmd_start(message: types.Message):
         await message.answer(
             f"Привет, Незнакомец! Для того, чтобы пользоваться мной свяжись с менеджером"
             , reply_markup=keyboard)
-    if id_telo in manager or id_telo in ADMINS:
-        buttons = [types.InlineKeyboardButton(text='Админская панель', callback_data='Админская панель')]
+    if str(id_telo) in str(manager) or str(id_telo) in str(ADMINS):
+        buttons = [types.InlineKeyboardButton(text='Админская панель', callback_data='admin')]
+        keyboard = types.InlineKeyboardMarkup(row_width=2)
+        keyboard.add(*buttons)
         await message.answer(
             f"Админская панель"
             , reply_markup=keyboard)
-        keyboard = types.InlineKeyboardMarkup(row_width=2)
-        keyboard.add(*buttons)
+
+
 
 
 

@@ -2,6 +2,7 @@ import os
 import json
 from config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE
 
+
 def open_json():
     if os.path.exists(JSON_FILE):
         with open(JSON_FILE, 'r', encoding='utf-8') as file:
@@ -11,7 +12,7 @@ def open_json():
     return MY_CONTACT
 
 
-def save_json():
+def save_json(MY_CONTACT):
     with open(JSON_FILE, 'w', encoding='utf-8') as file:
         json.dump(MY_CONTACT, file, ensure_ascii=False, indent=4)
 
@@ -23,7 +24,7 @@ def add_to_dict(MY_CONTACT, userbtn, phone):
     # userbtn = str(userbtn).replace('\'', '')
     # userbtn = f'[\'{userbtn}\']'
     MY_CONTACT.update({f'{userbtn}': f'{phone}'})
-    save_json()
+    save_json(MY_CONTACT)
 
 def anig():
     global user_id
