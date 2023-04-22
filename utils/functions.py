@@ -13,8 +13,8 @@ def open_json():
 
 
 def save_json(MY_CONTACT):
-    with open(JSON_FILE, 'r', encoding='utf-8') as file:
-        read = json.load(file, ensure_ascii=False, indent=4)
+    # with open(JSON_FILE, 'r', encoding='utf-8') as file:
+    #     read = json.load(file, ensure_ascii=False, indent=4)
 
     with open(JSON_FILE, 'w', encoding='utf-8') as file:
         json.dump(MY_CONTACT, file, ensure_ascii=False, indent=4)
