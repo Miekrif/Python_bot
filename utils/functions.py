@@ -13,6 +13,9 @@ def open_json():
 
 
 def save_json(MY_CONTACT):
+    with open(JSON_FILE, 'r', encoding='utf-8') as file:
+        read = json.load(file, ensure_ascii=False, indent=4)
+
     with open(JSON_FILE, 'w', encoding='utf-8') as file:
         json.dump(MY_CONTACT, file, ensure_ascii=False, indent=4)
 
@@ -26,9 +29,11 @@ def add_to_dict(MY_CONTACT, userbtn, phone):
     MY_CONTACT.update({f'{userbtn}': f'{phone}'})
     save_json(MY_CONTACT)
 
+
 def anig():
     global user_id
     user_id = list()
+
 
 def read_KPI_lines(counter):
     with open('jsons/kpi_json', 'r') as kpi:
