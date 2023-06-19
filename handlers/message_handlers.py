@@ -6,43 +6,35 @@ from aiogram.utils.markdown import text, hbold
 from aiogram.dispatcher.filters import Command, Text
 from utils.functions import open_json, add_to_dict
 from jsons.work_with_jsons import open_json_admins
-from config.config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
+from config.config import BOT_TOKEN, CHEKICHAT, JSON_FILE, manager
 
 
 @dp.message_handler(Command("start"))
 async def cmd_start(message: types.Message):
-    id_telo = message.from_user.id
+    id_user = message.from_user.id
     messages = open_json_admins()
-    print(id_telo)
-    print(messages)
-    if id_telo in messages.get('granted_users', []):
-        buttons = [types.InlineKeyboardButton(text='1) Время работать !', callback_data='Time_to_work'),
-                   types.InlineKeyboardButton(text="2) Я не знаю что делать !",
-                                              callback_data="I_dont_know_what_to_do"),
-                   ]
+    # Проверка является ли пользователь одобренным
+    if id_user in messages.get('granted_users', []):
+        buttons = [
+            types.InlineKeyboardButton(text='1) Время работать !', callback_data='Time_to_work'),
+            types.InlineKeyboardButton(text="2) Я не знаю что делать !", callback_data="I_dont_know_what_to_do"),
+        ]
         keyboard = types.InlineKeyboardMarkup(row_width=2)
         keyboard.add(*buttons)
         await message.answer(
             f"Охае, чайный мастер {message.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
-            reply_markup=keyboard)
-        # Проверка, является ли пользователь админом
-        if str(id_telo) in str(manager) or str(id_telo) in str(ADMINS):
-            # Создание клавиатуры для выбора ролей
-            roles_kb = types.InlineKeyboardMarkup(row_width=1)
-            for role in messages.get('roles', []):
-                roles_kb.add(types.InlineKeyboardButton(role, callback_data=role))
+            reply_markup=keyboard
+        )
 
+        # Проверка является ли пользователь админом
+        print(id_user)
+        print(messages.get('admins', []))
+        print(id_user in messages.get('admins', []))
+        if id_user in messages.get('admins', []):
             buttons = [types.InlineKeyboardButton(text='Админская панель', callback_data='admin')]
             keyboard = types.InlineKeyboardMarkup(row_width=2)
             keyboard.add(*buttons)
-
-            # Отправка клавиатуры с ролями
-            await message.answer("Выберите свою роль", reply_markup=roles_kb)
-            await CleaningForm.role.set()
-
-            await message.answer(
-                f"Админская панель"
-                , reply_markup=keyboard)
+            await message.answer(f"Админская панель", reply_markup=keyboard)
 
     else:
         buttons = [
@@ -51,8 +43,10 @@ async def cmd_start(message: types.Message):
         keyboard = types.InlineKeyboardMarkup(row_width=1)
         keyboard.add(*buttons)
         await message.answer(
-            f"Привет, Незнакомец! Для того, чтобы пользоваться мной свяжись с менеджером"
+            f"""Привет, Незнакомец! Для того, чтобы пользоваться мной свяжись с менеджером
+            \n Твой id передай его менджеру для добавления тебя в список {id_user}"""
             , reply_markup=keyboard)
+
 
 
 @dp.message_handler(commands=['close'])
@@ -104,21 +98,20 @@ async def need_help(message: types.Message):
         await message.answer(r"Нажми /start чтобы начать сначала!")
 
 
-
 @dp.message_handler(content_types=["photo"])
 async def photo_message(message: types.Message, state: FSMContext):
     global file_id
     file_id = [message.photo[-1].file_id]  # file ID загруженной фотографии
     await state.update_data(file_id=file_id)
-    id_telo = message.from_user.id
+    id_user = message.from_user.id
     open_json()
-    print(id_telo)
-    id_telo = f'[\'{id_telo}\']'
-    MY_CONTACT.fromkeys(f'{id_telo}')
-    if MY_CONTACT.get(id_telo) != None:
+    print(id_user)
+    id_user = f'[\'{id_user}\']'
+    MY_CONTACT.fromkeys(f'{id_user}')
+    if MY_CONTACT.get(id_user) != None:
         global phone1
         print('Не ровняется')
-        phone1 = MY_CONTACT.get(id_telo)
+        phone1 = MY_CONTACT.get(id_user)
         phone1 = str(phone1).replace('[', '')
         phone1 = str(phone1).replace(']', '')
         phone1 = str(phone1).replace('"', '')

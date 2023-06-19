@@ -5,33 +5,46 @@ from config.config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
 from jsons.work_with_jsons import word_mentor
 from loader import dp, bot
 from utils.functions import open_json, add_to_dict, open_json
+from jsons.work_with_jsons import open_json_admins
 
 
 @dp.callback_query_handler(text='start')
 async def cmd_start(message: types.Message):
-    id_telo = message.from_user.id
-    MY_CONTACT = open_json()
-    buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='Time_to_work'),
-               types.InlineKeyboardButton(text="2) Я не знаю что делать!!", callback_data="I_dont_know_what_to_do"),
-               ]
-    # first_name = callback.first_name  # Не может быть пустым
-    await bot.edit_message_text(text="text")
-    username = message.from_user.username
-    keyboard = types.InlineKeyboardMarkup(row_width=2)
-    keyboard.add(*buttons)
-    await message.answer(
-        f"Охае, чайный мастер {message.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
-        reply_markup=keyboard
-    )
-    if str(id_telo) in str(manager) or str(id_telo) in str(ADMINS):
-        buttons = [types.InlineKeyboardButton(text='Админская панель', callback_data='admin')]
+    id_user = message.from_user.id
+    messages = open_json_admins()
+    # Проверка является ли пользователь одобренным
+    if id_user in messages.get('granted_users', []):
+        buttons = [
+            types.InlineKeyboardButton(text='1) Время работать !', callback_data='Time_to_work'),
+            types.InlineKeyboardButton(text="2) Я не знаю что делать !", callback_data="I_dont_know_what_to_do"),
+        ]
         keyboard = types.InlineKeyboardMarkup(row_width=2)
         keyboard.add(*buttons)
         await message.answer(
-            f"Админская панель"
-            , reply_markup=keyboard)
-    await message.answer()
+            f"Охае, чайный мастер {message.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
+            reply_markup=keyboard
+        )
 
+        # Проверка является ли пользователь админом
+        print(id_user)
+        print(messages.get('admins', []))
+        if str(id_user) in messages.get('admins', []):
+            buttons = [types.InlineKeyboardButton(text='Админская панель', callback_data='admin')]
+            keyboard = types.InlineKeyboardMarkup(row_width=2)
+            keyboard.add(*buttons)
+
+            await message.answer(f"Админская панель", reply_markup=keyboard)
+
+    else:
+        buttons = [
+            types.InlineKeyboardButton(text='Да, нужна помощь', url=manager),
+        ]
+        keyboard = types.InlineKeyboardMarkup(row_width=1)
+        keyboard.add(*buttons)
+        await message.answer(
+            f"""Привет, Незнакомец! Для того, чтобы пользоваться мной свяжись с менеджером
+            \n Твой id передай его менджеру для добавления тебя в список {id_user}"""
+            , reply_markup=keyboard)
 
 # Знакомвство
 @dp.callback_query_handler(text='intro')
