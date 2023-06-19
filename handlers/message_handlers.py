@@ -5,8 +5,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.utils.markdown import text, hbold
 from aiogram.dispatcher.filters import Command, Text
 from utils.functions import open_json, add_to_dict, anig, open_json
-from config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
-
+from main import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
 
 
 @dp.message_handler(Command("start"))
@@ -15,7 +14,7 @@ async def cmd_start(message: types.Message):
     MY_CONTACT = open_json()
     print(id_telo)
     print(MY_CONTACT)
-    if MY_CONTACT.get(id_telo):
+    if MY_CONTACT.get(id_telo, True):
         buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='1) Время работать!'),
                    types.InlineKeyboardButton(text="2) Я не знаю что делать!",
                                               callback_data="3) Я не знаю что делать!"),
@@ -30,7 +29,7 @@ async def cmd_start(message: types.Message):
         buttons = [
             types.InlineKeyboardButton(text='Да, нужна помощь', url=manager),
                    ]
-        keyboard = types.InlineKeyboardMarkup(row_width=2)
+        keyboard = types.InlineKeyboardMarkup(row_width=1)
         keyboard.add(*buttons)
         await message.answer(
             f"Привет, Незнакомец! Для того, чтобы пользоваться мной свяжись с менеджером"
