@@ -89,8 +89,7 @@ async def cmd_start(callback: types.Message):
 
 @dp.message_handler()
 async def need_help(message: types.Message):
-    a = message.chat.type
-    if a != 'supergroup':
+    if message.chat.type != 'supergroup':
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         buttons = ['Бот плохо работает', "/start"]
         keyboard.add(*buttons)

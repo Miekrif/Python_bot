@@ -5,10 +5,12 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import ReplyKeyboardRemove
 from aiogram.utils.markdown import hbold
 import json
-from loader import dp
-
+from loader import dp, bot
+from PDF.logic import start_logic
 # Загружаем сообщения
 from jsons.work_with_jsons import open_json_admins, read_json_admin_file_add_user, save_json_admins
+import shutil
+
 
 messages = open_json_admins("messages.json")
 
@@ -19,6 +21,21 @@ class AdminForm(StatesGroup):
     WaitingForCleaningMessageChange = State()
     WaitingForFile = State()
     WaitingForTradePoint = State()
+    Role = State()
+    Message = State()
+    Confirm = State()
+
+
+@dp.callback_query_handler(text="admin")
+async def admin_panel(callback: types.CallbackQuery):
+    buttons = [
+        types.InlineKeyboardButton(text='Добавить Нового пользователя боту', callback_data='add_user')
+               ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await callback.message.answer("Цитата дня:\n")
+    await callback.message.answer("На какой точке ты сегодня работаешь?", reply_markup=keyboard)
+    await callback.answer()
 
 
 @dp.callback_query_handler(text='add_user', state=AdminForm.WaitingForUserAddition)
@@ -36,10 +53,10 @@ async def process_add_user(message: types.Message, state: FSMContext):
 
 
 # Состояния для FSM
-class UpdateCleaningMessageForm(StatesGroup):
-    Role = State()
-    Message = State()
-    Confirm = State()
+# class UpdateCleaningMessageForm(StatesGroup):
+#     Role = State()
+#     Message = State()
+#     Confirm = State()
 
 
 # Обработчик кнопки "Изменить сообщение об уборке"
@@ -50,20 +67,20 @@ async def cmd_update_cleaning_message(callback: types.CallbackQuery):
     for role in messages.get('roles_dict', {}).keys():
         roles_kb.add(types.InlineKeyboardButton(role, callback_data=role))
     await callback.message.edit_reply_markup(reply_markup=roles_kb)
-    await UpdateCleaningMessageForm.Role.set()
+    await AdminForm.Role.set()
 
 
 # Обработчик выбора роли
-@dp.callback_query_handler(state=UpdateCleaningMessageForm.Role)
+@dp.callback_query_handler(state=AdminForm.Role)
 async def process_role(callback: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         data['role'] = callback.data
     await callback.message.edit_text('Введите новое сообщение об уборке')
-    await UpdateCleaningMessageForm.next()
+    await AdminForm.next()
 
 
 # Обработчик ввода нового сообщения
-@dp.message_handler(state=UpdateCleaningMessageForm.Message)
+@dp.message_handler(state=AdminForm.Message)
 async def process_message(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['message'] = message.text
@@ -72,24 +89,24 @@ async def process_message(message: types.Message, state: FSMContext):
     confirm_kb.add(types.InlineKeyboardButton("Отменить", callback_data="cancel"))
     confirm_kb.add(types.InlineKeyboardButton("Сохранить", callback_data="save"))
     await message.answer("Новое сообщение: " + message.text, reply_markup=confirm_kb)
-    await UpdateCleaningMessageForm.next()
+    await AdminForm.next()
 
 
 # Обработчик кнопки "Проверить"
-@dp.callback_query_handler(text="check", state=UpdateCleaningMessageForm.Confirm)
+@dp.callback_query_handler(text="check", state=AdminForm.Confirm)
 async def check_message(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer('Сообщение проверено и готово к сохранению.')
 
 
 # Обработчик кнопки "Отменить"
-@dp.callback_query_handler(text="cancel", state=UpdateCleaningMessageForm.Confirm)
+@dp.callback_query_handler(text="cancel", state=AdminForm.Confirm)
 async def cancel_message(callback: types.CallbackQuery, state: FSMContext):
     await state.finish()
     await callback.message.edit_text('Изменение сообщения отменено')
 
 
 # Обработчик кнопки "Сохранить"
-@dp.callback_query_handler(text="save", state=UpdateCleaningMessageForm.Confirm)
+@dp.callback_query_handler(text="save", state=AdminForm.Confirm)
 async def save_message(callback: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         messages = open_json_admins()
@@ -98,3 +115,22 @@ async def save_message(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.edit_text('Сообщение об уборке успешно обновлено')
     await state.finish()
 
+
+@dp.callback_query_handler(text="get_file", state=AdminForm)
+async def enter_file_state(call: types.CallbackQuery, state: FSMContext):
+    await bot.send_document(chat_id=call.message.chat.id, document=open('PDF/example.xlsx', 'rb'))
+    await call.message.answer("Пожалуйста, загрузите файл.")
+    await AdminForm.WaitingForFile.set()
+
+
+@dp.message_handler(state=AdminForm.WaitingForFile, content_types=types.ContentTypes.DOCUMENT)
+async def get_file(message: types.Message, state: FSMContext):
+    file_id_info = await bot.get_file(message.document.file_id)
+    downloaded_file = await bot.download_file(file_id_info.file_path, 'PDF/counter.xlsx')
+    open('PDF/counter.xlsx')
+    start_logic()  # функция, которую вы хотите выполнить
+
+    shutil.make_archive("PDF/output", 'zip', "PDF/output")
+    await bot.send_document(chat_id=message.chat.id, document=open('PDF/counter.zip', 'rb'))
+
+    await state.finish()  # Выход из FSM после обработки файла

@@ -26,9 +26,7 @@ async def cmd_start(message: types.Message):
         )
 
         # Проверка является ли пользователь админом
-        print(id_user)
-        print(messages.get('admins', []))
-        if str(id_user) in messages.get('admins', []):
+        if id_user in messages.get('admins', []):
             buttons = [types.InlineKeyboardButton(text='Админская панель', callback_data='admin')]
             keyboard = types.InlineKeyboardMarkup(row_width=2)
             keyboard.add(*buttons)
@@ -45,6 +43,7 @@ async def cmd_start(message: types.Message):
             f"""Привет, Незнакомец! Для того, чтобы пользоваться мной свяжись с менеджером
             \n Твой id передай его менджеру для добавления тебя в список {id_user}"""
             , reply_markup=keyboard)
+
 
 # Знакомвство
 @dp.callback_query_handler(text='intro')

@@ -12,7 +12,7 @@ from config.config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
 
 
 # @rate_limit(5, "admin")
-@dp.callback_query_handler(text="admin")
+# @dp.callback_query_handler(text="admin")
 async def admin_panel(callback_query: types.CallbackQuery):
     message = callback_query.message
     # Добавьте кнопки на клавиатуру в соответствии с вашими требованиями
