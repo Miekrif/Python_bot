@@ -25,7 +25,7 @@ async def admin_panel(callback_query: types.CallbackQuery):
     await message.answer("Админская панель", reply_markup=markup)
 
 
-@dp.callback_query_handler(admin_cb.filter(action=["stats", "users", "close"]))
+# @dp.callback_query_handler(admin_cb.filter(action=["stats", "users", "close"]))
 async def admin_actions(query: types.CallbackQuery, callback_data: dict, state: FSMContext):
     action = callback_data["action"]
 

@@ -1,13 +1,13 @@
 import os
 import shutil
 import pandas as pd
-from square_tag import start as square_tag
-from horizon_tag import start as horizon_tag
+from PDF.square_tag import start as square_tag
+from PDF.horizon_tag import start as horizon_tag
 
 stop_word = 'nan'
 
 # Открываем файл Excel
-xls = pd.ExcelFile('counter.xlsx')
+xls = pd.ExcelFile('PDF/counter.xlsx')
 
 # Получаем список всех листов в файле
 sheets = xls.sheet_names

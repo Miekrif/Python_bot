@@ -25,11 +25,7 @@ async def cmd_start(message: types.Message):
             f"Охае, чайный мастер {message.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
             reply_markup=keyboard
         )
-
         # Проверка является ли пользователь админом
-        print(id_user)
-        print(messages.get('admins', []))
-        print(id_user in messages.get('admins', []))
         if id_user in messages.get('admins', []):
             buttons = [types.InlineKeyboardButton(text='Админская панель', callback_data='admin')]
             keyboard = types.InlineKeyboardMarkup(row_width=2)
@@ -46,7 +42,6 @@ async def cmd_start(message: types.Message):
             f"""Привет, Незнакомец! Для того, чтобы пользоваться мной свяжись с менеджером
             \n Твой id передай его менджеру для добавления тебя в список {id_user}"""
             , reply_markup=keyboard)
-
 
 
 @dp.message_handler(commands=['close'])

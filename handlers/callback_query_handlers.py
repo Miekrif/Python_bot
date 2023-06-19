@@ -24,13 +24,11 @@ async def cmd_start(message: types.Message):
             f"Охае, чайный мастер {message.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
             reply_markup=keyboard
         )
-
         # Проверка является ли пользователь админом
         if id_user in messages.get('admins', []):
             buttons = [types.InlineKeyboardButton(text='Админская панель', callback_data='admin')]
             keyboard = types.InlineKeyboardMarkup(row_width=2)
             keyboard.add(*buttons)
-
             await message.answer(f"Админская панель", reply_markup=keyboard)
 
     else:

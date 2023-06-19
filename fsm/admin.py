@@ -12,7 +12,7 @@ from jsons.work_with_jsons import open_json_admins, read_json_admin_file_add_use
 import shutil
 
 
-messages = open_json_admins("messages.json")
+messages = open_json_admins()
 
 
 # Описываем все состояния
@@ -33,12 +33,11 @@ async def admin_panel(callback: types.CallbackQuery):
                ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    await callback.message.answer("Цитата дня:\n")
-    await callback.message.answer("На какой точке ты сегодня работаешь?", reply_markup=keyboard)
+    await callback.message.answer("Добро пожаловать в админскую панель, выберите функционал:", reply_markup=keyboard)
     await callback.answer()
 
 
-@dp.callback_query_handler(text='add_user', state=AdminForm.WaitingForUserAddition)
+@dp.callback_query_handler(text='add_user')
 async def admin_add_user(call: types.CallbackQuery):
     await call.message.answer('Пожалуйста, введите ID пользователя, которого хотите добавить:')
     await AdminForm.WaitingForUserAddition.set()
