@@ -21,12 +21,8 @@ def save_json(MY_CONTACT):
 
 
 def add_to_dict(MY_CONTACT, userbtn, phone):
-    # userbtn = str(userbtn).replace('[', '')
-    # userbtn = str(userbtn).replace(']', '')
-    # userbtn = str(userbtn).replace('"', '')
-    # userbtn = str(userbtn).replace('\'', '')
-    # userbtn = f'[\'{userbtn}\']'
-    MY_CONTACT.update({f'{userbtn}': f'{phone}'})
+
+    MY_CONTACT[userbtn] = phone
     save_json(MY_CONTACT)
 
 
