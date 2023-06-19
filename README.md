@@ -1,2 +1,2 @@
 # Python_bot
-This my both for tg
+This my both\ for tg
