@@ -3,6 +3,7 @@ import json
 
 JSON_FILE_ADMIN = 'jsons/message.json'
 
+
 async def word_mentor():
     slovo = "Здесь были продаванские мудрости"
     print(slovo)
@@ -26,8 +27,7 @@ def read_json_admin_file_add_user(user_id):
         messages_admin["granted_users"].append(int(user_id))
 
         with open(JSON_FILE_ADMIN, 'w', encoding='utf-8') as json_file:
-            json.dump(messages_admin, json_file)
-
+            json.dump(messages_admin, json_file, ensure_ascii=False, indent=4)
     else:
         print('Файла нет')
 
@@ -40,7 +40,6 @@ def save_json_admins(role, data):     # roles_dict
         messages_admin.get('roles_dict', {})[role] = data
 
         with open(JSON_FILE_ADMIN, 'w', encoding='utf-8') as json_file:
-            json.dump(messages_admin, json_file)
-
+            json.dump(messages_admin, json_file, ensure_ascii=False, indent=4)
     else:
         print('Файла нет')

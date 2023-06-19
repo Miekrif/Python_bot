@@ -38,9 +38,8 @@ async def cmd_start(message: types.Message):
         keyboard = types.InlineKeyboardMarkup(row_width=1)
         keyboard.add(*buttons)
         await message.answer(
-            f"""Привет, Незнакомец! Для того, чтобы пользоваться мной свяжись с менеджером
-            \n Твой id передай его менджеру для добавления тебя в список {id_user}"""
-            , reply_markup=keyboard)
+            f"""Привет, Незнакомец! Для того, чтобы пользоваться мной свяжись с менеджером\n
+             Твой id передай его менджеру для добавления тебя в список {id_user}""", reply_markup=keyboard)
 
 
 # Знакомвство

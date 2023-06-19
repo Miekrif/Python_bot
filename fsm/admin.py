@@ -29,8 +29,9 @@ class AdminForm(StatesGroup):
 @dp.callback_query_handler(text="admin")
 async def admin_panel(callback: types.CallbackQuery):
     buttons = [
-        types.InlineKeyboardButton(text='Добавить Нового пользователя боту', callback_data='add_user')
-               ]
+        types.InlineKeyboardButton(text='Добавить Нового пользователя боту', callback_data='add_user'),
+        types.InlineKeyboardButton(text='Назад' , callback_data='start')
+    ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     await callback.message.answer("Добро пожаловать в админскую панель, выберите функционал:", reply_markup=keyboard)
@@ -39,7 +40,10 @@ async def admin_panel(callback: types.CallbackQuery):
 
 async def show_admin_menu(message: types.Message):
     buttons = [
-        types.InlineKeyboardButton(text='Добавить Нового пользователя боту', callback_data='add_user')
+        types.InlineKeyboardButton(text='Добавить Нового пользователя боту', callback_data='add_user'),
+        types.InlineKeyboardButton(text='Поменять сообщение для уборки', callback_data='update_cleaning_message'),
+        types.InlineKeyboardButton(text='Сделать ценники', callback_data='get_file'),
+        types.InlineKeyboardButton(text='Назад', callback_data='start')
     ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
@@ -59,14 +63,6 @@ async def process_add_user(message: types.Message, state: FSMContext):
     await message.answer('Пользователь успешно добавлен.')
     await state.finish()
     await show_admin_menu(message)
-
-
-
-# Состояния для FSM
-# class UpdateCleaningMessageForm(StatesGroup):
-#     Role = State()
-#     Message = State()
-#     Confirm = State()
 
 
 # Обработчик кнопки "Изменить сообщение об уборке"
