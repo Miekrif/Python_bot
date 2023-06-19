@@ -1,13 +1,18 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
-from config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE
-
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from config.config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
+from jsons.work_with_jsons import word_mentor
 from loader import dp, bot
+from utils.functions import open_json, add_to_dict, open_json
+
 
 @dp.callback_query_handler(text='start')
 async def cmd_start(message: types.Message):
-    buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='1) Время работать!'),
-               types.InlineKeyboardButton(text="2) Я не знаю что делать!", callback_data="3) Я не знаю что делать!"),
+    id_telo = message.from_user.id
+    MY_CONTACT = open_json()
+    buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='Time_to_work'),
+               types.InlineKeyboardButton(text="2) Я не знаю что делать!!", callback_data="I_dont_know_what_to_do"),
                ]
     # first_name = callback.first_name  # Не может быть пустым
     await bot.edit_message_text(text="text")
@@ -18,11 +23,18 @@ async def cmd_start(message: types.Message):
         f"Охае, чайный мастер {message.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
         reply_markup=keyboard
     )
+    if str(id_telo) in str(manager) or str(id_telo) in str(ADMINS):
+        buttons = [types.InlineKeyboardButton(text='Админская панель', callback_data='admin')]
+        keyboard = types.InlineKeyboardMarkup(row_width=2)
+        keyboard.add(*buttons)
+        await message.answer(
+            f"Админская панель"
+            , reply_markup=keyboard)
     await message.answer()
 
 
 # Знакомвство
-@dp.callback_query_handler(text='Знакомвство')
+@dp.callback_query_handler(text='intro')
 async def meeting(callback: types.CallbackQuery):
     buttons = [types.InlineKeyboardButton(text='Написать ему в телеграмме', url='https://t.me/Itisialready'),
                types.InlineKeyboardButton(text='Следить за ним в инст', url='https://www.instagram.com/chepozrat/'),
@@ -37,7 +49,7 @@ async def meeting(callback: types.CallbackQuery):
 
 
 # Ответ на первый вопрос
-@dp.callback_query_handler(text='1) Время работать!')
+@dp.callback_query_handler(text='Time_to_work')
 async def time_to_work(callback: types.CallbackQuery):
     buttons = [types.InlineKeyboardButton(text='Чайная История на Пушке', callback_data='Чайная История на Пушке'),
                types.InlineKeyboardButton(text='Центральная Чайная История',
@@ -49,14 +61,9 @@ async def time_to_work(callback: types.CallbackQuery):
                types.InlineKeyboardButton(text='Чайная История в Краснодаре на Театральной',
                                           callback_data='Чайная История в Краснодаре')
                ]
-    await word_mentor()
-    # print(send_mess.a_send_message)
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     await callback.message.answer("Цитата дня:\n")
-    # b = run(random.choice(lines))
-    await callback.message.answer(random.choice(Words))
-    # await callback.message.answer(b)
     await callback.message.answer("На какой точке ты сегодня работаешь?", reply_markup=keyboard)
     await callback.answer()
 
@@ -64,15 +71,15 @@ async def time_to_work(callback: types.CallbackQuery):
 
 
 # Ответ на второй вопрос
-@dp.callback_query_handler(text="3) Я не знаю что делать!")
+@dp.callback_query_handler(text="I_dont_know_what_to_do")
 async def problem1(callback: types.CallbackQuery):
     buttons = [types.InlineKeyboardButton(text='Да, нужна помощь', url=manager),
-               types.InlineKeyboardButton(text="Нет, Я запутался в рабочем дне",
-                                          callback_data="Нет, Я запутался в рабочем дне")
+               types.InlineKeyboardButton(text="Нет, Я запутался в рабочем  дне(",
+                                          callback_data="Im_confused")
         , types.InlineKeyboardButton(text='Регламент', callback_data='Регламент'),
                types.InlineKeyboardButton(text='Должностная инструкция', callback_data='Должностная инструкция'),
                types.InlineKeyboardButton(text='Миссия компании', callback_data='Миссия компании'),
-               types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!')
+               types.InlineKeyboardButton(text='Назад', callback_data='Time_to_work')
 
                ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
@@ -82,9 +89,9 @@ async def problem1(callback: types.CallbackQuery):
     # await message.answer(reply_markup=types.ReplyKeyboardRemove())
 
 
-@dp.callback_query_handler(text='Нет, Я запутался в рабочем дне')
+@dp.callback_query_handler(text='Im_confused')
 async def open_day(callback: types.CallbackQuery):
-    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='3) Я не знаю что делать!')
+    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='I_dont_know_what_to_do')
                ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
@@ -108,7 +115,7 @@ async def push(callback: types.CallbackQuery, state: FSMContext):
         # types.InlineKeyboardButton(text='Распорядок', callback_data='Распорядок на Пушке'),
         types.InlineKeyboardButton(text="Открыть смену",
                                    callback_data="Открыть смену на пушке"),
-        types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
+        types.InlineKeyboardButton(text='Назад', callback_data='Time_to_work'),
         types.InlineKeyboardButton(text='Закрыть смену', callback_data='Закрыть смену')
     ]
     # await po_tochkam(tochka='Чайная История на Пушке')
@@ -136,7 +143,7 @@ async def push(callback: types.CallbackQuery):
         # types.InlineKeyboardButton(text='Распорядок', callback_data='Распорядок на Пушке'),
         types.InlineKeyboardButton(text="Открыть смену",
                                    callback_data="Открыть смену на пушке"),
-        types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
+        types.InlineKeyboardButton(text='Назад', callback_data='Time_to_work'),
         types.InlineKeyboardButton(text='Закрыть смену', callback_data='Закрыть смену')
     ]
     # await po_tochkam(tochka='Центральная Чайная история')
@@ -168,7 +175,7 @@ async def push(callback: types.CallbackQuery, state: FSMContext):
         # types.InlineKeyboardButton(text='Распорядок', callback_data='Распорядок на Пушке'),
         types.InlineKeyboardButton(text="Открыть смену",
                                    callback_data="Открыть смену в Красе"),
-        types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
+        types.InlineKeyboardButton(text='Назад', callback_data='Time_to_work'),
         types.InlineKeyboardButton(text='Закрыть смену', callback_data='Закрыть смену')
     ]
     # await po_tochkam(tochka='Чайная История на Пушке')
@@ -412,7 +419,7 @@ async def push(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(text='Отлично закрыл')
 async def push(callback: types.CallbackQuery):
-    buttons = [types.InlineKeyboardButton(text="Сворачиваемся, ребята", callback_data="Сворачиваемся, ребята")
+    buttons = [types.InlineKeyboardButton(text="Сворачиваемся,  ребята", callback_data="Closing_smena")
                # types.InlineKeyboardButton(text="😔",
                #                            callback_data="Плохо закрыл"),
                # types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке')
@@ -427,7 +434,7 @@ async def push(callback: types.CallbackQuery):
     await callback.answer()
 
 
-@dp.callback_query_handler(text="Сворачиваемся, ребята")
+@dp.callback_query_handler(text="Closing_smena")
 async def push(callback: types.CallbackQuery):
     buttons = [types.InlineKeyboardButton(text="Готово", callback_data="Готово2")
                # types.InlineKeyboardButton(text="😔",
@@ -488,8 +495,8 @@ async def push(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(text='Плохо закрыл')
 async def push(callback: types.CallbackQuery):
-    buttons = [types.InlineKeyboardButton(text="Сворачиваемся, ребята",
-                                          callback_data="Сворачиваемся, ребята"),
+    buttons = [types.InlineKeyboardButton(text="Сворачиваемся,  ребята",
+                                          callback_data="Closing_smena"),
                # types.InlineKeyboardButton(text="😔",
                #                            callback_data="Плохо закрыл"),
                types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке')
@@ -504,8 +511,8 @@ async def push(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(text='Плохо закрыл')
 async def push(callback: types.CallbackQuery):
-    buttons = [types.InlineKeyboardButton(text="Сворачиваемся, ребята",
-                                          callback_data="Сворачиваемся, ребята"),
+    buttons = [types.InlineKeyboardButton(text="Сворачиваемся,  ребята",
+                                          callback_data="Closing_smena"),
                # types.InlineKeyboardButton(text="😔",
                #                            callback_data="Плохо закрыл"),
                types.InlineKeyboardButton(text='Назад', callback_data='Чайная История на Пушке')
@@ -532,7 +539,7 @@ async def reglament(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(text="Должностная инструкция")
 async def dolginstr(callback: types.CallbackQuery):
-    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
+    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='Time_to_work'),
                types.InlineKeyboardButton(text="Должностная инструкция",
                                           url="https://docs.google.com/document/d/1QZ_50FBmrg89zRkTPr0VX2KwdjykzKQxeMnfsOs43Zk/edit")
                ]
@@ -544,7 +551,7 @@ async def dolginstr(callback: types.CallbackQuery):
 
 @dp.callback_query_handler(text="Миссия компании")
 async def mission(callback: types.CallbackQuery):
-    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='1) Время работать!'),
+    buttons = [types.InlineKeyboardButton(text='Назад', callback_data='Time_to_work'),
                types.InlineKeyboardButton(text="Открыть смену",
                                           callback_data="Открыть смену")
                ]

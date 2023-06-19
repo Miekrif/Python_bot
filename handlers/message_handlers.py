@@ -1,49 +1,58 @@
 from aiogram import types
 from loader import dp, bot
-from aiogram.types import ParseMode
+from aiogram.types import ParseMode, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.dispatcher import FSMContext
 from aiogram.utils.markdown import text, hbold
 from aiogram.dispatcher.filters import Command, Text
-from utils.functions import open_json, add_to_dict, anig, open_json
-from main import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
+from utils.functions import open_json, add_to_dict
+from jsons.work_with_jsons import open_json_admins
+from config.config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
 
 
 @dp.message_handler(Command("start"))
 async def cmd_start(message: types.Message):
     id_telo = message.from_user.id
-    MY_CONTACT = open_json()
+    messages = open_json_admins()
     print(id_telo)
-    print(MY_CONTACT)
-    if MY_CONTACT.get(id_telo, True):
-        buttons = [types.InlineKeyboardButton(text='1) Время работать!', callback_data='1) Время работать!'),
-                   types.InlineKeyboardButton(text="2) Я не знаю что делать!",
-                                              callback_data="3) Я не знаю что делать!"),
+    print(messages)
+    if id_telo in messages.get('granted_users', []):
+        buttons = [types.InlineKeyboardButton(text='1) Время работать !', callback_data='Time_to_work'),
+                   types.InlineKeyboardButton(text="2) Я не знаю что делать !",
+                                              callback_data="I_dont_know_what_to_do"),
                    ]
-        # first_name = callback.first_name  # Не может быть пустым
         keyboard = types.InlineKeyboardMarkup(row_width=2)
         keyboard.add(*buttons)
         await message.answer(
             f"Охае, чайный мастер {message.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
             reply_markup=keyboard)
+        # Проверка, является ли пользователь админом
+        if str(id_telo) in str(manager) or str(id_telo) in str(ADMINS):
+            # Создание клавиатуры для выбора ролей
+            roles_kb = types.InlineKeyboardMarkup(row_width=1)
+            for role in messages.get('roles', []):
+                roles_kb.add(types.InlineKeyboardButton(role, callback_data=role))
+
+            buttons = [types.InlineKeyboardButton(text='Админская панель', callback_data='admin')]
+            keyboard = types.InlineKeyboardMarkup(row_width=2)
+            keyboard.add(*buttons)
+
+            # Отправка клавиатуры с ролями
+            await message.answer("Выберите свою роль", reply_markup=roles_kb)
+            await CleaningForm.role.set()
+
+            await message.answer(
+                f"Админская панель"
+                , reply_markup=keyboard)
+
     else:
         buttons = [
             types.InlineKeyboardButton(text='Да, нужна помощь', url=manager),
-                   ]
+        ]
         keyboard = types.InlineKeyboardMarkup(row_width=1)
         keyboard.add(*buttons)
         await message.answer(
             f"Привет, Незнакомец! Для того, чтобы пользоваться мной свяжись с менеджером"
             , reply_markup=keyboard)
-    if str(id_telo) in str(manager) or str(id_telo) in str(ADMINS):
-        buttons = [types.InlineKeyboardButton(text='Админская панель', callback_data='admin')]
-        keyboard = types.InlineKeyboardMarkup(row_width=2)
-        keyboard.add(*buttons)
-        await message.answer(
-            f"Админская панель"
-            , reply_markup=keyboard)
-
-
-
 
 
 @dp.message_handler(commands=['close'])
@@ -70,7 +79,7 @@ async def cmd_start(callback: types.Message):
 
 @dp.message_handler(commands=['open'])
 async def cmd_start(callback: types.Message):
-    buttons = [types.InlineKeyboardButton(text='Открыть смену', callback_data='1) Время работать!')
+    buttons = [types.InlineKeyboardButton(text='Открыть смену', callback_data='Time_to_work')
                ]
     # first_name = callback.first_name  # Не может быть пустым
     username = callback.from_user.username

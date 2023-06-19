@@ -5,7 +5,7 @@ from aiogram.utils.markdown import text, quote_html
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 
-from config import BOT_TOKEN
+from config.config import BOT_TOKEN
 
 # Создаем экземпляры бота и диспетчера
 bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.HTML)

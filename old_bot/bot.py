@@ -44,7 +44,7 @@ user_id = list()
 
 
 def open_admin():
-    with open('../jsons/admins.json', 'r') as admin_json:
+    with open('../jsons/message.json', 'r') as admin_json:
         ADMIN = json.load(admin_json)
         ADMIN = ADMIN['id_list']  # list with id
         return ADMIN

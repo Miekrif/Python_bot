@@ -5,7 +5,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Command
 from admin.admin_states import admin_keyboard, admin_cb
 
-from config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
+from config.config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
 
 
 # ADMIN_ID = "your_admin_id_here"

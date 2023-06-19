@@ -1,6 +1,6 @@
 import os
 import json
-from config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE
+from config.config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
 
 
 def open_json():
@@ -28,11 +28,6 @@ def add_to_dict(MY_CONTACT, userbtn, phone):
     # userbtn = f'[\'{userbtn}\']'
     MY_CONTACT.update({f'{userbtn}': f'{phone}'})
     save_json(MY_CONTACT)
-
-
-def anig():
-    global user_id
-    user_id = list()
 
 
 def read_KPI_lines(counter):
