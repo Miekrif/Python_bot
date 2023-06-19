@@ -11,7 +11,7 @@ async def word_mentor():
 
 def open_json_admins():
     if os.path.exists(JSON_FILE_ADMIN):
-        with open(JSON_FILE_ADMIN, 'r', encoding='utf-8') as file:
+        with open(JSON_FILE_ADMIN, 'r') as file:
             messages_admin = json.load(file)
     else:
         messages_admin = {}
@@ -20,10 +20,10 @@ def open_json_admins():
 
 def read_json_admin_file_add_user(user_id):
     if os.path.exists(JSON_FILE_ADMIN):
-        with open(JSON_FILE_ADMIN, 'r', encoding='utf-8') as file:
+        with open(JSON_FILE_ADMIN, 'r') as file:
             messages_admin = json.load(file)
 
-        messages_admin["granted_users"].append(user_id)
+        messages_admin["granted_users"].append(int(user_id))
 
         with open(JSON_FILE_ADMIN, 'w') as json_file:
             json.dump(messages_admin, json_file)
@@ -34,7 +34,7 @@ def read_json_admin_file_add_user(user_id):
 
 def save_json_admins(role, data):     # roles_dict
     if os.path.exists(JSON_FILE_ADMIN):
-        with open(JSON_FILE_ADMIN, 'r', encoding='utf-8') as file:
+        with open(JSON_FILE_ADMIN, 'r') as file:
             messages_admin = json.load(file)
 
         messages_admin.get('roles_dict', {})[role] = data

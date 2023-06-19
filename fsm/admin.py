@@ -37,6 +37,15 @@ async def admin_panel(callback: types.CallbackQuery):
     await callback.answer()
 
 
+async def show_admin_menu(message: types.Message):
+    buttons = [
+        types.InlineKeyboardButton(text='Добавить Нового пользователя боту', callback_data='add_user')
+    ]
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    keyboard.add(*buttons)
+    await message.answer("Добро пожаловать в админскую панель, выберите функционал:", reply_markup=keyboard)
+
+
 @dp.callback_query_handler(text='add_user')
 async def admin_add_user(call: types.CallbackQuery):
     await call.message.answer('Пожалуйста, введите ID пользователя, которого хотите добавить:')
@@ -49,6 +58,8 @@ async def process_add_user(message: types.Message, state: FSMContext):
     read_json_admin_file_add_user(user_id)
     await message.answer('Пользователь успешно добавлен.')
     await state.finish()
+    await show_admin_menu(message)
+
 
 
 # Состояния для FSM
