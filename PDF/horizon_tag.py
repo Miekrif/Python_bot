@@ -17,10 +17,10 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 
 def start(color_type, color_name, color_price, tea_type, name_of_tea, price_tea):
     #START
-    template_path = 'template/horizon_tag.pdf'
-    output_file = f'output/horizon/{name_of_tea}.pdf'
+    template_path = 'PDF/template/horizon_tag.pdf'
+    output_file = f'PDF/output/horizon/{name_of_tea}.pdf'
 
-    locale = 'fonts/Capsmall_clean.ttf'
+    locale = 'PDF/fonts/Capsmall_clean.ttf'
     pdfmetrics.registerFont(TTFont('Capsmall_clean', locale))
 
     page_width = 21 * cm

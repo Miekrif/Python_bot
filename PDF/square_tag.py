@@ -1,3 +1,4 @@
+import os
 import sys
 import pdfrw
 from pdfrw import PdfReader
@@ -17,10 +18,9 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 
 def start(color_type, color_name, color_price, tea_type, name_of_tea, price_tea):
     #START
-    template_path = 'template/square_tag.pdf'
-    output_file = f'output/square/{name_of_tea}.pdf'
-
-    locale = 'fonts/Capsmall_clean.ttf'
+    template_path = 'PDF/template/square_tag.pdf'
+    output_file = f'PDF/output/square/{name_of_tea}.pdf'
+    locale = 'PDF/fonts/Capsmall_clean.ttf'
     pdfmetrics.registerFont(TTFont('Capsmall_clean', locale))
 
     page_width = 6.79 * cm

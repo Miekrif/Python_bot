@@ -30,6 +30,21 @@ def read_json_admin_file_add_user(user_id):
             json.dump(messages_admin, json_file, ensure_ascii=False, indent=4)
     else:
         print('Файла нет')
+    messages = open_json_admins()
+
+
+def read_json_admin_file_add_user_admin(user_id):
+    if os.path.exists(JSON_FILE_ADMIN):
+        with open(JSON_FILE_ADMIN, 'r', encoding='utf-8') as file:
+            messages_admin = json.load(file)
+
+        messages_admin["admins"].append(int(user_id))
+
+        with open(JSON_FILE_ADMIN, 'w', encoding='utf-8') as json_file:
+            json.dump(messages_admin, json_file, ensure_ascii=False, indent=4)
+    else:
+        print('Файла нет')
+    messages = open_json_admins()
 
 
 def save_json_admins(role, data):     # roles_dict
@@ -41,5 +56,8 @@ def save_json_admins(role, data):     # roles_dict
 
         with open(JSON_FILE_ADMIN, 'w', encoding='utf-8') as json_file:
             json.dump(messages_admin, json_file, ensure_ascii=False, indent=4)
+
+        messages = open_json_admins()
     else:
         print('Файла нет')
+
