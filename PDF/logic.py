@@ -28,7 +28,6 @@ color_type = {
 
 
 def start_logic():
-    clear_subdirectories('output')
     try:
         # Проходим по каждому листу в файле
         for sheet in sheets:
@@ -94,4 +93,5 @@ def clear_subdirectories(path):
 
 
 if __name__ == '__main__':
+    clear_subdirectories('output')
     start_logic()
