@@ -17,8 +17,8 @@ async def cmd_start(message: types.Message):
     if id_user in messages.get('granted_users', []):
         if id_user in messages.get('admins', []):
             buttons = [
-                types.InlineKeyboardButton(text='1) Время работать !' , callback_data='Time_to_work'),
-                types.InlineKeyboardButton(text="2) Я не знаю что делать !" , callback_data="I_dont_know_what_to_do"),
+                types.InlineKeyboardButton(text='1) Время работать !', callback_data='Time_to_work'),
+                types.InlineKeyboardButton(text="2) Я не знаю что делать !", callback_data="I_dont_know_what_to_do"),
                 types.InlineKeyboardButton(text='Админская панель', callback_data='admin')
             ]
             keyboard = types.InlineKeyboardMarkup(row_width=2)
