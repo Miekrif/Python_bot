@@ -28,6 +28,7 @@ color_type = {
 
 
 def start_logic():
+    clear_subdirectories('PDF/output')
     try:
         # Проходим по каждому листу в файле
         for sheet in sheets:
@@ -80,6 +81,8 @@ def clear_subdirectories(path):
                 dir_path = os.path.join(root_dir, dir)
                 # Удаляем все файлы и поддиректории в текущей поддиректории
                 for filename in os.listdir(dir_path):
+                    if 1 in filename:
+                        continue
                     file_path = os.path.join(dir_path, filename)
                     try:
                         if os.path.isfile(file_path) or os.path.islink(file_path):
@@ -93,5 +96,4 @@ def clear_subdirectories(path):
 
 
 if __name__ == '__main__':
-    clear_subdirectories('output')
     start_logic()
