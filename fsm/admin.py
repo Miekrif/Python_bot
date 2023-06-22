@@ -1,3 +1,4 @@
+from aiogram.utils.callback_data import CallbackData
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Command, Text
@@ -8,7 +9,7 @@ import json
 from loader import dp, bot
 from PDF.logic import start_logic
 # Загружаем сообщения
-from jsons.work_with_jsons import open_json_admins, read_json_admin_file_add_user, save_json_admins, read_json_admin_file_add_user_admin
+from jsons.work_with_jsons import open_json_admins, read_json_admin_file_add_user, save_json_admins, read_json_admin_file_add_user_admin, del_json_user
 import shutil
 
 
@@ -18,7 +19,9 @@ messages = open_json_admins()
 # Описываем все состояния
 class AdminForm(StatesGroup):
     WaitingForUserAddition = State()
+    WaitingForUserDell = State()
     WaitingForUserAddition_admin = State()
+    WaitingForUserDell_admin = State()
     WaitingForCleaningMessageChange = State()
     WaitingForFile = State()
     WaitingForTradePoint = State()
@@ -29,44 +32,68 @@ class AdminForm(StatesGroup):
 
 @dp.callback_query_handler(text="admin")
 async def admin_panel(callback: types.CallbackQuery):
-    if callback.from_user.id in messages.get('root'):
-        buttons = [
-            types.InlineKeyboardButton(text='Добавить Нового админа боту', callback_data='add_admin'),
-            types.InlineKeyboardButton(text='Добавить Нового пользователя боту', callback_data='add_user'),
-            types.InlineKeyboardButton(text='Поменять сообщение для уборки', callback_data='update_cleaning_message'),
-            types.InlineKeyboardButton(text='Сделать ценники', callback_data='get_file'),
-            types.InlineKeyboardButton(text='Назад', callback_data='start')
-        ]
-        keyboard = types.InlineKeyboardMarkup(row_width=1)
-        keyboard.add(*buttons)
-    else:
-        buttons = [
-            types.InlineKeyboardButton(text='Добавить Нового пользователя боту', callback_data='add_user'),
-            types.InlineKeyboardButton(text='Поменять сообщение для уборки', callback_data='update_cleaning_message'),
-            types.InlineKeyboardButton(text='Сделать ценники', callback_data='get_file'),
-            types.InlineKeyboardButton(text='Назад', callback_data='start')
-        ]
-        keyboard = types.InlineKeyboardMarkup(row_width=1)
-        keyboard.add(*buttons)
-    await callback.message.answer("Добро пожаловать в админскую панель, выберите функционал:", reply_markup=keyboard)
-    await callback.answer()
+    if callback.from_user.id in messages.get('admins'):
+        if callback.from_user.id in messages.get('root'):
+            buttons = [
+                types.InlineKeyboardButton(text='Добавить Нового админа боту', callback_data='add_admin'),
+                types.InlineKeyboardButton(text='Добавить Нового пользователя боту', callback_data='add_user'),
+                types.InlineKeyboardButton(text='Поменять сообщение для уборки', callback_data='update_cleaning_message'),
+                types.InlineKeyboardButton(text='Сделать ценники', callback_data='get_file'),
+                types.InlineKeyboardButton(text='Удалить админа бота', callback_data='del_admin'),
+                types.InlineKeyboardButton(text='Удалить пользователя бота', callback_data='delete_user'),
+                types.InlineKeyboardButton(text='Назад', callback_data='start')
+            ]
+            keyboard = types.InlineKeyboardMarkup(row_width=1)
+            keyboard.add(*buttons)
+        else:
+            buttons = [
+                types.InlineKeyboardButton(text='Добавить Нового пользователя боту', callback_data='add_user'),
+                types.InlineKeyboardButton(text='Поменять сообщение для уборки', callback_data='update_cleaning_message'),
+                types.InlineKeyboardButton(text='Сделать ценники', callback_data='get_file'),
+                types.InlineKeyboardButton(text='Удалить админа бота', callback_data='del_admin'),
+                types.InlineKeyboardButton(text='Удалить пользователя бота', callback_data='delete_user'),
+                types.InlineKeyboardButton(text='Назад', callback_data='start')
+            ]
+            keyboard = types.InlineKeyboardMarkup(row_width=1)
+            keyboard.add(*buttons)
+        await callback.bot.edit_message_text(
+            chat_id=callback.message.chat.id ,  # указываем идентификатор чата
+            message_id=callback.message.message_id ,  # указываем идентификатор сообщения
+            text="Добро пожаловать в админскую панель, выберите функционал:" ,
+            reply_markup=keyboard
+        )
 
 
 async def show_admin_menu(message: types.Message):
-    buttons = [
-        types.InlineKeyboardButton(text='Добавить Нового пользователя боту', callback_data='add_user'),
-        types.InlineKeyboardButton(text='Поменять сообщение для уборки', callback_data='update_cleaning_message'),
-        types.InlineKeyboardButton(text='Сделать ценники', callback_data='get_file'),
-        types.InlineKeyboardButton(text='Назад', callback_data='start')
-    ]
-    keyboard = types.InlineKeyboardMarkup(row_width=1)
-    keyboard.add(*buttons)
-    await message.answer("Добро пожаловать в админскую панель, выберите функционал:", reply_markup=keyboard)
+    if message.from_user.id in messages.get('admins'):
+        if message.from_user.id in messages.get('root'):
+            buttons = [
+                types.InlineKeyboardButton(text='Добавить Нового админа боту', callback_data='add_admin'),
+                types.InlineKeyboardButton(text='Добавить Нового пользователя боту', callback_data='add_user'),
+                types.InlineKeyboardButton(text='Поменять сообщение для уборки', callback_data='update_cleaning_message'),
+                types.InlineKeyboardButton(text='Сделать ценники', callback_data='get_file'),
+                types.InlineKeyboardButton(text='Удалить админа бота', callback_data='del_admin'),
+                types.InlineKeyboardButton(text='Удалить пользователя бота', callback_data='delete_user'),
+                types.InlineKeyboardButton(text='Назад', callback_data='start')
+            ]
+        else:
+            buttons = [
+                types.InlineKeyboardButton(text='Добавить Нового пользователя боту', callback_data='add_user'),
+                types.InlineKeyboardButton(text='Поменять сообщение для уборки', callback_data='update_cleaning_message'),
+                types.InlineKeyboardButton(text='Сделать ценники', callback_data='get_file'),
+                types.InlineKeyboardButton(text='Удалить админа бота', callback_data='del_admin'),
+                types.InlineKeyboardButton(text='Удалить пользователя бота', callback_data='delete_user'),
+                types.InlineKeyboardButton(text='Назад', callback_data='start')
+            ]
+        keyboard = types.InlineKeyboardMarkup(row_width=1)
+        keyboard.add(*buttons)
+        await message.answer(text="Добро пожаловать в админскую панель, выберите функционал:", reply_markup=keyboard)
 
-#add admin
+
+# add an admin
 @dp.callback_query_handler(text='add_admin')
 async def admin_add_admin(call: types.CallbackQuery):
-    await call.message.answer('Пожалуйста, введите ID пользователя, которого хотите добавить:')
+    await call.message.edit_text('Пожалуйста, введите ID пользователя, которого хотите добавить:')
     await AdminForm.WaitingForUserAddition_admin.set()
 
 
@@ -74,7 +101,8 @@ async def admin_add_admin(call: types.CallbackQuery):
 async def process_add_admin(message: types.Message, state: FSMContext):
     user_id = message.text
     read_json_admin_file_add_user_admin(user_id)
-    await message.answer('Пользователь успешно добавлен.')
+    await bot.edit_message_text(chat_id=message.chat.id , message_id=message.message_id,
+                                text='Пользователь успешно добавлен.')
     await state.finish()
     await show_admin_menu(message)
 
@@ -82,7 +110,7 @@ async def process_add_admin(message: types.Message, state: FSMContext):
 #add user
 @dp.callback_query_handler(text='add_user')
 async def admin_add_user(call: types.CallbackQuery):
-    await call.message.answer('Пожалуйста, введите ID пользователя, которого хотите добавить:')
+    await call.message.edit_text('Пожалуйста, введите ID пользователя, которого хотите добавить:')
     await AdminForm.WaitingForUserAddition.set()
 
 
@@ -90,9 +118,44 @@ async def admin_add_user(call: types.CallbackQuery):
 async def process_add_user(message: types.Message, state: FSMContext):
     user_id = message.text
     read_json_admin_file_add_user(user_id)
-    await message.answer('Пользователь успешно добавлен.')
+    await bot.edit_message_text(chat_id=message.chat.id, message_id=message.message_id,
+                                text='Пользователь успешно добавлен.')
     await state.finish()
     await show_admin_menu(message)
+
+
+# Создаем объект CallbackData для обработки данных обратного вызова
+delete_user_callback = CallbackData('delete_user', 'user_id')
+
+
+@dp.callback_query_handler(text='delete_user', state='*')
+async def enter_user_delete_state(call: types.CallbackQuery, state: FSMContext):
+    messages = open_json_admins()
+    users = messages['granted_users']
+
+    keyboard = types.InlineKeyboardMarkup()
+    # Создаем кнопку для каждого пользователя
+    for user_id in users:
+        if str(user_id) == '247548114':
+            continue
+        button = types.InlineKeyboardButton(
+            text=user_id,
+            callback_data=delete_user_callback.new(user_id=user_id),
+        )
+        keyboard.add(button)
+
+    await call.message.edit_text('Выберите пользователя для удаления:', reply_markup=keyboard)
+    await AdminForm.WaitingForUserDell.set()
+
+
+@dp.callback_query_handler(delete_user_callback.filter(), state=AdminForm.WaitingForUserDell)
+async def delete_user(callback_query: types.CallbackQuery, state: FSMContext, callback_data: dict):
+    user_id = callback_data['user_id']
+    del_json_user(user_id)
+    await bot.edit_message_text(chat_id=callback_query.message.chat.id, message_id=callback_query.message.message_id,
+                                text=f'Пользователь {user_id} удален.')
+    await state.finish()
+    await show_admin_menu(callback_query.message)
 
 
 # Обработчик кнопки "Изменить сообщение об уборке"
@@ -124,14 +187,15 @@ async def process_message(message: types.Message, state: FSMContext):
     confirm_kb.add(types.InlineKeyboardButton("Проверить", callback_data="check"))
     confirm_kb.add(types.InlineKeyboardButton("Отменить", callback_data="cancel"))
     confirm_kb.add(types.InlineKeyboardButton("Сохранить", callback_data="save"))
-    await message.answer("Новое сообщение: " + message.text, reply_markup=confirm_kb)
+    await bot.edit_message_text(chat_id=message.chat.id , message_id=message.message_id,
+                                text="Новое сообщение: " + message.text, reply_markup=confirm_kb)
     await AdminForm.next()
 
 
 # Обработчик кнопки "Проверить"
 @dp.callback_query_handler(text="check", state=AdminForm.Confirm)
 async def check_message(callback: types.CallbackQuery, state: FSMContext):
-    await callback.answer('Сообщение проверено и готово к сохранению.')
+    await callback.message.edit_text('Сообщение проверено и готово к сохранению.')
 
 
 # Обработчик кнопки "Отменить"
@@ -160,7 +224,7 @@ async def enter_file_state(call: types.CallbackQuery, state: FSMContext):
                ]
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
-    await call.message.answer("Пожалуйста, загрузите файл или нажмите кнопку 'Отмена'.", reply_markup=keyboard)
+    await call.message.edit_text("Пожалуйста, загрузите файл или нажмите кнопку 'Отмена'.", reply_markup=keyboard)
     await AdminForm.WaitingForFile.set()
 
 

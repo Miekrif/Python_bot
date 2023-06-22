@@ -61,3 +61,31 @@ def save_json_admins(role, data):     # roles_dict
     else:
         print('Файла нет')
 
+
+def del_json_user(user):
+    if os.path.exists(JSON_FILE_ADMIN):
+        with open(JSON_FILE_ADMIN, 'r', encoding='utf-8') as file:
+            messages_admin = json.load(file)
+        try:
+
+            del messages_admin.get('granted_users_is', {})[str(user)]
+
+        except Exception as e:
+            print(e)
+            pass
+
+        try:
+
+            messages_admin.get('granted_users', []).remove(int(user))
+
+        except Exception as e:
+            print(e)
+            pass
+
+        with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
+            json.dump(messages_admin , json_file , ensure_ascii=False , indent=4)
+
+        messages = open_json_admins()
+
+    else:
+        print('Файла нет')
