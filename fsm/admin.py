@@ -10,8 +10,7 @@ from loader import dp , bot
 from PDF.logic import start_logic
 # Загружаем сообщения
 import jsons.work_with_jsons as work_with_jsons
-#open_json_admins , read_json_admin_file_add_user , save_json_admins , \
-    #read_json_admin_file_add_user_admin , del_json_user, del_json_admin
+
 import shutil
 
 messages = work_with_jsons.open_json_admins()

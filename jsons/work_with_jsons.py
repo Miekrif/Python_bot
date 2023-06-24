@@ -109,3 +109,26 @@ def del_json_admin(user):
 
     else:
         print('Файла нет')
+
+
+def add_granted_users_is_data(userid, name, surname, phone):
+    if os.path.exists(JSON_FILE_ADMIN):
+        with open(JSON_FILE_ADMIN, 'r', encoding='utf-8') as file:
+            messages_admin = json.load(file)
+
+        try:
+            messages_admin.get('granted_users_is', {})[str(userid)] = {
+                "Name": str(name),
+                "Surname": str(surname),
+                "phone_number": str(phone)
+            }
+            print(messages_admin.get('granted_users_is', {})[str(userid)])
+        except Exception as e:
+            print(e)
+            pass
+
+        with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
+            json.dump(messages_admin , json_file , ensure_ascii=False , indent=4)
+
+        messages = open_json_admins()
+

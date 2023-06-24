@@ -7,24 +7,27 @@ from aiogram.dispatcher.filters import Command, Text
 from utils.functions import open_json, add_to_dict
 from jsons.work_with_jsons import open_json_admins
 from config.config import BOT_TOKEN, CHEKICHAT, JSON_FILE, manager
+import fsm.fsm_user_id as fsm_user_id
 
 
 async def cmd_start(entity):
     if isinstance(entity, types.Message):
         id_user = entity.from_user.id
         chat_id = entity.chat.id
-
     else: # isinstance(entity, types.CallbackQuery)
-        id_user = types.CallbackQuery.from_user.id
-        chat_id = types.CallbackQuery.message.chat.id
+        id_user = entity.from_user.id
+        chat_id = entity.message.chat.id
 
     messages = open_json_admins()
     # Проверка является ли пользователь одобренным
     if id_user in messages.get('granted_users', []):
-        user_info = messages.get('granted_users_is' , {}).get(str(id_user) , {})
-        if not user_info or not all(field in user_info for field in ['Name' , 'Surname' , 'phone_number']):
-            await IntroductionForm.WaitingForName.set()
-            await bot.send_message(chat_id=chat_id , text='Пожалуйста, введите ваше имя')
+        user_info = messages.get('granted_users_is', {}).get(str(id_user), {})
+        if not user_info or not all(field in user_info for field in ['Name', 'Surname', 'phone_number']):
+            await fsm_user_id.IntroductionForm.WaitingForName.set()
+            await bot.send_message(chat_id=chat_id , text='Привет! \nМы с тобой еще незнакомы, но тебе уже можно мной пользоваться! Сейчас я попрошу тебя данные, для того, чтобы я мог знать, с кем я работаю! \nПожалуйста, введите свое имя:')
+            # await bot.send_message(chat_id=chat_id , text='Пожалуйста, введите ваше имя')
+            # await bot.send_message(chat_id=chat_id,
+                                   # text=f"Привет! \nМы с тобой еще незнакомы, но тебе уже можно мной пользоваться! Сейчас я попрошу тебя данные, для того, чтобы я мог знать, с кем я работаю! \nПоехали \nПожалуйста, введите ваше имя:",)
 
         else:
             if id_user in messages.get('admins', []):
@@ -44,9 +47,8 @@ async def cmd_start(entity):
                 keyboard.add(*buttons)
 
             await bot.send_message(chat_id=chat_id,
-                                   text=f"Охае, чайный мастер {entity.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
-                reply_markup=keyboard
-            )
+                                   text=f"Охае, чайный мастер {user_info.get('Name', entity.from_user.first_name)} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
+                reply_markup=keyboard)
     else:
         buttons = [
             types.InlineKeyboardButton(text='Да, нужна помощь', url=manager),
