@@ -27,6 +27,9 @@ async def process_name(message: types.Message, state: FSMContext):
     if len(name) < 2:
         await bot.send_message(chat_id=message.chat.id,
                                text='Ваше имя должно быть длиннее. Пожалуйста, введите снова:')
+    elif ' ' in name:
+        await bot.send_message(chat_id=message.chat.id,
+                               text='Ваше имя должно содержать только имя без Фамилии. Пожалуйста, введите снова:')
     else:
         async with state.proxy() as data:
             data['Name'] = name
@@ -46,7 +49,7 @@ async def process_surname(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['Surname'] = surname
         await bot.send_message(chat_id=message.chat.id,
-                               text='Теперь введите ваш номер телефона:')
+                               text='Ваш номер телефона должен начинаться с +7 и быть длиной 12 символов. \nТеперь введите ваш номер телефона:')
         await IntroductionForm.next()
 
 
