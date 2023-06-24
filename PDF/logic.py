@@ -81,7 +81,7 @@ def clear_subdirectories(path):
                 dir_path = os.path.join(root_dir, dir)
                 # Удаляем все файлы и поддиректории в текущей поддиректории
                 for filename in os.listdir(dir_path):
-                    if 1 in filename:
+                    if '1' in filename:
                         continue
                     file_path = os.path.join(dir_path, filename)
                     try:

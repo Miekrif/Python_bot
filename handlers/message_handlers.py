@@ -9,46 +9,64 @@ from jsons.work_with_jsons import open_json_admins
 from config.config import BOT_TOKEN, CHEKICHAT, JSON_FILE, manager
 
 
-@dp.message_handler(Command("start"))
-async def cmd_start(message: types.Message):
-    id_user = message.from_user.id
+async def cmd_start(entity):
+    if isinstance(entity, types.Message):
+        id_user = entity.from_user.id
+        chat_id = entity.chat.id
+
+    else: # isinstance(entity, types.CallbackQuery)
+        id_user = types.CallbackQuery.from_user.id
+        chat_id = types.CallbackQuery.message.chat.id
+
     messages = open_json_admins()
     # Проверка является ли пользователь одобренным
     if id_user in messages.get('granted_users', []):
-        if id_user in messages.get('admins', []):
-            buttons = [
-                types.InlineKeyboardButton(text='1) Время работать !', callback_data='Time_to_work'),
-                types.InlineKeyboardButton(text="2) Я не знаю что делать !", callback_data="I_dont_know_what_to_do"),
-                types.InlineKeyboardButton(text='Админская панель', callback_data='admin')
-            ]
-            keyboard = types.InlineKeyboardMarkup(row_width=2)
-            keyboard.add(*buttons)
+        user_info = messages.get('granted_users_is' , {}).get(str(id_user) , {})
+        if not user_info or not all(field in user_info for field in ['Name' , 'Surname' , 'phone_number']):
+            await IntroductionForm.WaitingForName.set()
+            await bot.send_message(chat_id=chat_id , text='Пожалуйста, введите ваше имя')
+
         else:
-            buttons = [
-                types.InlineKeyboardButton(text='1) Время работать !', callback_data='Time_to_work'),
-                types.InlineKeyboardButton(text="2) Я не знаю что делать !", callback_data="I_dont_know_what_to_do"),
-            ]
-            keyboard = types.InlineKeyboardMarkup(row_width=2)
-            keyboard.add(*buttons)
-        await message.answer(
-            f"Охае, чайный мастер {message.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
-            reply_markup=keyboard
-        )
-            # Проверка является ли пользователь админом
+            if id_user in messages.get('admins', []):
+                buttons = [
+                    types.InlineKeyboardButton(text='1) Время работать !', callback_data='Time_to_work'),
+                    types.InlineKeyboardButton(text="2) Я не знаю что делать !", callback_data="I_dont_know_what_to_do"),
+                    types.InlineKeyboardButton(text='Админская панель', callback_data='admin')
+                ]
+                keyboard = types.InlineKeyboardMarkup(row_width=2)
+                keyboard.add(*buttons)
+            else:
+                buttons = [
+                    types.InlineKeyboardButton(text='1) Время работать !', callback_data='Time_to_work'),
+                    types.InlineKeyboardButton(text="2) Я не знаю что делать !", callback_data="I_dont_know_what_to_do"),
+                ]
+                keyboard = types.InlineKeyboardMarkup(row_width=2)
+                keyboard.add(*buttons)
+
+            await bot.send_message(chat_id=chat_id,
+                                   text=f"Охае, чайный мастер {entity.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!",
+                reply_markup=keyboard
+            )
     else:
         buttons = [
             types.InlineKeyboardButton(text='Да, нужна помощь', url=manager),
         ]
         keyboard = types.InlineKeyboardMarkup(row_width=1)
         keyboard.add(*buttons)
-        await message.answer(
+        await bot.send_message(chat_id=chat_id,
+                               text=
             f"""Привет, Незнакомец! Для того, чтобы пользоваться мной свяжись с менеджером
             \n Твой id передай его менджеру для добавления тебя в список {id_user}"""
             , reply_markup=keyboard)
 
 
+@dp.message_handler(Command("start"))
+async def handle_start_command(message: types.Message):
+    await cmd_start(message)
+
+
 @dp.message_handler(commands=['close'])
-async def cmd_start(callback: types.Message):
+async def cmd_close(callback: types.Message):
     buttons = [
         types.InlineKeyboardButton(text='Закрыть смену на Пушке', callback_data='Сворачиваемся, ребята'),
         types.InlineKeyboardButton(text='Закрыть смену на Централе', callback_data='Сворачиваемся, ребята'),
@@ -70,7 +88,7 @@ async def cmd_start(callback: types.Message):
 
 
 @dp.message_handler(commands=['open'])
-async def cmd_start(callback: types.Message):
+async def cmd_open(callback: types.Message):
     buttons = [types.InlineKeyboardButton(text='Открыть смену', callback_data='Time_to_work')
                ]
     # first_name = callback.first_name  # Не может быть пустым

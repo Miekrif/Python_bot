@@ -89,3 +89,23 @@ def del_json_user(user):
 
     else:
         print('Файла нет')
+
+
+def del_json_admin(user):
+    if os.path.exists(JSON_FILE_ADMIN):
+        with open(JSON_FILE_ADMIN, 'r', encoding='utf-8') as file:
+            messages_admin = json.load(file)
+
+        try:
+            messages_admin['admins'].remove(int(user))
+        except Exception as e:
+            print(e)
+            pass
+
+        with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
+            json.dump(messages_admin , json_file , ensure_ascii=False , indent=4)
+
+        messages = open_json_admins()
+
+    else:
+        print('Файла нет')

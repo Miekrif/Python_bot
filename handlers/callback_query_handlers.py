@@ -6,41 +6,12 @@ from jsons.work_with_jsons import word_mentor
 from loader import dp, bot
 from utils.functions import open_json, add_to_dict, open_json
 from jsons.work_with_jsons import open_json_admins
+from handlers.message_handlers import cmd_start
 
 
 @dp.callback_query_handler(text='start')
-async def cmd_start(call: types.CallbackQuery):
-    id_user = call.from_user.id
-    messages = open_json_admins()
-    # Проверка является ли пользователь одобренным
-    if id_user in messages.get('granted_users', []):
-        if id_user in messages.get('admins', []):
-            buttons = [
-                types.InlineKeyboardButton(text='1) Время работать !' , callback_data='Time_to_work'),
-                types.InlineKeyboardButton(text="2) Я не знаю что делать !" , callback_data="I_dont_know_what_to_do"),
-                types.InlineKeyboardButton(text='Админская панель', callback_data='admin')
-            ]
-            keyboard = types.InlineKeyboardMarkup(row_width=2)
-            keyboard.add(*buttons)
-            await call.message.edit_text(f"Админская панель", reply_markup=keyboard)
-        else:
-            buttons = [
-                types.InlineKeyboardButton(text='1) Время работать !', callback_data='Time_to_work'),
-                types.InlineKeyboardButton(text="2) Я не знаю что делать !", callback_data="I_dont_know_what_to_do"),
-            ]
-            keyboard = types.InlineKeyboardMarkup(row_width=2)
-            keyboard.add(*buttons)
-        await call.message.edit_text(f"Охае, чайный мастер {call.from_user.first_name} \nМы уже знакомы - выбери первый пункт \nЕсли что-то пошло не так, то второй!", reply_markup=keyboard)
-        # Проверка является ли пользователь админом
-    else:
-        buttons = [
-            types.InlineKeyboardButton(text='Да, нужна помощь', url=manager),
-        ]
-        keyboard = types.InlineKeyboardMarkup(row_width=1)
-        keyboard.add(*buttons)
-        await call.message.edit_text(
-            f"""Привет, Незнакомец! Для того, чтобы пользоваться мной свяжись с менеджером\n
-             Твой id передай его менджеру для добавления тебя в список {id_user}""", reply_markup=keyboard)
+async def handle_admin_callback(message: types.Message):
+    await cmd_start(message)
 
 
 # Знакомвство
