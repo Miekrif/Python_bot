@@ -16,6 +16,10 @@ import shutil
 messages = work_with_jsons.open_json_admins()
 
 
+class AddPointForm(StatesGroup):
+    WaitingForName = State()
+    WaitingForChatID = State()
+
 # Описываем все состояния
 class AdminForm(StatesGroup):
     WaitingForUserAddition = State()
@@ -82,6 +86,7 @@ async def show_admin_menu(message_or_call):
         buttons = [
             types.InlineKeyboardButton(text='Добавить Нового админа боту' , callback_data='add_admin') ,
             types.InlineKeyboardButton(text='Добавить Нового пользователя боту' , callback_data='add_user') ,
+            types.InlineKeyboardButton(text='Добавить новую точку боту' , callback_data='add_points') ,
             types.InlineKeyboardButton(text='Поменять сообщение для уборки' ,
                                        callback_data='update_cleaning_message') ,
             types.InlineKeyboardButton(text='Сделать ценники' , callback_data='get_file') ,
@@ -304,3 +309,56 @@ async def get_file(message: types.Message, state: FSMContext):
     await state.finish()  # Выход из FSM после обработки файла
     await show_admin_menu(message)
 #####
+
+#######add trade point
+@dp.callback_query_handler(text='add_points', state='*')
+async def process_add_point(callback_query: types.CallbackQuery, state: FSMContext):
+    await bot.send_message(callback_query.message.chat.id, "Введите название точки:")
+    await AddPointForm.WaitingForName.set()
+
+
+@dp.message_handler(state=AddPointForm.WaitingForName)
+async def process_name(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['name'] = message.text
+    await bot.send_message(message.chat.id, "Введите ID чата точки:")
+    await AddPointForm.WaitingForChatID.set()
+
+
+@dp.message_handler(state=AddPointForm.WaitingForChatID)
+async def process_chat_id(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['chat_id'] = message.text
+    await bot.send_message(message.chat.id, "Добавляю точку...")
+    # Предположим, что функция add_sell_point принимает аргументы в виде строк
+    work_with_jsons.add_sell_point(data['name'], data['chat_id'])
+    await bot.send_message(message.chat.id, "Точка добавлена.")
+    await state.finish()
+
+
+class TradePointRemovalForm(StatesGroup):
+    ChoosingPoint = State()
+
+
+@dp.callback_query_handler(text='dell_points', state='*')
+async def process_delete_points_menu(callback_query: types.CallbackQuery, state: FSMContext):
+    messages = work_with_jsons.open_json_admins()
+    points = messages["trade_points"].keys()  # функция, возвращающая список всех торговых точек
+    keyboard = types.InlineKeyboardMarkup()
+    # Создаем кнопку для каждого пользователя
+    for points_id in points:
+        button = types.InlineKeyboardButton(
+            text=points_id ,
+            callback_data=process_delete_point.new(user_id=points_id),
+        )
+        keyboard.add(button)
+    await bot.send_message(callback_query.message.chat.id, text='Выберите точку для удаления:', reply_markup=keyboard)
+    await TradePointRemovalForm.ChoosingPoint.set()
+
+
+@dp.callback_query_handler(state=TradePointRemovalForm.ChoosingPoint)
+async def process_delete_point(callback_query: types.CallbackQuery, state: FSMContext):
+    point = callback_query.data.split(':', 1)[1]
+    work_with_jsons.dell_trade_point(point)  # функция, удаляющая выбранную торговую точку
+    await bot.send_message(callback_query.message.chat.id, f"Точка '{point}' удалена.")
+    await state.finish()

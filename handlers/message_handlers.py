@@ -32,16 +32,16 @@ async def cmd_start(entity):
         else:
             if id_user in messages["users"].get('admins', []):
                 buttons = [
-                    types.InlineKeyboardButton(text='1) Время работать !', callback_data='Time_to_work'),
-                    types.InlineKeyboardButton(text="2) Я не знаю что делать !", callback_data="I_dont_know_what_to_do"),
+                    types.InlineKeyboardButton(text='Открыть смену', callback_data='Time_to_work'),
+                    types.InlineKeyboardButton(text="Закрыть смену", callback_data="Time_to_end_work"),
                     types.InlineKeyboardButton(text='Админская панель', callback_data='admin')
                 ]
                 keyboard = types.InlineKeyboardMarkup(row_width=2)
                 keyboard.add(*buttons)
             else:
                 buttons = [
-                    types.InlineKeyboardButton(text='1) Время работать !', callback_data='Time_to_work'),
-                    types.InlineKeyboardButton(text="2) Я не знаю что делать !", callback_data="I_dont_know_what_to_do"),
+                    types.InlineKeyboardButton(text='Открыть смену', callback_data='Time_to_work'),
+                    types.InlineKeyboardButton(text="Закрыть смену", callback_data="Time_to_end_work"),
                 ]
                 keyboard = types.InlineKeyboardMarkup(row_width=2)
                 keyboard.add(*buttons)

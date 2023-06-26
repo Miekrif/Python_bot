@@ -131,3 +131,40 @@ def add_granted_users_is_data(userid , name , surname , phone):
             json.dump(messages_admin , json_file , ensure_ascii=False , indent=4)
 
         messages = open_json_admins()
+
+
+def add_sell_point(point, point_id):
+    if os.path.exists(JSON_FILE_ADMIN):
+        with open(JSON_FILE_ADMIN , 'r' , encoding='utf-8') as file:
+            messages_admin = json.load(file)
+
+        try:
+            messages_admin.get('trade_points' , {})[point] = str(point_id)
+
+        except Exception as e:
+            print(e)
+            pass
+
+        with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
+            json.dump(messages_admin , json_file , ensure_ascii=False , indent=4)
+
+        messages = open_json_admins()
+
+
+def dell_trade_point(point):
+    if os.path.exists(JSON_FILE_ADMIN):
+        with open(JSON_FILE_ADMIN , 'r' , encoding='utf-8') as file:
+            messages_admin = json.load(file)
+
+        try:
+
+            del messages_admin.get('trade_points', {})[point]
+
+        except Exception as e:
+            print(e)
+            pass
+
+        with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
+            json.dump(messages_admin , json_file , ensure_ascii=False , indent=4)
+
+        messages = open_json_admins()
