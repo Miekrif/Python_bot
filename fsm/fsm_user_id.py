@@ -58,7 +58,8 @@ async def process_phone_number(message: types.Message, state: FSMContext):
     logging.info('Function process_phone_number is called')  # добавлено для логирования
     phone_number = message.text
     if len(phone_number) != 12 or not phone_number.startswith('+7'):
-        await bot.send_message(chat_id=message.chat.id, text='Ваш номер телефона должен начинаться с +7 и быть длиной 12 символов. Пожалуйста, введите снова:')
+        await bot.send_message(chat_id=message.chat.id,
+                               text='Ваш номер телефона должен начинаться с +7 и быть длиной 12 символов. Пожалуйста, введите снова:')
     else:
         async with state.proxy() as data:
             data['phone_number'] = phone_number
@@ -140,7 +141,8 @@ async def start_change_phone_number(callback_query: types.CallbackQuery, state: 
 async def process_change_phone_number(message: types.Message, state: FSMContext):
     phone_number = message.text
     if len(phone_number) != 12 or not phone_number.startswith('+7'):
-        await bot.send_message(message.chat.id, "Ваш номер телефона должен начинаться с +7 и быть длиной 12 символов. Пожалуйста, введите снова:")
+        await bot.send_message(message.chat.id,
+                               "Ваш номер телефона должен начинаться с +7 и быть длиной 12 символов. Пожалуйста, введите снова:")
     else:
         await state.update_data(phone_number=phone_number)
         await bot.send_message(message.chat.id, "Номер телефона изменен.")
