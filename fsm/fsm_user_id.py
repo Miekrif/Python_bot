@@ -155,3 +155,4 @@ async def process_change_done(callback_query: types.CallbackQuery, state: FSMCon
         await bot.send_message(callback_query.message.chat.id, "Спасибо! Ваши данные обновлены.")
         await state.finish()
         await message_handlers.cmd_start(callback_query)
+
