@@ -20,8 +20,8 @@ async def cmd_start(entity):
 
     messages = open_json_admins()
     # Проверка является ли пользователь одобренным
-    if id_user in messages.get('granted_users', []):
-        user_info = messages.get('granted_users_is', {}).get(str(id_user), {})
+    if id_user in messages["users"].get('granted_users', []):
+        user_info = messages["users"].get('granted_users_is', {}).get(str(id_user), {})
         if not user_info or not all(field in user_info for field in ['Name', 'Surname', 'phone_number']):
             await fsm_user_id.IntroductionForm.WaitingForName.set()
             await bot.send_message(chat_id=chat_id , text='Привет! \nМы с тобой еще незнакомы, но тебе уже можно мной пользоваться! Сейчас я попрошу тебя данные, для того, чтобы я мог знать, с кем я работаю! \nПожалуйста, введите свое имя:')
@@ -30,7 +30,7 @@ async def cmd_start(entity):
                                    # text=f"Привет! \nМы с тобой еще незнакомы, но тебе уже можно мной пользоваться! Сейчас я попрошу тебя данные, для того, чтобы я мог знать, с кем я работаю! \nПоехали \nПожалуйста, введите ваше имя:",)
 
         else:
-            if id_user in messages.get('admins', []):
+            if id_user in messages["users"].get('admins', []):
                 buttons = [
                     types.InlineKeyboardButton(text='1) Время работать !', callback_data='Time_to_work'),
                     types.InlineKeyboardButton(text="2) Я не знаю что делать !", callback_data="I_dont_know_what_to_do"),

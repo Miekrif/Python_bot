@@ -78,7 +78,7 @@ async def show_admin_menu(message_or_call):
     else:
         chat_id = message_or_call.chat.id
 
-    if int(message_or_call.from_user.id) in messages.get('root'):
+    if int(message_or_call.from_user.id) in messages["users"].get('root'):
         buttons = [
             types.InlineKeyboardButton(text='Добавить Нового админа боту' , callback_data='add_admin') ,
             types.InlineKeyboardButton(text='Добавить Нового пользователя боту' , callback_data='add_user') ,
@@ -150,7 +150,7 @@ delete_user_callback = CallbackData('delete_user' , 'user_id')
 @dp.callback_query_handler(text='delete_user' , state='*')
 async def enter_user_delete_state(call: types.CallbackQuery, state: FSMContext):
     messages = work_with_jsons.open_json_admins()
-    users = messages['granted_users']
+    users = messages["users"]['granted_users']
 
     keyboard = types.InlineKeyboardMarkup()
     # Создаем кнопку для каждого пользователя
@@ -184,7 +184,7 @@ delete_admin_callback = CallbackData('del_admin' , 'user_id')
 @dp.callback_query_handler(text='del_admin' , state='*')
 async def enter_user_delete_state(call: types.CallbackQuery, state: FSMContext):
     messages = work_with_jsons.open_json_admins()
-    users = messages['admins']
+    users = messages["users"]['admins']
 
     keyboard = types.InlineKeyboardMarkup()
     # Создаем кнопку для каждого пользователя
@@ -218,7 +218,7 @@ async def delete_user(call: types.CallbackQuery, state: FSMContext , callback_da
 async def cmd_update_cleaning_message(callback: types.CallbackQuery):
     messages = work_with_jsons.open_json_admins()
     roles_kb = types.InlineKeyboardMarkup(row_width=1)
-    for role in messages.get('roles_dict' , {}).keys():
+    for role in messages["users"].get('roles_dict' , {}).keys():
         roles_kb.add(types.InlineKeyboardButton(role , callback_data=role))
     await callback.message.edit_reply_markup(reply_markup=roles_kb)
     await AdminForm.Role.set()

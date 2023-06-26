@@ -24,7 +24,7 @@ def read_json_admin_file_add_user(user_id):
         with open(JSON_FILE_ADMIN , 'r' , encoding='utf-8') as file:
             messages_admin = json.load(file)
 
-        messages_admin["granted_users"].append(int(user_id))
+        messages_admin["users"]["granted_users"].append(int(user_id))
 
         with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
             json.dump(messages_admin , json_file , ensure_ascii=False , indent=4)
@@ -38,7 +38,7 @@ def read_json_admin_file_add_user_admin(user_id):
         with open(JSON_FILE_ADMIN , 'r' , encoding='utf-8') as file:
             messages_admin = json.load(file)
 
-        messages_admin["admins"].append(int(user_id))
+        messages_admin["users"]["admins"].append(int(user_id))
 
         with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
             json.dump(messages_admin , json_file , ensure_ascii=False , indent=4)
@@ -68,7 +68,7 @@ def del_json_user(user):
             messages_admin = json.load(file)
         try:
 
-            del messages_admin.get('granted_users_is' , {})[str(user)]
+            del messages_admin["users"].get('granted_users_is' , {})[str(user)]
 
         except Exception as e:
             print(e)
@@ -76,7 +76,7 @@ def del_json_user(user):
 
         try:
 
-            messages_admin.get('granted_users' , []).remove(int(user))
+            messages_admin["users"].get('granted_users' , []).remove(int(user))
 
         except Exception as e:
             print(e)
@@ -97,7 +97,7 @@ def del_json_admin(user):
             messages_admin = json.load(file)
 
         try:
-            messages_admin['admins'].remove(int(user))
+            messages_admin["users"]['admins'].remove(int(user))
         except Exception as e:
             print(e)
             pass
@@ -117,7 +117,7 @@ def add_granted_users_is_data(userid , name , surname , phone):
             messages_admin = json.load(file)
 
         try:
-            messages_admin.get('granted_users_is' , {})[str(userid)] = {
+            messages_admin["users"].get('granted_users_is' , {})[str(userid)] = {
                 "Name": str(name) ,
                 "Surname": str(surname) ,
                 "phone_number": str(phone)
