@@ -20,6 +20,7 @@ class AddPointForm(StatesGroup):
     WaitingForName = State()
     WaitingForChatID = State()
 
+
 # Описываем все состояния
 class AdminForm(StatesGroup):
     WaitingForUserAddition = State()
@@ -32,6 +33,10 @@ class AdminForm(StatesGroup):
     Role = State()
     Message = State()
     Confirm = State()
+
+
+class TradePointRemovalForm(StatesGroup):
+    ChoosingPoint = State()
 
 
 @dp.callback_query_handler(text="admin")
@@ -91,6 +96,7 @@ async def show_admin_menu(message_or_call):
                                        callback_data='update_cleaning_message') ,
             types.InlineKeyboardButton(text='Сделать ценники' , callback_data='get_file') ,
             types.InlineKeyboardButton(text='Удалить админа бота' , callback_data='del_admin') ,
+            types.InlineKeyboardButton(text='Удалить торговую точку из бота' , callback_data='dell_points') ,
             types.InlineKeyboardButton(text='Удалить пользователя бота' , callback_data='delete_user') ,
             types.InlineKeyboardButton(text='Ежедневное сообщение' , callback_data='schedule_message') ,
             types.InlineKeyboardButton(text='Назад' , callback_data='start')
@@ -100,11 +106,12 @@ async def show_admin_menu(message_or_call):
     else:
         buttons = [
             types.InlineKeyboardButton(text='Добавить Нового пользователя боту' , callback_data='add_user') ,
+            types.InlineKeyboardButton(text='Добавить новую точку боту' , callback_data='add_points') ,
             types.InlineKeyboardButton(text='Поменять сообщение для уборки' ,
                                        callback_data='update_cleaning_message') ,
             types.InlineKeyboardButton(text='Сделать ценники' , callback_data='get_file') ,
-            types.InlineKeyboardButton(text='Удалить админа бота' , callback_data='del_admin') ,
             types.InlineKeyboardButton(text='Удалить пользователя бота' , callback_data='delete_user') ,
+            types.InlineKeyboardButton(text='Удалить торговую точку из бота' , callback_data='dell_points') ,
             types.InlineKeyboardButton(text='Ежедневное сообщение' , callback_data='schedule_message') ,
             types.InlineKeyboardButton(text='Назад' , callback_data='start')
         ]
@@ -310,6 +317,7 @@ async def get_file(message: types.Message, state: FSMContext):
     await show_admin_menu(message)
 #####
 
+
 #######add trade point
 @dp.callback_query_handler(text='add_points', state='*')
 async def process_add_point(callback_query: types.CallbackQuery, state: FSMContext):
@@ -321,7 +329,7 @@ async def process_add_point(callback_query: types.CallbackQuery, state: FSMConte
 async def process_name(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['name'] = message.text
-    await bot.send_message(message.chat.id, "Введите ID чата точки:")
+    await bot.send_message(message.chat.id, "Введите ID чата точки если оно у вас есть, если нет - 0:")
     await AddPointForm.WaitingForChatID.set()
 
 
@@ -334,10 +342,7 @@ async def process_chat_id(message: types.Message, state: FSMContext):
     work_with_jsons.add_sell_point(data['name'], data['chat_id'])
     await bot.send_message(message.chat.id, "Точка добавлена.")
     await state.finish()
-
-
-class TradePointRemovalForm(StatesGroup):
-    ChoosingPoint = State()
+    await show_admin_menu(message)
 
 
 @dp.callback_query_handler(text='dell_points', state='*')
@@ -346,10 +351,10 @@ async def process_delete_points_menu(callback_query: types.CallbackQuery, state:
     points = messages["trade_points"].keys()  # функция, возвращающая список всех торговых точек
     keyboard = types.InlineKeyboardMarkup()
     # Создаем кнопку для каждого пользователя
-    for points_id in points:
+    for point_id in points:
         button = types.InlineKeyboardButton(
-            text=points_id ,
-            callback_data=process_delete_point.new(user_id=points_id),
+            text=point_id ,
+            callback_data=str(point_id),
         )
         keyboard.add(button)
     await bot.send_message(callback_query.message.chat.id, text='Выберите точку для удаления:', reply_markup=keyboard)
@@ -358,7 +363,9 @@ async def process_delete_points_menu(callback_query: types.CallbackQuery, state:
 
 @dp.callback_query_handler(state=TradePointRemovalForm.ChoosingPoint)
 async def process_delete_point(callback_query: types.CallbackQuery, state: FSMContext):
-    point = callback_query.data.split(':', 1)[1]
+    point = callback_query.data
     work_with_jsons.dell_trade_point(point)  # функция, удаляющая выбранную торговую точку
     await bot.send_message(callback_query.message.chat.id, f"Точка '{point}' удалена.")
     await state.finish()
+    await show_admin_menu(callback_query)
+
