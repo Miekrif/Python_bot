@@ -25,9 +25,6 @@ async def cmd_start(entity):
         if not user_info or not all(field in user_info for field in ['Name', 'Surname', 'phone_number']):
             await fsm_user_id.IntroductionForm.WaitingForName.set()
             await bot.send_message(chat_id=chat_id , text='Привет! \nМы с тобой еще незнакомы, но тебе уже можно мной пользоваться! Сейчас я попрошу тебя данные, для того, чтобы я мог знать, с кем я работаю! \nПожалуйста, введите свое имя:')
-            # await bot.send_message(chat_id=chat_id , text='Пожалуйста, введите ваше имя')
-            # await bot.send_message(chat_id=chat_id,
-                                   # text=f"Привет! \nМы с тобой еще незнакомы, но тебе уже можно мной пользоваться! Сейчас я попрошу тебя данные, для того, чтобы я мог знать, с кем я работаю! \nПоехали \nПожалуйста, введите ваше имя:",)
 
         else:
             if id_user in messages["users"].get('admins', []):
@@ -62,7 +59,7 @@ async def cmd_start(entity):
             , reply_markup=keyboard)
 
 
-@dp.message_handler(Command("start"))
+@dp.message_handler(Command("start"), state='*')
 async def handle_start_command(message: types.Message):
     await cmd_start(message)
 

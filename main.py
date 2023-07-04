@@ -1,6 +1,11 @@
 import logging
+import fsm.admin
 from loader import dp
 from aiogram import executor
+from utils.functions import open_json
+from handlers import message_handlers, callback_query_handlers
+from config.config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
