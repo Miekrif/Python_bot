@@ -226,11 +226,11 @@ async def delete_user(call: types.CallbackQuery, state: FSMContext , callback_da
 
 ##### message about clearing
 # Обработчик кнопки "Изменить сообщение об уборке"
-@dp.callback_query_handler(text="update_cleaning_message" , state="*")
+@dp.callback_query_handler(text="update_cleaning_message", state="*")
 async def cmd_update_cleaning_message(callback: types.CallbackQuery):
     messages = work_with_jsons.open_json_admins()
     roles_kb = types.InlineKeyboardMarkup(row_width=1)
-    for role in messages["users"].get('roles_dict' , {}).keys():
+    for role in messages["slearing"].keys():
         roles_kb.add(types.InlineKeyboardButton(role , callback_data=role))
     await callback.message.edit_reply_markup(reply_markup=roles_kb)
     await AdminForm.Role.set()

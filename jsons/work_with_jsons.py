@@ -155,6 +155,13 @@ def add_sell_point(point, point_id):
                 3. Поздравить гостей с ДР до 15:00
                 4. Отправить чек закрытия прислать отчёт по выполнению смены до 01:30
                 5. Выручка -50000'''
+            messages_admin.get("slearing", {})[point] = {
+                "Чайный Мастер утро": "Чайный Мастер утро",
+                "Чайный Админ": "Чайный Админ",
+                "Чайный Мастер вечер": "Чайный Мастер вечер",
+                "Чайный Мастер полного дня": "Чайный Мастер полного дня"
+            }
+            messages_admin.get("goals_day", {})[point] = ""
 
         except Exception as e:
             print(e)
@@ -175,6 +182,9 @@ def dell_trade_point(point):
 
             del messages_admin.get('trade_points', {})[point]
             del messages_admin.get('scheduled_message' , {})[point]
+            del messages_admin.get("slearing", {})[point]
+            del messages_admin.get("goals_day", {})[point]
+
         except Exception as e:
             print(e)
             pass

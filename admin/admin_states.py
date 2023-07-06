@@ -5,6 +5,7 @@ from config.config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
 
 admin_cb = CallbackData("admin", "action")
 
+
 def admin_keyboard():
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("КПИ", callback_data=admin_cb.new(action="KPI")))
