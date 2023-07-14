@@ -30,7 +30,13 @@ class AdminForm(StatesGroup):
     WaitingForCleaningMessageChange = State()
     WaitingForFile = State()
     WaitingForTradePoint = State()
+
+
+class DailyCleaningMessage(StatesGroup):
     Role = State()
+    Message_show = State()
+    Message_edit = State()
+    Message_input = State()
     Message = State()
     Confirm = State()
 
@@ -86,35 +92,20 @@ async def show_admin_menu(message_or_call):
         chat_id = message_or_call.message.chat.id
     else:
         chat_id = message_or_call.chat.id
-
+    buttons = [
+        types.InlineKeyboardButton(text='Добавить Нового пользователя боту' , callback_data='add_user') ,
+        types.InlineKeyboardButton(text='Добавить новую точку боту' , callback_data='add_points') ,
+        types.InlineKeyboardButton(text='Поменять сообщение для уборки' ,
+                                   callback_data='update_cleaning_message') ,
+        types.InlineKeyboardButton(text='Сделать ценники' , callback_data='get_file') ,
+        types.InlineKeyboardButton(text='Удалить пользователя бота' , callback_data='delete_user') ,
+        types.InlineKeyboardButton(text='Удалить торговую точку из бота' , callback_data='dell_points') ,
+        types.InlineKeyboardButton(text='Ежедневное сообщение' , callback_data='schedule_message') ,
+    ]
     if int(message_or_call.from_user.id) in messages["users"].get('root'):
-        buttons = [
-            types.InlineKeyboardButton(text='Добавить Нового админа боту' , callback_data='add_admin') ,
-            types.InlineKeyboardButton(text='Добавить Нового пользователя боту' , callback_data='add_user') ,
-            types.InlineKeyboardButton(text='Добавить новую точку боту' , callback_data='add_points') ,
-            types.InlineKeyboardButton(text='Поменять сообщение для уборки' ,
-                                       callback_data='update_cleaning_message') ,
-            types.InlineKeyboardButton(text='Сделать ценники' , callback_data='get_file') ,
-            types.InlineKeyboardButton(text='Удалить админа бота' , callback_data='del_admin') ,
-            types.InlineKeyboardButton(text='Удалить торговую точку из бота' , callback_data='dell_points') ,
-            types.InlineKeyboardButton(text='Удалить пользователя бота' , callback_data='delete_user') ,
-            types.InlineKeyboardButton(text='Ежедневное сообщение' , callback_data='schedule_message') ,
-            types.InlineKeyboardButton(text='Назад' , callback_data='start')
-        ]
-        keyboard = types.InlineKeyboardMarkup(row_width=1)
-        keyboard.add(*buttons)
-    else:
-        buttons = [
-            types.InlineKeyboardButton(text='Добавить Нового пользователя боту' , callback_data='add_user') ,
-            types.InlineKeyboardButton(text='Добавить новую точку боту' , callback_data='add_points') ,
-            types.InlineKeyboardButton(text='Поменять сообщение для уборки' ,
-                                       callback_data='update_cleaning_message') ,
-            types.InlineKeyboardButton(text='Сделать ценники' , callback_data='get_file') ,
-            types.InlineKeyboardButton(text='Удалить пользователя бота' , callback_data='delete_user') ,
-            types.InlineKeyboardButton(text='Удалить торговую точку из бота' , callback_data='dell_points') ,
-            types.InlineKeyboardButton(text='Ежедневное сообщение' , callback_data='schedule_message') ,
-            types.InlineKeyboardButton(text='Назад' , callback_data='start')
-        ]
+        buttons.append(types.InlineKeyboardButton(text='Добавить Нового админа боту' , callback_data='add_admin'))
+        buttons.append(types.InlineKeyboardButton(text='Удалить админа бота' , callback_data='del_admin'))
+    buttons.append(types.InlineKeyboardButton(text='Назад' , callback_data='start'))
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     await bot.send_message(chat_id=chat_id , text="Добро пожаловать в админскую панель, выберите функционал:" ,
@@ -227,62 +218,93 @@ async def delete_user(call: types.CallbackQuery, state: FSMContext , callback_da
 ##### message about clearing
 # Обработчик кнопки "Изменить сообщение об уборке"
 @dp.callback_query_handler(text="update_cleaning_message", state="*")
-async def cmd_update_cleaning_message(callback: types.CallbackQuery):
+async def cmd_update_cleaning_message(callback: types.CallbackQuery, state: FSMContext):
     messages = work_with_jsons.open_json_admins()
     roles_kb = types.InlineKeyboardMarkup(row_width=1)
-    for role in messages["slearing"].keys():
+    for role in messages["сlearing"].keys():
         roles_kb.add(types.InlineKeyboardButton(role , callback_data=role))
     await callback.message.edit_reply_markup(reply_markup=roles_kb)
-    await AdminForm.Role.set()
+    await DailyCleaningMessage.Role.set()
 
 
 # Обработчик выбора роли
-@dp.callback_query_handler(state=AdminForm.Role)
-async def process_role(callback: types.CallbackQuery , state: FSMContext):
+@dp.callback_query_handler(state=DailyCleaningMessage.Role)
+async def process_role(callback: types.CallbackQuery, state: FSMContext):
+    async with state.proxy() as data:
+        data['point'] = callback.data
+    messages = work_with_jsons.open_json_admins()
+    roles_kb = types.InlineKeyboardMarkup(row_width=1)
+    for role in messages["сlearing"][data['point']].keys():
+        roles_kb.add(types.InlineKeyboardButton(role , callback_data=role))
+
+    await callback.message.edit_text('Выберете роль для изменения сообщения:', reply_markup=roles_kb)
+    await DailyCleaningMessage.next()
+
+
+# Вывод старого сообщения
+@dp.callback_query_handler(state=DailyCleaningMessage.Message_show)
+async def process_edit_message(callback: types.CallbackQuery, state: FSMContext):
+    messages = work_with_jsons.open_json_admins()
     async with state.proxy() as data:
         data['role'] = callback.data
-    await callback.message.edit_text('Введите новое сообщение об уборке')
-    await AdminForm.next()
+    await callback.message.edit_text(f'Текущее сообщение для {data["role"]} в {data["point"]}')
+    await callback.message.answer(messages["сlearing"][data['point']][data["role"]])
+    await DailyCleaningMessage.Message_edit.set()  # Устанавливаем состояние на Message_edit
+    await process_message_edit(callback, state)  # Вызываем функцию обработки process_message_edit
+
+
+@dp.callback_query_handler(state=DailyCleaningMessage.Message_edit)
+async def process_message_edit(callback: types.CallbackQuery, state: FSMContext):
+    confirm_kb = types.InlineKeyboardMarkup(row_width=1)
+    confirm_kb.add(types.InlineKeyboardButton("Изменить", callback_data="change_daily_message"))
+    confirm_kb.add(types.InlineKeyboardButton("Оставить", callback_data="admin"))
+    await callback.message.answer("Что с ним сделать?", reply_markup=confirm_kb)
+    await DailyCleaningMessage.next()  # Смена состояния происходит уже после того, как пользователь взаимодействует с клавиатурой
+
+
+
+@dp.callback_query_handler(text='change_daily_message', state=DailyCleaningMessage.Message_input)
+async def process_message_change(callback: types.CallbackQuery):
+    await callback.message.answer(text="Введите новое сообщение об уборке:")
 
 
 # Обработчик ввода нового сообщения
-@dp.message_handler(state=AdminForm.Message)
-async def process_message(message: types.Message, state: FSMContext):
+@dp.message_handler(state=DailyCleaningMessage.Message_input)
+async def process_message_input(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['message'] = message.text
     confirm_kb = types.InlineKeyboardMarkup(row_width=1)
-    confirm_kb.add(types.InlineKeyboardButton("Проверить", callback_data="check"))
-    confirm_kb.add(types.InlineKeyboardButton("Отменить", callback_data="cancel"))
     confirm_kb.add(types.InlineKeyboardButton("Сохранить", callback_data="save"))
-    await bot.edit_message_text(chat_id=message.chat.id , message_id=message.message_id,
-                                text="Новое сообщение: " + message.text, reply_markup=confirm_kb)
-    await AdminForm.next()
+    confirm_kb.add(types.InlineKeyboardButton("Изменить", callback_data="change"))
+    confirm_kb.add(types.InlineKeyboardButton("Отменить", callback_data="cancel"))
+    await message.answer("Что с ним сделать?", reply_markup=confirm_kb)
+    await DailyCleaningMessage.Confirm.set()
 
 
-# Обработчик кнопки "Проверить"
-@dp.callback_query_handler(text="check" , state=AdminForm.Confirm)
-async def check_message(callback: types.CallbackQuery , state: FSMContext):
-    await callback.message.edit_text('Сообщение проверено и готово к сохранению.')
-
-
-# Обработчик кнопки "Отменить"
-@dp.callback_query_handler(text="cancel" , state=AdminForm.Confirm)
-async def cancel_message(callback: types.CallbackQuery , state: FSMContext):
-    await state.finish()
-    await callback.message.edit_text('Изменение сообщения отменено')
-
-
-# Обработчик кнопки "Сохранить"
-@dp.callback_query_handler(text="save" , state=AdminForm.Confirm)
+# Обработчики кнопок "Сохранить", "Изменить", "Отменить"
+@dp.callback_query_handler(text="save" , state=DailyCleaningMessage.Confirm)
 async def save_message(callback: types.CallbackQuery , state: FSMContext):
     async with state.proxy() as data:
-        messages = work_with_jsons.open_json_admins()
-        messages['roles_dict'][data['role']] = data['message']
-        work_with_jsons.save_json_admins(messages)
+        work_with_jsons.change_message_trade_points(data['point'], data['role'], data['message'])
     await callback.message.edit_text('Сообщение об уборке успешно обновлено')
     await state.finish()
-###
+    await show_admin_menu(callback)
 
+
+
+@dp.callback_query_handler(text="change", state=DailyCleaningMessage.Confirm)
+async def change_message(callback: types.CallbackQuery , state: FSMContext):
+    await callback.message.answer("Введите новое сообщение об уборке:")
+    await DailyCleaningMessage.Message_input.set()
+
+
+@dp.callback_query_handler(text="cancel", state=DailyCleaningMessage.Confirm)
+async def cancel_message(callback: types.CallbackQuery , state: FSMContext):
+    await callback.message.edit_text('Изменение сообщения отменено')
+    await state.finish()
+    await show_admin_menu(callback)
+
+###
 
 ########## counter
 @dp.callback_query_handler(text="get_file")

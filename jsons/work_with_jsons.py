@@ -155,7 +155,7 @@ def add_sell_point(point, point_id):
                 3. Поздравить гостей с ДР до 15:00
                 4. Отправить чек закрытия прислать отчёт по выполнению смены до 01:30
                 5. Выручка -50000'''
-            messages_admin.get("slearing", {})[point] = {
+            messages_admin.get("clearing", {})[point] = {
                 "Чайный Мастер утро": "Чайный Мастер утро",
                 "Чайный Админ": "Чайный Админ",
                 "Чайный Мастер вечер": "Чайный Мастер вечер",
@@ -182,7 +182,7 @@ def dell_trade_point(point):
 
             del messages_admin.get('trade_points', {})[point]
             del messages_admin.get('scheduled_message' , {})[point]
-            del messages_admin.get("slearing", {})[point]
+            del messages_admin.get("clearing", {})[point]
             del messages_admin.get("goals_day", {})[point]
 
         except Exception as e:
@@ -195,13 +195,31 @@ def dell_trade_point(point):
         messages = open_json_admins()
 
 
-def change_message_trade_points(point, message):
+def change_message_scheduled_trade_points(point, message):
     if os.path.exists(JSON_FILE_ADMIN):
         with open(JSON_FILE_ADMIN , 'r' , encoding='utf-8') as file:
             messages_admin = json.load(file)
 
         try:
             messages_admin.get('scheduled_message' , {})[point] = message
+
+        except Exception as e:
+            print(e)
+            pass
+
+        with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
+            json.dump(messages_admin , json_file , ensure_ascii=False , indent=4)
+
+        messages = open_json_admins()
+
+
+def change_message_trade_points(point, role, message):
+    if os.path.exists(JSON_FILE_ADMIN):
+        with open(JSON_FILE_ADMIN , 'r' , encoding='utf-8') as file:
+            messages_admin = json.load(file)
+
+        try:
+            messages_admin.get('сlearing' , {})[point][role] = message
 
         except Exception as e:
             print(e)
