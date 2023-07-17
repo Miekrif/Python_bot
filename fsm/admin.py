@@ -45,6 +45,16 @@ class TradePointRemovalForm(StatesGroup):
     ChoosingPoint = State()
 
 
+class ScheduleMessageForm(StatesGroup):
+    ChoosingPoint = State()
+    EditMessage = State()
+    NewMessage = State()
+    ChooseTime = State()
+    DeleteMessage = State()
+    SaveChanges = State()
+    CancelChanges = State()
+
+
 @dp.callback_query_handler(text="admin")
 async def handle_admin_callback(call: types.CallbackQuery):
     await show_admin_menu(call)
@@ -391,3 +401,108 @@ async def process_delete_point(callback_query: types.CallbackQuery, state: FSMCo
     await state.finish()
     await show_admin_menu(callback_query)
 
+
+# Обработчик кнопки "Ежедневное сообщение"
+@dp.callback_query_handler(text='schedule_message')
+async def process_schedule_message(callback_query: types.CallbackQuery , state: FSMContext):
+    messages = work_with_jsons.open_json_admins()
+    trade_points = messages["trade_points"].keys()
+    keyboard = types.InlineKeyboardMarkup()
+
+    # Создаем кнопку для каждой точки
+    for point in trade_points:
+        button = types.InlineKeyboardButton(text=point , callback_data=f'schedule_message_point:{point}')
+        keyboard.add(button)
+
+    await bot.send_message(callback_query.message.chat.id , "Выберите точку:" , reply_markup=keyboard)
+    await ScheduleMessageForm.ChoosingPoint.set()
+
+
+# Обработчик выбора точки
+@dp.callback_query_handler(state=ScheduleMessageForm.ChoosingPoint)
+async def process_schedule_message_point(callback_query: types.CallbackQuery , state: FSMContext):
+    point = callback_query.data.split(':')[1]
+
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+    buttons = [
+        types.InlineKeyboardButton(text='Изменить ежедневное сообщение' ,
+                                   callback_data=f'schedule_message_edit:{point}') ,
+        types.InlineKeyboardButton(text='Поменять время ежедневного сообщения' ,
+                                   callback_data=f'schedule_message_time:{point}') ,
+        types.InlineKeyboardButton(text='Удалить ежедневное сообщение' ,
+                                   callback_data=f'schedule_message_delete:{point}') ,
+        types.InlineKeyboardButton(text='Сохранить изменения' , callback_data='schedule_message_save') ,
+        types.InlineKeyboardButton(text='Отменить изменения' , callback_data='schedule_message_cancel') ,
+    ]
+
+    keyboard.add(*buttons)
+
+    await bot.send_message(callback_query.message.chat.id , "Выберите действие:" , reply_markup=keyboard)
+    async with state.proxy() as data:
+        data['point'] = point
+
+    await ScheduleMessageForm.next()
+
+
+# Обработчик кнопки "Изменить ежедневное сообщение"
+@dp.callback_query_handler(lambda callback_query: callback_query.data.startswith('schedule_message_edit') ,
+                           state=ScheduleMessageForm.EditMessage)
+async def process_schedule_message_edit(callback_query: types.CallbackQuery , state: FSMContext):
+    messages = work_with_jsons.open_json_admins()
+    point = callback_query.data.split(':')[1]
+    message = messages["scheduled_message"].get(point , "")
+
+    await bot.send_message(callback_query.message.chat.id ,
+                           f'Текущее сообщение для {point}: {message}\n\nВведите новое сообщение:')
+    await ScheduleMessageForm.next()
+
+
+# Обработчик ввода нового сообщения
+@dp.message_handler(state=ScheduleMessageForm.NewMessage)
+async def process_new_message(message: types.Message , state: FSMContext):
+    async with state.proxy() as data:
+        data['message'] = message.text
+
+    await bot.send_message(message.chat.id , 'Сообщение успешно обновлено')
+    await ScheduleMessageForm.previous()
+
+
+# Обработчик кнопки "Поменять время ежедневного сообщения"
+@dp.callback_query_handler(lambda callback_query: callback_query.data.startswith('schedule_message_time') ,
+                           state=ScheduleMessageForm.ChooseTime)
+async def process_schedule_message_time(callback_query: types.CallbackQuery , state: FSMContext):
+    # Код для выбора времени и сохранения его в FSM
+    await ScheduleMessageForm.next()
+
+
+# Обработчик кнопки "Удалить ежедневное сообщение"
+@dp.callback_query_handler(lambda callback_query: callback_query.data.startswith('schedule_message_delete') ,
+                           state=ScheduleMessageForm.DeleteMessage)
+async def process_schedule_message_delete(callback_query: types.CallbackQuery , state: FSMContext):
+    messages = work_with_jsons.open_json_admins()
+    point = callback_query.data.split(':')[1]
+    work_with_jsons.delete_scheduled_message(point)
+
+    await bot.send_message(callback_query.message.chat.id , 'Ежедневное сообщение успешно удалено')
+    await show_admin_menu(callback_query)  # Ваша функция show_admin_menu()
+
+
+# Обработчик кнопки "Сохранить изменения"
+@dp.callback_query_handler(text='schedule_message_save' , state=ScheduleMessageForm.SaveChanges)
+async def process_schedule_message_save(callback_query: types.CallbackQuery , state: FSMContext):
+    async with state.proxy() as data:
+        point = data['point']
+        message = data.get('message' , '')
+        time = data.get('time' , '')
+
+        work_with_jsons.save_scheduled_message(point , time , message)
+
+    await bot.send_message(callback_query.message.chat.id , 'Изменения успешно сохранены')
+    await show_admin_menu(callback_query.message.chat.id)  # Ваша функция show_admin_menu()
+
+
+# Обработчик кнопки "Отменить изменения"
+@dp.callback_query_handler(text='schedule_message_cancel' , state=ScheduleMessageForm.CancelChanges)
+async def process_schedule_message_cancel(callback_query: types.CallbackQuery , state: FSMContext):
+    await state.finish()
+    await show_admin_menu(callback_query.message.chat.id)  # Ваша функция show_admin_menu()
