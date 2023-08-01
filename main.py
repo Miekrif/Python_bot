@@ -2,6 +2,7 @@ import logging
 import fsm.admin
 from loader import dp
 from aiogram import executor
+from initial import copy_initial_file
 from utils.functions import open_json
 from handlers import message_handlers, callback_query_handlers
 from config.config import BOT_TOKEN, CHEKICHAT, ADMINS, JSON_FILE, manager
@@ -17,3 +18,4 @@ logger.error("Ошибка")
 
 if __name__ == '__main__':
     executor.start_polling(dp)
+    copy_initial_file()
