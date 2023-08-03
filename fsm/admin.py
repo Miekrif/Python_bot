@@ -105,8 +105,7 @@ async def show_admin_menu(message_or_call):
     buttons = [
         types.InlineKeyboardButton(text='Добавить Нового пользователя боту' , callback_data='add_user') ,
         types.InlineKeyboardButton(text='Добавить новую точку боту' , callback_data='add_points') ,
-        types.InlineKeyboardButton(text='Поменять сообщение для уборки' ,
-                                   callback_data='update_cleaning_message') ,
+        types.InlineKeyboardButton(text='Поменять сообщение для уборки' , callback_data='update_cleaning_message') ,
         types.InlineKeyboardButton(text='Сделать ценники' , callback_data='get_file') ,
         types.InlineKeyboardButton(text='Удалить пользователя бота' , callback_data='delete_user') ,
         types.InlineKeyboardButton(text='Удалить торговую точку из бота' , callback_data='dell_points') ,
@@ -501,8 +500,9 @@ async def process_schedule_message_save(callback_query: types.CallbackQuery , st
     await show_admin_menu(callback_query.message.chat.id)  # Ваша функция show_admin_menu()
 
 
-# Обработчик кнопки "Отменить изменения"
-@dp.callback_query_handler(text='schedule_message_cancel' , state=ScheduleMessageForm.CancelChanges)
-async def process_schedule_message_cancel(callback_query: types.CallbackQuery , state: FSMContext):
-    await state.finish()
-    await show_admin_menu(callback_query.message.chat.id)  # Ваша функция show_admin_menu()
+
+
+
+
+
+
