@@ -325,7 +325,7 @@ async def enter_file_state(call: types.CallbackQuery, state: FSMContext):
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(*buttons)
     await bot.send_message(chat_id=call.message.chat.id ,
-                           text="Пожалуйста, загрузите файл или нажмите кнопку 'Отмена'." ,
+                           text="Я отослал тебе файл, это пример того что я должен получить от тебя для положительного результата \nПожалуйста, загрузите файл или нажмите кнопку 'Отмена'." ,
                            reply_markup=keyboard)
     await AdminForm.WaitingForFile.set()
 
