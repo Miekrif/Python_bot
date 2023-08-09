@@ -29,7 +29,6 @@ color_type = {
 
 
 def start_logic():
-    clear_subdirectories('PDF/output')
     try:
         # Проходим по каждому листу в файле
         for sheet in sheets:
@@ -106,4 +105,5 @@ if __name__ == '__main__':
     logger.info("Информационное сообщение")
     logger.warning("Предупреждение")
     logger.error("Ошибка")
+    clear_subdirectories(os.path.abspath('output'))
     start_logic()
