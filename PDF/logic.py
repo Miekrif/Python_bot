@@ -2,8 +2,8 @@ import os
 import shutil
 import logging
 import pandas as pd
-from square_tag import start as square_tag
-from horizon_tag import start as horizon_tag
+from PDF.square_tag import start as square_tag
+from PDF.horizon_tag import start as horizon_tag
 
 stop_word = 'nan'
 
