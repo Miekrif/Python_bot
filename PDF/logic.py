@@ -73,26 +73,29 @@ def start_logic():
 
 
 def clear_subdirectories(path):
-    # Проверяем, существует ли заданный путь
-    if os.path.exists(path) and os.path.isdir(path):
-        # Проходим по всем поддиректориям
-        for root_dir, dirs, files in os.walk(path):
-            for dir in dirs:
-                dir_path = os.path.join(root_dir, dir)
-                # Удаляем все файлы и поддиректории в текущей поддиректории
-                for filename in os.listdir(dir_path):
-                    if '1' in filename:
-                        continue
-                    file_path = os.path.join(dir_path, filename)
-                    try:
-                        if os.path.isfile(file_path) or os.path.islink(file_path):
-                            os.unlink(file_path)
-                        elif os.path.isdir(file_path):
-                            shutil.rmtree(file_path)
-                    except Exception as e:
-                        print(f'Не удалось удалить {file_path}. Причина: {e}')
-    else:
-        print(f'Путь {path} не существует или не является директорией')
+    try:
+        # Проверяем, существует ли заданный путь
+        if os.path.exists(path) and os.path.isdir(path):
+            # Проходим по всем поддиректориям
+            for root_dir, dirs, files in os.walk(path):
+                for dir in dirs:
+                    dir_path = os.path.join(root_dir, dir)
+                    # Удаляем все файлы и поддиректории в текущей поддиректории
+                    for filename in os.listdir(dir_path):
+                        if '1' in filename:
+                            continue
+                        file_path = os.path.join(dir_path, filename)
+                        try:
+                            if os.path.isfile(file_path) or os.path.islink(file_path):
+                                os.unlink(file_path)
+                            elif os.path.isdir(file_path):
+                                shutil.rmtree(file_path)
+                        except Exception as e:
+                            print(f'Не удалось удалить {file_path}. Причина: {e}')
+        else:
+            print(f'Путь {path} не существует или не является директорией')
+    except Exception as e:
+        print(e)
 
 
 if __name__ == '__main__':
