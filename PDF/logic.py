@@ -1,5 +1,6 @@
 import os
 import shutil
+import logging
 import pandas as pd
 from PDF.square_tag import start as square_tag
 from PDF.horizon_tag import start as horizon_tag
@@ -99,4 +100,10 @@ def clear_subdirectories(path):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
+
+    logger.info("Информационное сообщение")
+    logger.warning("Предупреждение")
+    logger.error("Ошибка")
     start_logic()
