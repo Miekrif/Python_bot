@@ -23,7 +23,7 @@ color_type = {
 
 
 def start_logic():
-    xls = pd.ExcelFile(os.path.abspath('counter.xlsx'))
+    xls = pd.ExcelFile(os.path.abspath('PDF/counter.xlsx'))
     sheets = xls.sheet_names
     try:
         # Проходим по каждому листу в файле
