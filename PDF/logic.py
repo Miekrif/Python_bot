@@ -7,12 +7,6 @@ from PDF.horizon_tag import start as horizon_tag
 
 stop_word = 'nan'
 
-# Открываем файл Excel
-xls = pd.ExcelFile('PDF/counter.xlsx')
-
-# Получаем список всех листов в файле
-sheets = xls.sheet_names
-
 color_type = {
     'ГАБА': '#CD7F32',
     'УЛУН': '#E75C21',
@@ -29,6 +23,8 @@ color_type = {
 
 
 def start_logic():
+    xls = pd.ExcelFile(os.path.abspath('counter.xlsx'))
+    sheets = xls.sheet_names
     try:
         # Проходим по каждому листу в файле
         for sheet in sheets:
