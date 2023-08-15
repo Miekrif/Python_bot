@@ -42,20 +42,13 @@ def start_logic():
                 # Обработка цены
                 price = str(row['Цена'])
                 if float(row['Цена']) < 20:
-                    price = price + 'ρ (A)'
+                    price = price.replace('.0', '') + 'ρ (A)'
                 elif float(row['Цена']) <= 35:
-                    price = price + 'ρ (A+)'
+                    price = price.replace('.0', '') + 'ρ (A+)'
                 elif float(row['Цена']) <= 55:
-                    price = price + 'ρ (A++)'
+                    price = price.replace('.0', '') + 'ρ (A++)'
                 else:
-                    price = price + 'ρ'
-                # Words[name.replace('/', '\\')] = [price, type, color_type.get(type.upper(), '#E75C21'), color_name.get(name.replace('/', '\\'), '#FFFFFF'), '#FFB12A']
-                # color_type=color_type.get(type.upper(), '#E75C21')
-                # color_name=color_name.get(name.replace('/', '\\'), '#FFFFFF')
-                # color_price='#FFB12A'
-                # tea_type=type
-                # name_of_tea=name_of_tea
-                # price_tea=price
+                    price = price.replace('.0', '') + 'ρ'
                 print(color_type.get(str(row['Тип чая']), '#E75C21'), str(row['Наименование']), price, str(row['Тип чая']), str(row['Наименование']), price)
                 # Здесь вставьте вызовы функций модулей horizon и square в соответствии с именем листа
                 if sheet.lower() == 'horizon':
