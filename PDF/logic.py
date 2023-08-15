@@ -49,14 +49,28 @@ def start_logic():
                     price = price.replace('.0', '') + 'ρ (A++)'
                 else:
                     price = price.replace('.0', '') + 'ρ'
-                print(color_type.get(str(row['Тип чая']), '#E75C21'), str(row['Наименование']), price, str(row['Тип чая']), str(row['Наименование']), price)
+                print(
+                    color_type.get(str(row['Тип чая']).upper(), '#E75C21'),
+                    str(row['Тип чая']),
+                    str(row['Наименование']).replace('/', '\\'),
+                    price
+                )
                 # Здесь вставьте вызовы функций модулей horizon и square в соответствии с именем листа
                 if sheet.lower() == 'horizon':
-                    horizon_tag(color_type=color_type.get(str(row['Тип чая']).upper(), '#E75C21'), color_name='#FFFFFF',
-                                  color_price='#FFB12A', tea_type=str(row['Тип чая']), name_of_tea=str(row['Наименование']).replace('/', '\\'), price_tea=price)
+                    horizon_tag(color_type=color_type.get(str(row['Тип чая']).upper(), '#E75C21'),
+                                color_name='#FFFFFF',
+                                color_price='#FFB12A',
+                                tea_type=str(row['Тип чая']),
+                                name_of_tea=str(row['Наименование']).replace('/', '\\'),
+                                price_tea=price)
+
                 elif sheet.lower() == 'square':
-                    square_tag(color_type=color_type.get(str(row['Тип чая']).upper(), '#E75C21'), color_name='#FFFFFF',
-                                 color_price='#FFB12A', tea_type=str(row['Тип чая']), name_of_tea=str(row['Наименование']).replace('/', '\\'), price_tea=price)
+                    square_tag(color_type=color_type.get(str(row['Тип чая']).upper(), '#E75C21'),
+                               color_name='#FFFFFF',
+                               color_price='#FFB12A',
+                               tea_type=str(row['Тип чая']),
+                               name_of_tea=str(row['Наименование']).replace('/', '\\'),
+                               price_tea=price)
     except Exception as e:
         print(e)
 
