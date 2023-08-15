@@ -40,15 +40,15 @@ def start_logic():
                 # Получаем нужный цвет из словаря
                 # print(df.columns)
                 # Обработка цены
-                price = str(row['Цена']).replace('.0', '')
+                price = str(convert_to_appropriate_type(row['Цена']))
                 if float(row['Цена']) < 20:
-                    price = price.replace('.0', '') + 'ρ (A)'
+                    price = price + 'ρ (A)'
                 elif float(row['Цена']) <= 35:
-                    price = price.replace('.0', '') + 'ρ (A+)'
+                    price = price + 'ρ (A+)'
                 elif float(row['Цена']) <= 55:
-                    price = price.replace('.0', '') + 'ρ (A++)'
+                    price = price + 'ρ (A++)'
                 else:
-                    price = price.replace('.0', '') + 'ρ'
+                    price = price + 'ρ'
                 print(
                     color_type.get(str(row['Тип чая']).upper(), '#E75C21'),
                     str(row['Тип чая']),
@@ -99,6 +99,12 @@ def clear_subdirectories(path):
             print(f'Путь {path} не существует или не является директорией')
     except Exception as e:
         print(e)
+
+
+def convert_to_appropriate_type(num):
+    if num.is_integer():
+        return int(num)
+    return num
 
 
 if __name__ == '__main__':
