@@ -40,7 +40,7 @@ def start_logic():
                 # Получаем нужный цвет из словаря
                 # print(df.columns)
                 # Обработка цены
-                price = str(row['Цена'])
+                price = str(row['Цена']).replace('.0', '')
                 if float(row['Цена']) < 20:
                     price = price.replace('.0', '') + 'ρ (A)'
                 elif float(row['Цена']) <= 35:
