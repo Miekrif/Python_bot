@@ -27,6 +27,9 @@ async def cmd_start(entity):
             await bot.send_message(chat_id=chat_id , text='Привет! \nМы с тобой еще незнакомы, но тебе уже можно мной пользоваться! Сейчас я попрошу тебя данные, для того, чтобы я мог знать, с кем я работаю! \nПожалуйста, введите свое имя:')
 
         else:
+            print(id_user in messages["users"].get('admins', []))
+            print(id_user)
+            print(messages["users"].get('admins', []))
             if id_user in messages["users"].get('admins', []):
                 buttons = [
                     types.InlineKeyboardButton(text='Открыть смену', callback_data='Time_to_work'),
