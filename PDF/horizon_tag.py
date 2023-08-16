@@ -11,7 +11,7 @@ from contextlib import contextmanager
 from reportlab.pdfbase import pdfmetrics
 from reportlab.platypus import Paragraph
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 
 
@@ -79,30 +79,32 @@ def get_name_tea_style(font_name='Capsmall_clean', font_size=15, font_color=colo
         fontName=font_name,
         fontSize=font_size,
         textColor=font_color,
-        alignment=TA_CENTER,
+        alignment=TA_LEFT ,  # выравнивание по левому краю
         leading=0.9 * font_size,  # уменьшение разрыва между строками
     )
 
 
 def name_tea(c, color_id, size, name_of_tea):
     try:
+
         pdf_color = colors.HexColor(color_id)
         c.setFillColor(pdf_color)
-        width = 18.5 * cm
+        width = 10 * cm
         height = 1.9 * cm
-        x = 3 * cm
+        x = 8 * cm
         y = 1 * cm
-        # draw_background(c, x, y, width, height, background_color=colors.HexColor('#CCCCCC'))
 
         # Уменьшение размера шрифта в зависимости от длины текста
         if len(name_of_tea) > 30:
-            size -= 6
+            size -= 12
         elif len(name_of_tea) > 20:
-            size -= 3
+            size -= 8
         elif len(name_of_tea) > 15:
-            size -= 2
+            size -= 5
         elif len(name_of_tea) > 10:
-            size -= 1
+            size -= 4
+        # Подсветка зон размещения
+        # draw_background(c, x, y, width, height, background_color=colors.HexColor('#CCCCCC'))  # добавьте эту строку
 
         name_tea_style = get_name_tea_style(font_size=size, font_color=pdf_color)
         name_tea_paragraph = Paragraph(name_of_tea, style=name_tea_style)
@@ -117,30 +119,60 @@ def name_tea(c, color_id, size, name_of_tea):
 
 def type_tea(c, color_id, tea_type, size):
     try:
-        x = 4.9 * cm
-        y = 1.4 * cm
-        c.setFont('Capsmall_clean', size)
-
+        x = 2.2 * cm
+        y = 1 * cm
+        width = 5.5 * cm
+        height = 1.9 * cm
         pdf_color = colors.HexColor(color_id)
 
+        # Подсветка зон размещения
+        # draw_background(c, x, y, width, height, background_color=colors.HexColor('#CD5C5C'))
+
+        c.setFont('Capsmall_clean', size)
+        text_width = c.stringWidth(tea_type, 'Capsmall_clean', size)
+        text_height = size  # Обычно размер шрифта соответствует высоте текста
+
+        # Вычисление координат для центрирования текста
+        x_centered = x + width / 2
+        y_centered = y + height / 2 - text_height / 2  # Центрируем текст по вертикали внутри выделенной зоны
+
         c.setFillColor(pdf_color)
-        c.drawCentredString(x, y, tea_type)
+        c.drawCentredString(x_centered, y_centered, tea_type)
     except Exception as e:
         print(e)
 
 
+def get_paragraph_style(font_name='Capsmall_clean', font_size=15, font_color=colors.white):
+    return ParagraphStyle(
+        name='CenteredStyle',
+        fontName=font_name,
+        fontSize=font_size,
+        textColor=font_color,
+        alignment=TA_CENTER,
+        leading=0.9 * font_size  # уменьшение разрыва между строками
+    )
+
+
 def price_of_tea(c, color_id, price_tea, size):
     try:
-        x = 18.5 * cm
-        y = 1.5 * cm
+        x = 18 * cm
+        y = 1 * cm
+        width = 2.8 * cm
+        height = 1.9 * cm
 
-        c.setFont('Capsmall_clean', size)
+        # Подсветка зон размещения
+        # draw_background(c, x, y, width, height, background_color=colors.HexColor('#FFD700'))
 
         pdf_color = colors.HexColor(color_id)
 
-        c.setFillColor(pdf_color)
+        # Создание абзаца с заданным стилем
+        style = get_paragraph_style(font_size=size, font_color=pdf_color)
+        para = Paragraph(price_tea, style)
 
-        c.drawCentredString(x, y, price_tea)
+        # Размещаем абзац внутри нашей подсвеченной области
+        w, h = para.wrap(width, height)
+        para.drawOn(c, x, y + (height - h) / 2)
+
     except Exception as e:
         print(e)
 

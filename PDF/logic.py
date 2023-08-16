@@ -89,7 +89,7 @@ def clear_subdirectories(path):
                     dir_path = os.path.join(root_dir, dir)
                     # Удаляем все файлы и поддиректории в текущей поддиректории
                     for filename in os.listdir(dir_path):
-                        if '1' in filename:
+                        if '1' in filename and len(filename) == 1:
                             continue
                         file_path = os.path.join(dir_path, filename)
                         try:
@@ -105,7 +105,6 @@ def clear_subdirectories(path):
         print(e)
 
 
-
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
@@ -115,3 +114,7 @@ if __name__ == '__main__':
     logger.error("Ошибка")
     clear_subdirectories(os.path.abspath('output'))
     start_logic()
+    os.system('rm -rf PDF/counter.xlsx')
+    # os.system('rm -rf PDF/output.zip')
+
+    print(os.system('ls -lha '))
