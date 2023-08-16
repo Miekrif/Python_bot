@@ -40,7 +40,11 @@ def start_logic():
                 # Получаем нужный цвет из словаря
                 # print(df.columns)
                 # Обработка цены
-                price = str(convert_to_appropriate_type(row['Цена']))
+                if row['Цена'].is_integer():
+                    price = str(int(row['Цена']))
+                else:
+                    price = str(row['Цена'])
+
                 if float(row['Цена']) < 20:
                     price = price + 'ρ (A)'
                 elif float(row['Цена']) <= 35:
@@ -100,11 +104,6 @@ def clear_subdirectories(path):
     except Exception as e:
         print(e)
 
-
-def convert_to_appropriate_type(num):
-    if num.is_integer():
-        return int(num)
-    return num
 
 
 if __name__ == '__main__':
