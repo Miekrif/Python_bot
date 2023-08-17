@@ -143,6 +143,7 @@ def type_tea(c, color_id, tea_type, size):
     except Exception as e:
         logger.error(e)
 
+
 def price_of_tea(c, color_id, price_tea, size):
     try:
         x = 3.5 * cm
