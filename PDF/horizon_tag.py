@@ -1,5 +1,6 @@
 import sys
 import pdfrw
+import logging
 from pdfrw import PdfReader
 from reportlab.lib import colors
 from reportlab.lib.units import cm
@@ -13,6 +14,13 @@ from reportlab.platypus import Paragraph
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+logger.info("Информационное сообщение")
+logger.warning("Предупреждение")
+logger.error("Ошибка")
 
 
 def start(color_type, color_name, color_price, tea_type, name_of_tea, price_tea):
@@ -43,7 +51,7 @@ def start(color_type, color_name, color_price, tea_type, name_of_tea, price_tea)
         trim_bottom = 2.9 * mm  # 10 мм снизу
         resize_page(output_file, page_width, page_height, trim_bottom)
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 def split_text(text, max_length):
@@ -65,7 +73,7 @@ def split_text(text, max_length):
         lines.append(current_line.strip())
         return lines
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 def draw_background(c, x, y, width, height, background_color):
@@ -114,7 +122,7 @@ def name_tea(c, color_id, size, name_of_tea):
         vertical_padding = (height - wrapped_text_height) / 2
         name_tea_paragraph.drawOn(c, x, y + vertical_padding)
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 def type_tea(c, color_id, tea_type, size):
@@ -139,7 +147,7 @@ def type_tea(c, color_id, tea_type, size):
         c.setFillColor(pdf_color)
         c.drawCentredString(x_centered, y_centered, tea_type)
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 def get_paragraph_style(font_name='Capsmall_clean', font_size=15, font_color=colors.white):
@@ -174,7 +182,7 @@ def price_of_tea(c, color_id, price_tea, size):
         para.drawOn(c, x, y + (height - h) / 2)
 
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 @contextmanager
@@ -186,7 +194,7 @@ def edit_canvas(output_file, page_width, page_height):
         finally:
             c.save()
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 def resize_page(output_file, page_width, page_height, trim_bottom):
@@ -202,4 +210,4 @@ def resize_page(output_file, page_width, page_height, trim_bottom):
         # Сохранение обновленного PDF-файла
         pdfrw.PdfWriter().write(output_file, input_pdf)
     except Exception as e:
-        print(e)
+        logger.error(e)

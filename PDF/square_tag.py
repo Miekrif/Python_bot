@@ -1,6 +1,7 @@
 import os
 import sys
 import pdfrw
+import logging
 from pdfrw import PdfReader
 from reportlab.lib import colors
 from reportlab.lib.units import cm
@@ -14,6 +15,14 @@ from reportlab.platypus import Paragraph
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+logger.info("Информационное сообщение")
+logger.warning("Предупреждение")
+logger.error("Ошибка")
 
 
 def start(color_type, color_name, color_price, tea_type, name_of_tea, price_tea):
@@ -43,7 +52,7 @@ def start(color_type, color_name, color_price, tea_type, name_of_tea, price_tea)
         trim_bottom = 2.9 * mm  # 10 мм снизу
         resize_page(output_file, page_width, page_height, trim_bottom)
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 def split_text(text, max_length):
@@ -65,7 +74,7 @@ def split_text(text, max_length):
         lines.append(current_line.strip())
         return lines
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 def draw_background(c, x, y, width, height, background_color):
@@ -73,7 +82,7 @@ def draw_background(c, x, y, width, height, background_color):
         c.setFillColor(background_color)
         c.rect(x, y, width, height, fill=True)
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 def get_name_tea_style(font_name='Capsmall_clean', font_size=15, font_color=colors.white):
@@ -87,7 +96,7 @@ def get_name_tea_style(font_name='Capsmall_clean', font_size=15, font_color=colo
             leading=0.9 * font_size,  # уменьшение разрыва между строками
         )
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 def name_tea(c, color_id, size, name_of_tea):
@@ -118,7 +127,7 @@ def name_tea(c, color_id, size, name_of_tea):
         vertical_padding = (height - wrapped_text_height) / 2
         name_tea_paragraph.drawOn(c, x, y + vertical_padding)
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 def type_tea(c, color_id, tea_type, size):
@@ -132,7 +141,7 @@ def type_tea(c, color_id, tea_type, size):
         c.setFillColor(pdf_color)
         c.drawCentredString(x, y, tea_type)
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 def price_of_tea(c, color_id, price_tea, size):
     try:
@@ -147,7 +156,7 @@ def price_of_tea(c, color_id, price_tea, size):
 
         c.drawCentredString(x, y, price_tea)
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 @contextmanager
@@ -172,4 +181,4 @@ def resize_page(output_file, page_width, page_height, trim_bottom):
         # Сохранение обновленного PDF-файла
         pdfrw.PdfWriter().write(output_file, input_pdf)
     except Exception as e:
-        print(e)
+        logger.error(e)

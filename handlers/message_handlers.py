@@ -1,3 +1,4 @@
+import logging
 from aiogram import types
 from loader import dp, bot
 from aiogram.types import ParseMode, ReplyKeyboardMarkup, KeyboardButton
@@ -8,6 +9,14 @@ from utils.functions import open_json, add_to_dict
 from jsons.work_with_jsons import open_json_admins
 from config.config import BOT_TOKEN, CHEKICHAT, JSON_FILE, manager
 import fsm.fsm_user_id as fsm_user_id
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+logger.info("Информационное сообщение")
+logger.warning("Предупреждение")
+logger.error("Ошибка")
 
 
 async def cmd_start(entity):
@@ -27,9 +36,9 @@ async def cmd_start(entity):
             await bot.send_message(chat_id=chat_id , text='Привет! \nМы с тобой еще незнакомы, но тебе уже можно мной пользоваться! Сейчас я попрошу тебя данные, для того, чтобы я мог знать, с кем я работаю! \nПожалуйста, введите свое имя:')
 
         else:
-            print(id_user in messages["users"].get('admins', []))
-            print(id_user)
-            print(messages["users"].get('admins', []))
+            logger.info(id_user in messages["users"].get('admins', []))
+            logger.info(id_user)
+            logger.info(messages["users"].get('admins', []))
             if id_user in messages["users"].get('admins', []):
                 buttons = [
                     types.InlineKeyboardButton(text='Открыть смену', callback_data='Time_to_work'),
@@ -122,12 +131,12 @@ async def photo_message(message: types.Message, state: FSMContext):
     await state.update_data(file_id=file_id)
     id_user = message.from_user.id
     open_json()
-    print(id_user)
+    logger.info(id_user)
     id_user = f'[\'{id_user}\']'
     MY_CONTACT.fromkeys(f'{id_user}')
     if MY_CONTACT.get(id_user) != None:
         global phone1
-        print('Не ровняется')
+        logger.info('Не ровняется')
         phone1 = MY_CONTACT.get(id_user)
         phone1 = str(phone1).replace('[', '')
         phone1 = str(phone1).replace(']', '')

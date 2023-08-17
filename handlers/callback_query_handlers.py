@@ -1,3 +1,4 @@
+import logging
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
@@ -7,6 +8,13 @@ from loader import dp, bot
 from utils.functions import open_json, add_to_dict, open_json
 from jsons.work_with_jsons import open_json_admins
 from handlers.message_handlers import cmd_start
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+logger.info("Информационное сообщение")
+logger.warning("Предупреждение")
+logger.error("Ошибка")
 
 
 @dp.callback_query_handler(text='start')
@@ -104,7 +112,7 @@ async def push(call: types.CallbackQuery, state: FSMContext):
     keyboard.add(*buttons)
     await call.message.edit_text(f'Так же не забудь про уборочку! \n\n{await do_cleaning_cchi(day)}')
     a = 0
-    print(a)
+    logger.info(a)
     await call.message.edit_text(f'Хорошего дня тебе,\U0001F609 {call.from_user.first_name} \n ')
     await call.message.edit_text(
         'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
@@ -132,7 +140,7 @@ async def push(call: types.CallbackQuery):
     keyboard.add(*buttons)
     await call.message.edit_text(f'Так же не забудь про уборочку! \n\n{await do_cleaning_cchi(day)}')
     a = 0
-    print(a)
+    logger.info(a)
     await call.message.edit_text(f'Хорошего дня тебе,\U0001F609 {call.from_user.first_name} ')
     await call.message.edit_text(
         'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
@@ -164,7 +172,7 @@ async def push(call: types.CallbackQuery, state: FSMContext):
     keyboard.add(*buttons)
     await call.message.edit_text(f'Так же не забудь про уборочку! \n\n{await do_cleaning_kchi(day)}')
     a = 0
-    print(a)
+    logger.info(a)
     await call.message.edit_text(f'Хорошего дня тебе,\U0001F609 {call.from_user.first_name} \n ')
     await call.message.edit_text(
         'Помни,ты самый лучший мастер на планете и у тебя все получится!\nГлавное хотеть этого \n👌 хорошего начала дня\n😇 хороших посетителей\n🙏 хорошего настроения\n😅 хорошего чая\n🤑 хорошей кассы')
@@ -278,7 +286,7 @@ async def closesmena(call: types.CallbackQuery):
     await call.message.edit_text(f'{call.from_user.first_name}')
     # Здесь будет переменная которую будут менять
     await call.message.edit_text(
-        f'''Твой КПИ на это месяц. \n\n{print(*KPI_it)}''',
+        f'''Твой КПИ на это месяц. \n\n{logger.info(*KPI_it)}''',
         reply_markup=keyboard)
     await call.answer()
 

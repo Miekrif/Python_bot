@@ -1,12 +1,20 @@
 import os
 import json
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+logger.info("Информационное сообщение")
+logger.warning("Предупреждение")
+logger.error("Ошибка")
 
 JSON_FILE_ADMIN = 'jsons/message.json'
 
 
 async def word_mentor():
     slovo = "Здесь были продаванские мудрости"
-    print(slovo)
+    logger.info(slovo)
     return slovo
 
 
@@ -29,7 +37,7 @@ def read_json_admin_file_add_user(user_id):
         with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
             json.dump(messages_admin , json_file , ensure_ascii=False , indent=4)
     else:
-        print('Файла нет')
+        logger.info('Файла нет')
     messages = open_json_admins()
 
 
@@ -43,7 +51,7 @@ def read_json_admin_file_add_user_admin(user_id):
         with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
             json.dump(messages_admin , json_file , ensure_ascii=False , indent=4)
     else:
-        print('Файла нет')
+        logger.info('Файла нет')
     messages = open_json_admins()
 
 
@@ -59,7 +67,7 @@ def save_json_admins(role , data):  # roles_dict
 
         messages = open_json_admins()
     else:
-        print('Файла нет')
+        logger.info('Файла нет')
 
 
 def del_json_user(user):
@@ -71,7 +79,7 @@ def del_json_user(user):
             del messages_admin["users"].get('granted_users_is' , {})[str(user)]
 
         except Exception as e:
-            print(e)
+            logger.info(e)
             pass
 
         try:
@@ -79,7 +87,7 @@ def del_json_user(user):
             messages_admin["users"].get('granted_users' , []).remove(int(user))
 
         except Exception as e:
-            print(e)
+            logger.info(e)
             pass
 
         with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
@@ -88,7 +96,7 @@ def del_json_user(user):
         messages = open_json_admins()
 
     else:
-        print('Файла нет')
+        logger.info('Файла нет')
 
 
 def del_json_admin(user):
@@ -99,7 +107,7 @@ def del_json_admin(user):
         try:
             messages_admin["users"]['admins'].remove(int(user))
         except Exception as e:
-            print(e)
+            logger.info(e)
             pass
 
         with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
@@ -108,7 +116,7 @@ def del_json_admin(user):
         messages = open_json_admins()
 
     else:
-        print('Файла нет')
+        logger.info('Файла нет')
 
 
 def add_granted_users_is_data(userid , name , surname , phone):
@@ -122,9 +130,9 @@ def add_granted_users_is_data(userid , name , surname , phone):
                 "Surname": str(surname) ,
                 "phone_number": str(phone)
             }
-            print(messages_admin.get('granted_users_is' , {})[str(userid)])
+            logger.info(messages_admin.get('granted_users_is' , {})[str(userid)])
         except Exception as e:
-            print(e)
+            logger.info(e)
             pass
 
         with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
@@ -164,7 +172,7 @@ def add_sell_point(point, point_id):
             messages_admin.get("goals_day", {})[point] = ""
 
         except Exception as e:
-            print(e)
+            logger.info(e)
             pass
 
         with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
@@ -186,7 +194,7 @@ def dell_trade_point(point):
             del messages_admin.get("goals_day", {})[point]
 
         except Exception as e:
-            print(e)
+            logger.info(e)
             pass
 
         with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
@@ -204,7 +212,7 @@ def change_message_scheduled_trade_points(point, message):
             messages_admin.get('scheduled_message' , {})[point] = message
 
         except Exception as e:
-            print(e)
+            logger.info(e)
             pass
 
         with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:
@@ -222,7 +230,7 @@ def change_message_trade_points(point, role, message):
             messages_admin.get('сlearing' , {})[point][role] = message
 
         except Exception as e:
-            print(e)
+            logger.info(e)
             pass
 
         with open(JSON_FILE_ADMIN , 'w' , encoding='utf-8') as json_file:

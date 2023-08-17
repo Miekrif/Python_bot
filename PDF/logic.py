@@ -5,6 +5,14 @@ import pandas as pd
 from PDF.square_tag import start as square_tag
 from PDF.horizon_tag import start as horizon_tag
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+logger.info("Информационное сообщение")
+logger.warning("Предупреждение")
+logger.error("Ошибка")
+
+
 stop_word = 'nan'
 
 color_type = {
@@ -14,7 +22,7 @@ color_type = {
     'СВЕТЛЫЕ УЛУНЫ': '#77DDE7',
     'СВ УЛУН': '#77DDE7',
     'ЗЕЛЕНЫЙ': '#7ED957',
-    'ЗЕЛЁНЫЙ': '#7ED957' ,
+    'ЗЕЛЁНЫЙ': '#7ED957',
     'ЖЕЛТЫЙ': '#FFED00',
     'БЕЛЫЙ': '#FFFFFF',
     'ФХДЦ': '#8A6642',
@@ -31,15 +39,12 @@ def start_logic():
         for sheet in sheets:
             # Читаем данные с текущего листа
             data = pd.read_excel(xls, sheet)
-            print('*'*100)
-            print(sheet)
+            logger.info('*'*100)
+            logger.info(sheet)
             # Итерируемся по каждой строке данных
             for index, row in data.iterrows():
-                if str(str(row['Наименование'])) in str(stop_word):
+                if str(row['Наименование']) in str(stop_word):
                     break
-                # print(row)
-                # Получаем нужный цвет из словаря
-                # print(df.columns)
                 # Обработка цены
                 if row['Цена'].is_integer():
                     price = str(int(row['Цена']))
@@ -54,7 +59,7 @@ def start_logic():
                     price = price + 'ρ (A++)'
                 else:
                     price = price + 'ρ'
-                print(
+                logger.info(
                     color_type.get(str(row['Тип чая']).upper(), '#E75C21'),
                     str(row['Тип чая']),
                     str(row['Наименование']).replace('/', '\\'),
@@ -77,7 +82,7 @@ def start_logic():
                                name_of_tea=str(row['Наименование']).replace('/', '\\'),
                                price_tea=price)
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 def clear_subdirectories(path):
@@ -99,23 +104,17 @@ def clear_subdirectories(path):
                             elif os.path.isdir(file_path):
                                 shutil.rmtree(file_path)
                         except Exception as e:
-                            print(f'Не удалось удалить {file_path}. Причина: {e}')
+                            logger.error(f'Не удалось удалить {file_path}. Причина: {e}')
         else:
-            print(f'Путь {path} не существует или не является директорией')
+            logger.warning(f'Путь {path} не существует или не является директорией')
     except Exception as e:
-        print(e)
+        logger.error(e)
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(__name__)
-
-    logger.info("Информационное сообщение")
-    logger.warning("Предупреждение")
-    logger.error("Ошибка")
     clear_subdirectories(os.path.abspath('output'))
     start_logic()
     os.system('rm -rf PDF/counter.xlsx')
     # os.system('rm -rf PDF/output.zip')
 
-    print(os.system('ls -lha '))
+    logger.info(os.system('ls -lha '))
