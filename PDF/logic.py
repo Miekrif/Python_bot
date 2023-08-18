@@ -39,8 +39,6 @@ def start_logic():
         for sheet in sheets:
             # Читаем данные с текущего листа
             data = pd.read_excel(xls, sheet)
-            logger.info('*'*100)
-            logger.info(sheet)
             # Итерируемся по каждой строке данных
             for index, row in data.iterrows():
                 if str(row['Наименование']) in str(stop_word):
