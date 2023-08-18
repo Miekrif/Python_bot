@@ -59,11 +59,11 @@ def start_logic():
                     price = price + 'ρ (A++)'
                 else:
                     price = price + 'ρ'
-                logger.info(
-                    color_type.get(str(row['Тип чая']).upper(), '#E75C21'),
-                    str(row['Тип чая']),
-                    str(row['Наименование']).replace('/', '\\'),
-                    price
+                print(
+                    f"{color_type.get(str(row['Тип чая']).upper(), '#E75C21')}",
+                    f"{str(row['Тип чая'])}",
+                    f"{str(row['Наименование'])}".replace('/', '\\'),
+                    f"{price}"
                 )
                 # Здесь вставьте вызовы функций модулей horizon и square в соответствии с именем листа
                 if sheet.lower() == 'horizon':
