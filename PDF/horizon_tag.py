@@ -18,10 +18,6 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-logger.info("Информационное сообщение")
-logger.warning("Предупреждение")
-logger.error("Ошибка")
-
 
 def start(color_type, color_name, color_price, tea_type, name_of_tea, price_tea):
     try:
