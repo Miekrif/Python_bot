@@ -97,23 +97,35 @@ def get_name_tea_style(font_name='Capsmall_clean', font_size=15, font_color=colo
 
 def name_tea(c, color_id, size, name_of_tea):
     try:
+
         pdf_color = colors.HexColor(color_id)
         c.setFillColor(pdf_color)
-        width = 4.3 * cm
+        width = 4 * cm
         height = 1 * cm
-        x = 1.4 * cm
+        x = 1.55 * cm
         y = 2.48 * cm
         # draw_background(c, x, y, width, height, background_color=colors.HexColor('#CCCCCC'))
 
         # Уменьшение размера шрифта в зависимости от длины текста
-        if len(name_of_tea) > 30:
-            size -= 6
+        if len(name_of_tea) >= 40:
+            size -= 5.7
+        elif len(name_of_tea) >= 31:
+            size -= 4
+        elif len(name_of_tea) >= 25:
+            size -= 4
         elif len(name_of_tea) > 20:
             size -= 3
         elif len(name_of_tea) > 15:
             size -= 2
         elif len(name_of_tea) > 10:
             size -= 1
+        elif len(name_of_tea) <= 6:
+            size += 8
+        elif len(name_of_tea) <= 4:
+            size += 4
+
+        # Подсветка зон размещения
+        # draw_background(c, x, y, width, height, background_color=colors.HexColor('#CCCCCC'))  # добавьте эту строку
 
         name_tea_style = get_name_tea_style(font_size=size, font_color=pdf_color)
         name_tea_paragraph = Paragraph(name_of_tea, style=name_tea_style)
@@ -128,30 +140,65 @@ def name_tea(c, color_id, size, name_of_tea):
 
 def type_tea(c, color_id, tea_type, size):
     try:
-        x = 3.5 * cm
-        y = 3.8 * cm
-        c.setFont('Capsmall_clean', size)
-
+        x = 1.85 * cm
+        y = 3.5 * cm
+        width = 3.3 * cm
+        height = 1.5 * cm
         pdf_color = colors.HexColor(color_id)
 
+        # Подсветка зон размещения
+        # draw_background(c, x, y, width, height, background_color=colors.HexColor('#CD5C5C'))
+
+        c.setFont('Capsmall_clean', size)
+        text_width = c.stringWidth(tea_type, 'Capsmall_clean', size)
+        text_height = size  # Обычно размер шрифта соответствует высоте текста
+
+        # Вычисление координат для центрирования текста
+        x_centered = x + width / 2
+        y_centered = y + height / 2 - text_height / 2  # Центрируем текст по вертикали внутри выделенной зоны
+
         c.setFillColor(pdf_color)
-        c.drawCentredString(x, y, tea_type)
+        c.drawCentredString(x_centered, y_centered, tea_type)
     except Exception as e:
         logger.error(e)
 
 
+def get_paragraph_style(font_name='Capsmall_clean', font_size=15, font_color=colors.white):
+    return ParagraphStyle(
+        name='CenteredStyle',
+        fontName=font_name,
+        fontSize=font_size,
+        textColor=font_color,
+        alignment=TA_CENTER,
+        leading=0.9 * font_size  # уменьшение разрыва между строками
+    )
+
+
 def price_of_tea(c, color_id, price_tea, size):
     try:
-        x = 3.5 * cm
+        x = 1.95 * cm
         y = 1.7 * cm
+        width = 3.1 * cm
+        height = 0.9 * cm
 
-        c.setFont('Capsmall_clean', size)
+        if len(price_tea) >= 10:
+            size -= 3
+        elif len(price_tea) >= 11:
+            size -= 4
+
+        # Подсветка зон размещения
+        # draw_background(c, x, y, width, height, background_color=colors.HexColor('#FFD700'))
 
         pdf_color = colors.HexColor(color_id)
 
-        c.setFillColor(pdf_color)
+        # Создание абзаца с заданным стилем
+        style = get_paragraph_style(font_size=size, font_color=pdf_color)
+        para = Paragraph(price_tea, style)
 
-        c.drawCentredString(x, y, price_tea)
+        # Размещаем абзац внутри нашей подсвеченной области
+        w, h = para.wrap(width, height)
+        para.drawOn(c, x, y + (height - h) / 2)
+
     except Exception as e:
         logger.error(e)
 
