@@ -79,7 +79,8 @@ def start_logic():
                                tea_type=str(row['Тип чая']),
                                name_of_tea=str(row['Наименование']).replace('/', '\\'),
                                price_tea=price)
-
+        shutil.make_archive("PDF/output" , 'zip' , "PDF/output")
+        clear_subdirectories()
     except Exception as e:
         logger.error(e)
 
@@ -112,6 +113,7 @@ def clear_subdirectories():
 
 
 if __name__ == '__main__':
+    print('tyt')
     clear_subdirectories()
     start_logic()
     os.system('rm -rf PDF/counter.xlsx')
