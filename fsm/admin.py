@@ -342,7 +342,6 @@ async def get_file(message: types.Message, state: FSMContext):
     await bot.download_file(file_id_info.file_path, 'PDF/counter.xlsx')
     start_logic()  # функция, которую вы хотите выполнить
     open('PDF/counter.xlsx')
-
     await bot.send_document(chat_id=message.chat.id, document=open('PDF/output.zip', 'rb'))
     await state.finish()  # Выход из FSM после обработки файла
     await show_admin_menu(message)

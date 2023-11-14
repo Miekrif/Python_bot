@@ -44,7 +44,7 @@ def start_logic():
                 if str(row['Наименование']) in str(stop_word):
                     break
                 # Обработка цены
-                if row['Цена'].is_integer():
+                if isinstance(int, row['Цена']):
                     price = str(int(row['Цена']))
                 else:
                     price = str(row['Цена'])
@@ -119,5 +119,4 @@ if __name__ == '__main__':
     start_logic()
     os.system('rm -rf PDF/counter.xlsx')
     # os.system('rm -rf PDF/output.zip')
-
     logger.info(os.system('ls -lha '))
