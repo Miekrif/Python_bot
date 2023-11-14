@@ -87,7 +87,7 @@ def start_logic():
 
 def clear_subdirectories():
     try:
-        print(os.system('ls -lha'))
+        logger.info(os.system('ls -lha'))
         path = os.path.abspath('output')
         # Проверяем, существует ли заданный путь
         if os.path.exists(path) and os.path.isdir(path):
