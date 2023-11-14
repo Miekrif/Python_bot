@@ -7,7 +7,7 @@ from aiogram.types import ReplyKeyboardRemove
 from aiogram.utils.markdown import hbold
 import json
 from loader import dp , bot
-from PDF.logic import start_logic
+from PDF.logic import start_logic, clear_subdirectories
 # Загружаем сообщения
 import jsons.work_with_jsons as work_with_jsons
 
@@ -343,6 +343,7 @@ async def get_file(message: types.Message, state: FSMContext):
     start_logic()  # функция, которую вы хотите выполнить
     open('PDF/counter.xlsx')
     shutil.make_archive("PDF/output", 'zip', "PDF/output")
+    clear_subdirectories()
     await bot.send_document(chat_id=message.chat.id, document=open('PDF/output.zip', 'rb'))
     await state.finish()  # Выход из FSM после обработки файла
     await show_admin_menu(message)

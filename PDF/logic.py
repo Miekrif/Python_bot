@@ -79,12 +79,14 @@ def start_logic():
                                tea_type=str(row['Тип чая']),
                                name_of_tea=str(row['Наименование']).replace('/', '\\'),
                                price_tea=price)
+
     except Exception as e:
         logger.error(e)
 
 
-def clear_subdirectories(path):
+def clear_subdirectories():
     try:
+        path = os.path.abspath('output')
         # Проверяем, существует ли заданный путь
         if os.path.exists(path) and os.path.isdir(path):
             # Проходим по всем поддиректориям
@@ -110,7 +112,7 @@ def clear_subdirectories(path):
 
 
 if __name__ == '__main__':
-    clear_subdirectories(os.path.abspath('output'))
+    clear_subdirectories()
     start_logic()
     os.system('rm -rf PDF/counter.xlsx')
     # os.system('rm -rf PDF/output.zip')
