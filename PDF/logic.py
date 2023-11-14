@@ -44,8 +44,7 @@ def start_logic():
                 if str(row['Наименование']) in str(stop_word):
                     break
                 # Обработка цены
-                logger.info(row['Цена'])
-                if isinstance(int, row['Цена']):
+                if isinstance(row['Цена'], int):
                     price = str(int(row['Цена']))
                 else:
                     price = str(row['Цена'])
