@@ -31,7 +31,7 @@ color_type = {
 }
 
 
-def start_logic():
+def start_logic_pdf():
     xls = pd.ExcelFile(os.path.abspath('PDF/counter.xlsx'))
     sheets = xls.sheet_names
     try:
@@ -42,6 +42,7 @@ def start_logic():
             # Итерируемся по каждой строке данных
             for index, row in data.iterrows():
                 if str(row['Наименование']) in str(stop_word):
+                    logger.info(row['Наименование'])
                     break
                 # Обработка цены
                 if isinstance(row['Цена'], int):
@@ -79,8 +80,6 @@ def start_logic():
                                tea_type=str(row['Тип чая']),
                                name_of_tea=str(row['Наименование']).replace('/', '\\'),
                                price_tea=price)
-        shutil.make_archive("PDF/output" , 'zip' , "PDF/output")
-        clear_subdirectories()
     except Exception as e:
         logger.error(e)
 
@@ -113,10 +112,17 @@ def clear_subdirectories():
         logger.error(e)
 
 
-if __name__ == '__main__':
-    print('tyt')
+def start_logic():
     clear_subdirectories()
-    start_logic()
+    start_logic_pdf()
     os.system('rm -rf PDF/counter.xlsx')
-    # os.system('rm -rf PDF/output.zip')
     logger.info(os.system('ls -lha '))
+
+
+# if __name__ == '__main__':
+    # print('tyt')
+    # clear_subdirectories()
+    # start_logic()
+    # os.system('rm -rf PDF/counter.xlsx')
+    # # os.system('rm -rf PDF/output.zip')
+    # logger.info(os.system('ls -lha '))
