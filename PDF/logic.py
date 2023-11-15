@@ -87,7 +87,7 @@ def start_logic_pdf():
 def clear_subdirectories():
     try:
         logger.info(os.system('ls -lha'))
-        path = os.path.abspath('output')
+        path = os.path.abspath('PDF/output')
         # Проверяем, существует ли заданный путь
         if os.path.exists(path) and os.path.isdir(path):
             # Проходим по всем поддиректориям
