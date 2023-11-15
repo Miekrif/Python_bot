@@ -81,7 +81,7 @@ def start_logic_pdf():
                                name_of_tea=str(row['Наименование']).replace('/', '\\'),
                                price_tea=price)
     except Exception as e:
-        logger.error(e)
+        logger.error(f" start_logic_pdf \n {e}")
 
 
 def clear_subdirectories():
@@ -109,14 +109,17 @@ def clear_subdirectories():
         else:
             logger.warning(f'Путь {path} не существует или не является директорией')
     except Exception as e:
-        logger.error(e)
+        logger.error(f" clear_subdirectories \n {e}")
 
 
 def start_logic():
-    clear_subdirectories()
-    start_logic_pdf()
-    os.system('rm -rf PDF/counter.xlsx')
-    logger.info(os.system('ls -lha '))
+    try:
+        clear_subdirectories()
+        start_logic_pdf()
+        os.system('rm -rf PDF/counter.xlsx')
+        logger.info(os.system('ls -lha '))
+    except Exception as e:
+        logger.error(f" start_logic \n {e}")
 
 
 # if __name__ == '__main__':
