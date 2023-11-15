@@ -41,6 +41,8 @@ def start_logic_pdf():
             data = pd.read_excel(xls, sheet)
             # Итерируемся по каждой строке данных
             for index, row in data.iterrows():
+                if str(row['Наименование']) in 'наименование':
+                    continue
                 if str(row['Наименование']) in str(stop_word):
                     logger.info(row['Наименование'])
                     break
