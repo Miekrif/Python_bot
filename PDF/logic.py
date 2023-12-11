@@ -140,6 +140,7 @@ def convert_pdf_to_jpeg():
                             elif os.path.isdir(file_path):
                                 for filename in os.listdir(file_path):
                                     file_path = os.path.join(dir_path , filename)
+                                    pages = convert_from_path(file_path , 500)
                             for count, page in enumerate(pages):
                                 logger.info(file_path)
                                 page.save(f'{str(file_path).replace(".pdf", "")}.jpg' , 'JPEG')
