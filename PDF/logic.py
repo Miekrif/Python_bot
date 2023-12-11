@@ -90,7 +90,7 @@ def start_logic_pdf():
 
 def clear_subdirectories():
     try:
-        logger.info(os.system('ls -lha'))
+        logger.info(os.system('ls -lha PDF/output_PDF'))
         paths = [os.path.abspath('PDF/output_PDF'), os.path.abspath('PDF/output_PDF')]
         # Проверяем, существует ли заданный путь
         for path in paths:
@@ -119,6 +119,7 @@ def clear_subdirectories():
 
 def convert_pdf_to_jpeg():
     try:
+        logger.info(os.system('ls -lha PDF/output_images/*'))
         path = os.path.abspath('PDF/output_PDF')
         # Проверяем, существует ли заданный путь
         if os.path.exists(path) and os.path.isdir(path):
@@ -134,6 +135,9 @@ def convert_pdf_to_jpeg():
                         try:
                             if os.path.isfile(file_path):
                                 pages = convert_from_path(file_path, 500)
+                            elif os.path.isdir(file_path):
+                                for filename in os.listdir(file_path):
+                                    file_path = os.path.join(dir_path , filename)
                             for count, page in enumerate(pages):
                                 page.save(f'{str(file_path).replace(".pdf", "")}.jpg' , 'JPEG')
                         except Exception as e:
