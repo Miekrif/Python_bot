@@ -23,7 +23,7 @@ def start(color_type, color_name, color_price, tea_type, name_of_tea, price_tea)
     try:
         #START
         template_path = 'PDF/template/horizon_tag.pdf'
-        output_file = f'PDF/output/horizon/{name_of_tea}.pdf'
+        output_file = f'PDF/output_PDF/horizon/{str(name_of_tea).replace(" ", "_")}.pdf'
 
         locale = 'PDF/fonts/Capsmall_clean.ttf'
         pdfmetrics.registerFont(TTFont('Capsmall_clean', locale))

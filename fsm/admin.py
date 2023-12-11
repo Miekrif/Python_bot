@@ -271,7 +271,6 @@ async def process_message_edit(callback: types.CallbackQuery, state: FSMContext)
     await DailyCleaningMessage.next()  # Смена состояния происходит уже после того, как пользователь взаимодействует с клавиатурой
 
 
-
 @dp.callback_query_handler(text='change_daily_message', state=DailyCleaningMessage.Message_input)
 async def process_message_change(callback: types.CallbackQuery):
     await callback.message.answer(text="Введите новое сообщение об уборке:")
@@ -341,9 +340,12 @@ async def get_file(message: types.Message, state: FSMContext):
     file_id_info = await bot.get_file(message.document.file_id)
     await bot.download_file(file_id_info.file_path, 'PDF/counter.xlsx')
     start_logic()  # функция, которую вы хотите выполнить
-    shutil.make_archive("PDF/output" , 'zip' , "PDF/output")
+    shutil.make_archive("PDF/output_PDF" , 'zip' , "PDF/output_PDF")
+    shutil.make_archive("PDF/output_images" , 'zip' , "PDF/output_images")
     # open('PDF/counter.xlsx')
-    await bot.send_document(chat_id=message.chat.id, document=open('PDF/output.zip', 'rb'))
+    await bot.send_document(chat_id=message.chat.id, document=open('PDF/output_images.zip', 'rb'))
+    await bot.send_document(chat_id=message.chat.id, document=open('PDF/output_PDF.zip', 'rb'))
+
     await state.finish()  # Выход из FSM после обработки файла
     await show_admin_menu(message)
 #####

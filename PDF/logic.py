@@ -1,9 +1,12 @@
 import os
+import fitz  # PyMuPDF
 import shutil
 import logging
 import pandas as pd
+from PIL import Image
 from PDF.square_tag import start as square_tag
 from PDF.horizon_tag import start as horizon_tag
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -114,10 +117,46 @@ def clear_subdirectories():
         logger.error(f" clear_subdirectories \n {e}")
 
 
+def convert_pdf_to_jpeg(pdf_path, output_folder):
+    # Открываем PDF-файл
+    pdf_document = fitz.open(pdf_path)
+
+    # Проходим по страницам PDF-файла
+    for page_number in range(pdf_document.page_count):
+        # Получаем страницу
+        page = pdf_document[page_number]
+
+        # Получаем изображение страницы
+        img = page.get_pixmap()
+
+        # Имя файла для сохранения изображения
+        img_filename = f"{output_folder}/page{page_number + 1}.jpeg"
+
+        # Сохраняем изображение с использованием Pillow
+        Image.frombytes("RGB", [img.width, img.height], img.samples).convert("RGB").save(img_filename)
+
+    # Закрываем PDF-файл
+    pdf_document.close()
+
+
+def convert_all_pdfs(input_folder, output_folder):
+    # Обход файлов в указанной папке
+    for filename in os.listdir(input_folder):
+        if filename.endswith(".pdf"):
+            pdf_path = os.path.join(input_folder, filename)
+            convert_pdf_to_jpeg(pdf_path, output_folder)
+
+
 def start_logic():
     try:
+        # Чистим папки
         clear_subdirectories()
+        # Создаем pdf'ы
         start_logic_pdf()
+        # Конвертируем PDF-файлы в изображения
+        convert_all_pdfs("output_PDF/horizon", "output_images/horizon_images")
+        convert_all_pdfs("output_PDF/square", "output_images/square_images")
+        # Удаляем старый файл
         os.system('rm -rf PDF/counter.xlsx')
         logger.info(os.system('ls -lha '))
     except Exception as e:
