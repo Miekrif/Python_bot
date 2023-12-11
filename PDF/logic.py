@@ -143,9 +143,8 @@ def convert_pdf_to_jpeg():
                                     file_path = os.path.join(dir_path , filename)
                                     pages = convert_from_path(file_path , 500)
                             for count, page in enumerate(pages):
-                                logger.info(file_path)
                                 jpeg_filename = os.path.join(path , f'{str(file_path).replace(".pdf" , "")}.jpg')
-                                logger.info(jpeg_filename)
+                                logger.info(jpeg_filename.replace("/output_PDF/", "/output_images/"))
                                 page.save(jpeg_filename, 'JPEG')
                         except Exception as e:
                             logger.error(f'Не поменять формат {file_path}. Причина: {e}')
