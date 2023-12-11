@@ -121,6 +121,7 @@ def convert_pdf_to_jpeg():
     try:
         logger.info(os.system('ls -lha PDF/output_images/*'))
         path = os.path.abspath('PDF/output_PDF')
+        logger.info(path)
         # Проверяем, существует ли заданный путь
         if os.path.exists(path) and os.path.isdir(path):
             # Проходим по всем поддиректориям
@@ -132,6 +133,7 @@ def convert_pdf_to_jpeg():
                         if '1' in filename and len(filename) == 1:
                             continue
                         file_path = os.path.join(dir_path, filename)
+                        logger.info(file_path)
                         try:
                             if os.path.isfile(file_path):
                                 pages = convert_from_path(file_path, 500)
@@ -139,6 +141,7 @@ def convert_pdf_to_jpeg():
                                 for filename in os.listdir(file_path):
                                     file_path = os.path.join(dir_path , filename)
                             for count, page in enumerate(pages):
+                                logger.info(file_path)
                                 page.save(f'{str(file_path).replace(".pdf", "")}.jpg' , 'JPEG')
                         except Exception as e:
                             logger.error(f'Не поменять формат {file_path}. Причина: {e}')
@@ -158,7 +161,6 @@ def start_logic():
         convert_pdf_to_jpeg()
         # Удаляем старый файл
         os.system('rm -rf PDF/counter.xlsx')
-        logger.info(os.system('ls -lha '))
     except Exception as e:
         logger.error(f" start_logic \n {e}")
 
