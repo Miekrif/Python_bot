@@ -133,12 +133,13 @@ def convert_pdf_to_jpeg():
                         if '1' in filename and len(filename) == 1:
                             continue
                         file_path = os.path.join(dir_path, filename)
-                        logger.info(file_path)
                         try:
                             if os.path.isfile(file_path):
+                                logger.info(file_path)
                                 pages = convert_from_path(file_path, 500)
                             elif os.path.isdir(file_path):
                                 for filename in os.listdir(file_path):
+                                    logger.info(file_path)
                                     file_path = os.path.join(dir_path , filename)
                                     pages = convert_from_path(file_path , 500)
                             for count, page in enumerate(pages):
