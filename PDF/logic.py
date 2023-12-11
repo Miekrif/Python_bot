@@ -141,7 +141,7 @@ def convert_pdf_to_jpeg():
                             for count, page in enumerate(pages):
                                 page.save(f'{str(file_path).replace(".pdf", "")}.jpg' , 'JPEG')
                         except Exception as e:
-                            logger.error(f'Не удалось удалить {file_path}. Причина: {e}')
+                            logger.error(f'Не поменять формат {file_path}. Причина: {e}')
         else:
             logger.warning(f'Путь {path} не существует или не является директорией')
     except Exception as e:
@@ -155,8 +155,7 @@ def start_logic():
         # Создаем pdf'ы
         start_logic_pdf()
         # Конвертируем PDF-файлы в изображения
-        # convert_all_pdfs("output_PDF/horizon", "output_images/horizon_images")
-        # convert_all_pdfs("output_PDF/square", "output_images/square_images")
+        convert_pdf_to_jpeg()
         # Удаляем старый файл
         os.system('rm -rf PDF/counter.xlsx')
         logger.info(os.system('ls -lha '))
