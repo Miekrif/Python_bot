@@ -1,9 +1,8 @@
 import os
-import fitz  # PyMuPDF
 import shutil
 import logging
 import pandas as pd
-from PIL import Image
+from pdf2image import convert_from_path
 from PDF.square_tag import start as square_tag
 from PDF.horizon_tag import start as horizon_tag
 
@@ -92,7 +91,35 @@ def start_logic_pdf():
 def clear_subdirectories():
     try:
         logger.info(os.system('ls -lha'))
-        path = os.path.abspath('PDF/output')
+        paths = [os.path.abspath('PDF/output_PDF'), os.path.abspath('PDF/output_PDF')]
+        # Проверяем, существует ли заданный путь
+        for path in paths:
+            if os.path.exists(path) and os.path.isdir(path):
+                # Проходим по всем поддиректориям
+                for root_dir, dirs, files in os.walk(path):
+                    for dir in dirs:
+                        dir_path = os.path.join(root_dir, dir)
+                        # Удаляем все файлы и поддиректории в текущей поддиректории
+                        for filename in os.listdir(dir_path):
+                            if '1' in filename and len(filename) == 1:
+                                continue
+                            file_path = os.path.join(dir_path, filename)
+                            try:
+                                if os.path.isfile(file_path) or os.path.islink(file_path):
+                                    os.unlink(file_path)
+                                elif os.path.isdir(file_path):
+                                    shutil.rmtree(file_path)
+                            except Exception as e:
+                                logger.error(f'Не удалось удалить {file_path}. Причина: {e}')
+            else:
+                logger.warning(f'Путь {path} не существует или не является директорией')
+    except Exception as e:
+        logger.error(f" clear_subdirectories \n {e}")
+
+
+def convert_pdf_to_jpeg():
+    try:
+        path = os.path.abspath('PDF/output_PDF')
         # Проверяем, существует ли заданный путь
         if os.path.exists(path) and os.path.isdir(path):
             # Проходим по всем поддиректориям
@@ -105,46 +132,16 @@ def clear_subdirectories():
                             continue
                         file_path = os.path.join(dir_path, filename)
                         try:
-                            if os.path.isfile(file_path) or os.path.islink(file_path):
-                                os.unlink(file_path)
-                            elif os.path.isdir(file_path):
-                                shutil.rmtree(file_path)
+                            if os.path.isfile(file_path):
+                                pages = convert_from_path(file_path, 500)
+                            for count, page in enumerate(pages):
+                                page.save(f'{str(file_path).replace(".pdf", "")}.jpg' , 'JPEG')
                         except Exception as e:
                             logger.error(f'Не удалось удалить {file_path}. Причина: {e}')
         else:
             logger.warning(f'Путь {path} не существует или не является директорией')
     except Exception as e:
         logger.error(f" clear_subdirectories \n {e}")
-
-
-def convert_pdf_to_jpeg(pdf_path, output_folder):
-    # Открываем PDF-файл
-    pdf_document = fitz.open(pdf_path)
-
-    # Проходим по страницам PDF-файла
-    for page_number in range(pdf_document.page_count):
-        # Получаем страницу
-        page = pdf_document[page_number]
-
-        # Получаем изображение страницы
-        img = page.get_pixmap()
-
-        # Имя файла для сохранения изображения
-        img_filename = f"{output_folder}/page{page_number + 1}.jpeg"
-
-        # Сохраняем изображение с использованием Pillow
-        Image.frombytes("RGB", [img.width, img.height], img.samples).convert("RGB").save(img_filename)
-
-    # Закрываем PDF-файл
-    pdf_document.close()
-
-
-def convert_all_pdfs(input_folder, output_folder):
-    # Обход файлов в указанной папке
-    for filename in os.listdir(input_folder):
-        if filename.endswith(".pdf"):
-            pdf_path = os.path.join(input_folder, filename)
-            convert_pdf_to_jpeg(pdf_path, output_folder)
 
 
 def start_logic():
@@ -154,8 +151,8 @@ def start_logic():
         # Создаем pdf'ы
         start_logic_pdf()
         # Конвертируем PDF-файлы в изображения
-        convert_all_pdfs("output_PDF/horizon", "output_images/horizon_images")
-        convert_all_pdfs("output_PDF/square", "output_images/square_images")
+        # convert_all_pdfs("output_PDF/horizon", "output_images/horizon_images")
+        # convert_all_pdfs("output_PDF/square", "output_images/square_images")
         # Удаляем старый файл
         os.system('rm -rf PDF/counter.xlsx')
         logger.info(os.system('ls -lha '))
