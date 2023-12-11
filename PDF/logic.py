@@ -135,7 +135,7 @@ def convert_pdf_to_jpeg():
                         file_path = os.path.join(dir_path, filename)
                         try:
                             if os.path.isfile(file_path):
-                                logger.info(file_path)
+                                logger.info(f'if os.path.isfile(file_path) {file_path}')
                                 pages = convert_from_path(file_path, 500)
                             elif os.path.isdir(file_path):
                                 for filename in os.listdir(file_path):
