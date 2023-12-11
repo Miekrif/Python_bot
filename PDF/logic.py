@@ -128,7 +128,7 @@ def convert_pdf_to_jpeg():
             for root_dir, dirs, files in os.walk(path):
                 for dir in dirs:
                     dir_path = os.path.join(root_dir, dir)
-                    # Удаляем все файлы и поддиректории в текущей поддиректории
+                    # Проходим все файлы и поддиректории в текущей поддиректории
                     for filename in os.listdir(dir_path):
                         if '1' in filename and len(filename) == 1:
                             continue
@@ -144,13 +144,15 @@ def convert_pdf_to_jpeg():
                                     pages = convert_from_path(file_path , 500)
                             for count, page in enumerate(pages):
                                 logger.info(file_path)
-                                page.save(f'{str(file_path).replace(".pdf", "")}.jpg' , 'JPEG')
+                                jpeg_filename = os.path.join(path , f'{str(file_path).replace(".pdf" , "")}.jpg')
+                                logger.info(jpeg_filename)
+                                page.save(jpeg_filename, 'JPEG')
                         except Exception as e:
                             logger.error(f'Не поменять формат {file_path}. Причина: {e}')
         else:
             logger.warning(f'Путь {path} не существует или не является директорией')
     except Exception as e:
-        logger.error(f" clear_subdirectories \n {e}")
+        logger.error(f" convert_pdf_to_jpeg \n {e}")
 
 
 def start_logic():
