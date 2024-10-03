@@ -28,8 +28,8 @@ def start(color_type, color_name, color_price, tea_type, name_of_tea, price_tea)
         locale = 'PDF/fonts/Capsmall_clean.ttf'
         pdfmetrics.registerFont(TTFont('Capsmall_clean', locale))
 
-        page_width = 21 * cm
-        page_height = 3.2 * cm
+        page_width = 20.9 * cm
+        page_height = 2.95 * cm
 
         template = PdfReader(template_path)
         page = template.pages[0]
@@ -44,7 +44,7 @@ def start(color_type, color_name, color_price, tea_type, name_of_tea, price_tea)
             type_tea(c=c, color_id=color_type, tea_type=tea_type.upper(), size=30)
             name_tea(c=c, color_id=color_name, size=29, name_of_tea=name_of_tea.upper().replace('/', '\\'))
             price_of_tea(c=c, color_id=color_price, price_tea=price_tea,  size=25)
-        trim_bottom = 2.9 * mm  # 10 мм снизу
+        trim_bottom = 0 * mm  # 10 мм снизу
         resize_page(output_file, page_width, page_height, trim_bottom)
     except Exception as e:
         logger.error(e)
@@ -95,8 +95,8 @@ def name_tea(c, color_id, size, name_of_tea):
         c.setFillColor(pdf_color)
         width = 10 * cm
         height = 1.9 * cm
-        x = 8 * cm
-        y = 1 * cm
+        x = 7.89 * cm
+        y = 0.6 * cm
 
         # Уменьшение размера шрифта в зависимости от длины текста
         if len(name_of_tea) > 30:
@@ -108,7 +108,7 @@ def name_tea(c, color_id, size, name_of_tea):
         elif len(name_of_tea) > 10:
             size -= 4
         # Подсветка зон размещения
-        # draw_background(c, x, y, width, height, background_color=colors.HexColor('#CCCCCC'))  # добавьте эту строку
+        # page_draw(c , x , y, width, height, background_color=colors.HexColor('#CCCCCC'))
 
         name_tea_style = get_name_tea_style(font_size=size, font_color=pdf_color)
         name_tea_paragraph = Paragraph(name_of_tea, style=name_tea_style)
@@ -124,13 +124,13 @@ def name_tea(c, color_id, size, name_of_tea):
 def type_tea(c, color_id, tea_type, size):
     try:
         x = 2.2 * cm
-        y = 1 * cm
+        y = 0.6 * cm
         width = 5.5 * cm
         height = 1.9 * cm
         pdf_color = colors.HexColor(color_id)
 
         # Подсветка зон размещения
-        # draw_background(c, x, y, width, height, background_color=colors.HexColor('#CD5C5C'))
+        # page_draw(c, x, y, width, height, background_color=colors.HexColor('#CD5C5C'))
 
         c.setFont('Capsmall_clean', size)
         text_width = c.stringWidth(tea_type, 'Capsmall_clean', size)
@@ -159,13 +159,13 @@ def get_paragraph_style(font_name='Capsmall_clean', font_size=15, font_color=col
 
 def price_of_tea(c, color_id, price_tea, size):
     try:
-        x = 18 * cm
-        y = 1 * cm
+        x = 17.8 * cm
+        y = 0.6 * cm
         width = 2.8 * cm
         height = 1.9 * cm
 
         # Подсветка зон размещения
-        # draw_background(c, x, y, width, height, background_color=colors.HexColor('#FFD700'))
+        # page_draw(c, x, y, width, height, background_color=colors.HexColor('#FFD700'))
 
         pdf_color = colors.HexColor(color_id)
 
@@ -207,3 +207,9 @@ def resize_page(output_file, page_width, page_height, trim_bottom):
         pdfrw.PdfWriter().write(output_file, input_pdf)
     except Exception as e:
         logger.error(e)
+
+
+def page_draw(c, x, y, width, height, background_color):
+    print("1")
+    draw_background(c, x, y, width, height, background_color=background_color)
+

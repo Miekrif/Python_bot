@@ -103,7 +103,7 @@ def name_tea(c, color_id, size, name_of_tea):
         width = 4 * cm
         height = 1 * cm
         x = 1.55 * cm
-        y = 2.48 * cm
+        y = 2.2 * cm
         # draw_background(c, x, y, width, height, background_color=colors.HexColor('#CCCCCC'))
 
         # Уменьшение размера шрифта в зависимости от длины текста
@@ -123,7 +123,6 @@ def name_tea(c, color_id, size, name_of_tea):
             size += 8
         elif len(name_of_tea) <= 4:
             size += 4
-
         # Подсветка зон размещения
         # draw_background(c, x, y, width, height, background_color=colors.HexColor('#CCCCCC'))  # добавьте эту строку
 
@@ -141,7 +140,7 @@ def name_tea(c, color_id, size, name_of_tea):
 def type_tea(c, color_id, tea_type, size):
     try:
         x = 1.85 * cm
-        y = 3.5 * cm
+        y = 3.2 * cm
         width = 3.3 * cm
         height = 1.5 * cm
         pdf_color = colors.HexColor(color_id)
@@ -177,7 +176,7 @@ def get_paragraph_style(font_name='Capsmall_clean', font_size=15, font_color=col
 def price_of_tea(c, color_id, price_tea, size):
     try:
         x = 1.95 * cm
-        y = 1.7 * cm
+        y = 1.2 * cm
         width = 3.1 * cm
         height = 0.9 * cm
 
